@@ -19,6 +19,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Integer uid = userMapper.getUidByUsername(username);
+        if (uid == null) throw new UsernameNotFoundException("User: '" + username + "' not found.");
         User user = userMapper.getUserByUid(uid);
         if(user == null) throw new UsernameNotFoundException("User: '" + username + "' not found.");
         return user;
