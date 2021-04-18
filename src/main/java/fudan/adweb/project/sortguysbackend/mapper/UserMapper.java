@@ -1,10 +1,7 @@
 package fudan.adweb.project.sortguysbackend.mapper;
 
 import fudan.adweb.project.sortguysbackend.entity.User;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 import org.springframework.stereotype.Repository;
 
@@ -27,4 +24,9 @@ public interface UserMapper {
 
     @Select("select uid from user where username = #{username}")
     public Integer getUidByUsername(String username);
+
+    @Insert("insert into user(username, password) values(#{username}, #{password}) ")
+    //获取自增主键
+    @Options(useGeneratedKeys = true, keyProperty = "uid", keyColumn="uid")
+    public Integer insert(User user);
 }

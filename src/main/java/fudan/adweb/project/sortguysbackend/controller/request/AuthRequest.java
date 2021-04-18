@@ -1,6 +1,6 @@
 package fudan.adweb.project.sortguysbackend.controller.request;
 
-public class LoginRequest {
+public class AuthRequest {
     private String username;
     private String password;
 

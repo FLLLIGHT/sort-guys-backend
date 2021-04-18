@@ -15,6 +15,15 @@ public class User implements UserDetails {
     private String password;
     private Set<Authority> authorities;
 
+    public User() {
+        //
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public Integer getUid() {
         return uid;
     }

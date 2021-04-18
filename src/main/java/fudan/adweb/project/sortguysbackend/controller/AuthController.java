@@ -1,6 +1,6 @@
 package fudan.adweb.project.sortguysbackend.controller;
 
-import fudan.adweb.project.sortguysbackend.controller.request.LoginRequest;
+import fudan.adweb.project.sortguysbackend.controller.request.AuthRequest;
 import fudan.adweb.project.sortguysbackend.entity.User;
 import fudan.adweb.project.sortguysbackend.security.jwt.JwtTokenUtil;
 import fudan.adweb.project.sortguysbackend.service.AuthService;
@@ -28,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         User user = authService.login(request.getUsername(), request.getPassword());
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         builder.header("token", jwtTokenUtil.generateToken(user));
@@ -37,7 +37,23 @@ public class AuthController {
 
     @GetMapping("/login")
     public ResponseEntity<?> login() {
-        User user = authService.login("Alice", "123456");
+        User user = authService.login("Bob", "123456");
+        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        builder.header("token", jwtTokenUtil.generateToken(user));
+        return builder.body(user);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody AuthRequest request) {
+        User user = authService.register(request.getUsername(), request.getPassword());
+        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        builder.header("token", jwtTokenUtil.generateToken(user));
+        return builder.body(user);
+    }
+
+    @GetMapping("/register")
+    public ResponseEntity<?> register() {
+        User user = authService.register("Bob", "123456");
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         builder.header("token", jwtTokenUtil.generateToken(user));
         return builder.body(user);
