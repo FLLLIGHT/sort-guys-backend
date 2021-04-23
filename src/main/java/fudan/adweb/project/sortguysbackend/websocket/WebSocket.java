@@ -1,4 +1,4 @@
-package fudan.adweb.project.sortguysbackend.service;
+package fudan.adweb.project.sortguysbackend.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -15,11 +15,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 @ServerEndpoint(value = "/websocket/{nickname}")
 @Component
-public class WebSocketService {
+public class WebSocket {
     // bind sessionId and session
     private static Map<String,Session> map = new HashMap<>();
     // store WebSocketService
-    private static CopyOnWriteArraySet<WebSocketService> webSocketSet = new CopyOnWriteArraySet<>();
+    private static CopyOnWriteArraySet<WebSocket> webSocketSet = new CopyOnWriteArraySet<>();
     private static Map<String, String> usersMap = new HashMap<>();
     private Session session;
 
@@ -78,16 +78,20 @@ public class WebSocketService {
                 if(toSession != null){
                     Map<String,Object> m= new HashMap<>();
                     m.put("type",1);
-                    m.put("to", username);
-                    m.put("name",nickname);
+                    m.put("toUser", username);
+                    m.put("fromUser",nickname);
                     m.put("msg",socketMsg.getMsg());
                     fromSession.getAsyncRemote().sendText(new Gson().toJson(m));
                     toSession.getAsyncRemote().sendText(new Gson().toJson(m));
                 }else{
                     Map<String, String> map = new HashMap<>();
-                    map.put("false", "false");
+                    map.put("msg", "error");
                     fromSession.getAsyncRemote().sendText(new Gson().toJson(map));
                 }
+            }
+            else{
+                // 群发
+                broadcast(nickname+": "+socketMsg.getMsg());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,5 +102,14 @@ public class WebSocketService {
     @OnError
     public void onError(Session session, Throwable error) {
         error.printStackTrace();
+    }
+
+    // 广播消息
+    private void broadcast(String msg) {
+        for (WebSocket item : webSocketSet) {
+            //同步异步说明参考：http://blog.csdn.net/who_is_xiaoming/article/details/53287691
+            //this.session.getBasicRemote().sendText(message);
+            item.session.getAsyncRemote().sendText(msg); //异步发送消息
+        }
     }
 }
