@@ -35,18 +35,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         // We dont't need CSRF for this project.
-        http.csrf().disable()
-                // Make sure we use stateless session; session won't be used to store user's state.
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
+        http.csrf().ignoringAntMatchers("/*");
 
-                .antMatchers("/login","/register").permitAll()
-                .anyRequest().authenticated();
-
-//      Here we use JWT(Json Web Token) to authenticate the user.
+        // Here we use JWT(Json Web Token) to authenticate the user.
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
