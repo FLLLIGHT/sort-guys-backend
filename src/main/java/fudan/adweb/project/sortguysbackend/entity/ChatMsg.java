@@ -1,6 +1,6 @@
 package fudan.adweb.project.sortguysbackend.entity;
 
-public class SocketMsg {
+public class ChatMsg {
     private int type; //0：群聊，1：单聊.
     private String fromUser;
     private String toUser;

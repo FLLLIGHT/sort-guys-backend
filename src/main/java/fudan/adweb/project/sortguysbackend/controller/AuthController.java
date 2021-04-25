@@ -53,7 +53,7 @@ public class AuthController {
 
     @GetMapping("/register")
     public ResponseEntity<?> register() {
-        User user = authService.register("Bob", "123456");
+        User user = authService.register("Cathy", "123456");
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         builder.header("token", jwtTokenUtil.generateToken(user));
         return builder.body(user);

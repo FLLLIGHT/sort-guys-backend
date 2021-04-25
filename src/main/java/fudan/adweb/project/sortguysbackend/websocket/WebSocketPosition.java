@@ -3,10 +3,8 @@ package fudan.adweb.project.sortguysbackend.websocket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import fudan.adweb.project.sortguysbackend.entity.PositionMsg;
-import fudan.adweb.project.sortguysbackend.entity.SocketMsg;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.Position;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
