@@ -5,6 +5,19 @@ public class PositionMsg {
     private Double x;
     private Double y;
     private Double z;
+    private int type;
+
+    public PositionMsg(){
+        //empty
+    }
+
+    public PositionMsg(String username, Double x, Double y, Double z, int type) {
+        this.username = username;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.type = type;
+    }
 
     public String getUsername() {
         return username;
@@ -38,6 +51,14 @@ public class PositionMsg {
         this.z = z;
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "PositionMsg{" +
@@ -45,6 +66,7 @@ public class PositionMsg {
                 ", x=" + x +
                 ", y=" + y +
                 ", z=" + z +
+                ", type=" + type +
                 '}';
     }
 }

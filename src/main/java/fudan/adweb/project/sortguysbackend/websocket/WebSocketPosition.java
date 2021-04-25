@@ -6,6 +6,7 @@ import fudan.adweb.project.sortguysbackend.entity.PositionMsg;
 import fudan.adweb.project.sortguysbackend.entity.SocketMsg;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.Position;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -22,6 +23,7 @@ public class WebSocketPosition {
     // store WebSocketService
     private static CopyOnWriteArraySet<WebSocketPosition> webSocketSet = new CopyOnWriteArraySet<>();
     private static Map<String, String> usersMap = new HashMap<>();
+    private static Map<String, PositionMsg> positionMap = new HashMap<>();
     private Session session;
 
     /**
@@ -33,6 +35,7 @@ public class WebSocketPosition {
         this.session = session;
         map.put(session.getId(), session);
         usersMap.put(nickname, session.getId());
+        positionMap.put(nickname, new PositionMsg(nickname, 0d, 0d, 0d, 1));
         webSocketSet.add(this);
 
         System.out.println("New connection: " + nickname + ", id: " + session.getId() + ", current people:" + webSocketSet.size());
@@ -41,6 +44,7 @@ public class WebSocketPosition {
         message.put("name",nickname);
         message.put("aisle",session.getId());
         this.session.getAsyncRemote().sendText(new Gson().toJson(message));
+        this.session.getAsyncRemote().sendText(asJsonString(positionMap));
     }
 
     /**
@@ -50,13 +54,22 @@ public class WebSocketPosition {
     public void onClose() {
         webSocketSet.remove(this);
         map.remove(this.session.getId());
+        String username = "";
         for (Map.Entry<String, String> entry : usersMap.entrySet()){
             if (entry.getValue().equals(this.session.getId())){
+                username = entry.getKey();
                 usersMap.remove(entry.getKey());
                 break;
             }
         }
+        for (Map.Entry<String, PositionMsg> entry : positionMap.entrySet()){
+            if (entry.getKey().equals(username)){
+                positionMap.remove(entry.getKey());
+                break;
+            }
+        }
         System.out.println("Close 1, current people: " + webSocketSet.size());
+        broadcast(new PositionMsg(username, -1d, -1d, -1d, 2));
     }
 
     /**
@@ -69,6 +82,7 @@ public class WebSocketPosition {
 
         try {
             positionMsg = objectMapper.readValue(message, PositionMsg.class);
+            positionMap.put(nickname, positionMsg);
             broadcast(positionMsg);
         } catch (IOException e) {
             e.printStackTrace();
@@ -86,6 +100,10 @@ public class WebSocketPosition {
         for (WebSocketPosition item : webSocketSet) {
             item.session.getAsyncRemote().sendText(asJsonString(positionMsg));
         }
+    }
+
+    private void position(){
+
     }
 
     private String asJsonString(final Object obj) {
