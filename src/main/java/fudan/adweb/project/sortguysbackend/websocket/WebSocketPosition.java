@@ -35,7 +35,7 @@ public class WebSocketPosition {
         this.session = session;
         map.put(session.getId(), session);
         usersMap.put(nickname, session.getId());
-        positionMap.put(nickname, new PositionMsg(nickname, 0d, 0d, 0d, 1));
+        positionMap.put(nickname, new PositionMsg(nickname, 0d, 30d, 0d, 1));
         webSocketSet.add(this);
 
         System.out.println("New connection: " + nickname + ", id: " + session.getId() + ", current people:" + webSocketSet.size());
