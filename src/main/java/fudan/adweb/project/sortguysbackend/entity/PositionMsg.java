@@ -37,4 +37,14 @@ public class PositionMsg {
     public void setZ(Double z) {
         this.z = z;
     }
+
+    @Override
+    public String toString() {
+        return "PositionMsg{" +
+                "username='" + username + '\'' +
+                ", x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
+    }
 }
