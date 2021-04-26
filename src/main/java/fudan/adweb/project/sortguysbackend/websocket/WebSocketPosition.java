@@ -28,7 +28,7 @@ public class WebSocketPosition {
      * on connect
      */
     @OnOpen
-    public void onOpen(Session session,@PathParam("nickname") String nickname) {
+    public void onOpen(Session session,@PathParam("nickname") String nickname) throws IOException {
         Map<String,Object> message= new HashMap<>();
         this.session = session;
         map.put(session.getId(), session);
@@ -42,8 +42,12 @@ public class WebSocketPosition {
         message.put("people",webSocketSet.size());
         message.put("name",nickname);
         message.put("aisle",session.getId());
-        this.session.getAsyncRemote().sendText(new Gson().toJson(message));
-        this.session.getAsyncRemote().sendText(asJsonString(positionMap));
+        synchronized (this.session){
+            this.session.getBasicRemote().sendText(new Gson().toJson(message));
+        }
+        synchronized (this.session){
+            this.session.getBasicRemote().sendText(asJsonString(positionMap));
+        }
         broadcast(positionMsg);
     }
 
@@ -51,7 +55,7 @@ public class WebSocketPosition {
      * close
      */
     @OnClose
-    public void onClose() {
+    public void onClose() throws IOException {
         webSocketSet.remove(this);
         map.remove(this.session.getId());
         String username = "";
@@ -96,9 +100,11 @@ public class WebSocketPosition {
     }
 
     // 广播位置信息
-    private void broadcast(PositionMsg positionMsg) {
+    private void broadcast(PositionMsg positionMsg) throws IOException {
         for (WebSocketPosition item : webSocketSet) {
-            item.session.getAsyncRemote().sendText(asJsonString(positionMsg));
+            synchronized (item.session){
+                item.session.getBasicRemote().sendText(asJsonString(positionMsg));
+            }
         }
     }
 
