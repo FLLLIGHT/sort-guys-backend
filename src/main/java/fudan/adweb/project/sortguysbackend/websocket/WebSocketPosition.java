@@ -33,7 +33,8 @@ public class WebSocketPosition {
         this.session = session;
         map.put(session.getId(), session);
         usersMap.put(nickname, session.getId());
-        positionMap.put(nickname, new PositionMsg(nickname, 0d, 30d, 0d, 1));
+        PositionMsg positionMsg = new PositionMsg(nickname, 0d, 30d, 0d, 1);
+        positionMap.put(nickname, positionMsg);
         webSocketSet.add(this);
 
         System.out.println("New connection: " + nickname + ", id: " + session.getId() + ", current people:" + webSocketSet.size());
@@ -43,6 +44,7 @@ public class WebSocketPosition {
         message.put("aisle",session.getId());
         this.session.getAsyncRemote().sendText(new Gson().toJson(message));
         this.session.getAsyncRemote().sendText(asJsonString(positionMap));
+        broadcast(positionMsg);
     }
 
     /**
