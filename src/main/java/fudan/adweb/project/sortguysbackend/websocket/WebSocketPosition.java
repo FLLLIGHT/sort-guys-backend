@@ -86,6 +86,8 @@ public class WebSocketPosition {
 
         try {
             positionMsg = objectMapper.readValue(message, PositionMsg.class);
+            // 设置正常消息
+            positionMsg.setType(1);
             positionMap.put(nickname, positionMsg);
             broadcast(positionMsg);
         } catch (IOException e) {
