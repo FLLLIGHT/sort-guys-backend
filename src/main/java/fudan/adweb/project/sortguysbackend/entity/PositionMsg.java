@@ -5,6 +5,7 @@ public class PositionMsg {
     private Double x;
     private Double y;
     private Double z;
+    // type=1: 一般的消息，type=2：断开连接的消息，type=3：初始消息
     private int type;
 
     public PositionMsg(){
