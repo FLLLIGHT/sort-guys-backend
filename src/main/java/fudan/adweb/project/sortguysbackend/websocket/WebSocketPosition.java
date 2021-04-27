@@ -33,7 +33,7 @@ public class WebSocketPosition {
         this.session = session;
         map.put(session.getId(), session);
         usersMap.put(nickname, session.getId());
-        PositionMsg positionMsg = new PositionMsg(nickname, 0d, 30d, 0d, 3);
+        PositionMsg positionMsg = new PositionMsg(nickname, 0d, 30d, 0d, 1);
         positionMap.put(nickname, positionMsg);
         webSocketSet.add(this);
 

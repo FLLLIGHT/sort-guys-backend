@@ -5,7 +5,7 @@ public class PositionMsg {
     private Double x;
     private Double y;
     private Double z;
-    // type=1: 一般的消息，type=2：断开连接的消息，type=3：初始消息
+    // 一般的有内容有意义的位置信息的类型都是1，然后断开连接的消息类型是2（里面的位置信息无意义，都是-1）
     private int type;
 
     public PositionMsg(){
