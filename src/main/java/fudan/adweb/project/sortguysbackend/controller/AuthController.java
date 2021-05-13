@@ -1,6 +1,7 @@
 package fudan.adweb.project.sortguysbackend.controller;
 
 import fudan.adweb.project.sortguysbackend.controller.request.AuthRequest;
+import fudan.adweb.project.sortguysbackend.controller.request.LogoutRequest;
 import fudan.adweb.project.sortguysbackend.entity.User;
 import fudan.adweb.project.sortguysbackend.security.jwt.JwtTokenUtil;
 import fudan.adweb.project.sortguysbackend.service.AuthService;
@@ -89,5 +90,26 @@ public class AuthController {
         }
         builder.header("token", jwtTokenUtil.generateToken(user));
         return builder.body(user);
+    }
+
+    @PostMapping("/clearLoginInfo")
+    public ResponseEntity<?> logout(@RequestBody LogoutRequest request){
+        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        System.out.println("logout");
+        String msg = authService.logout(request.getUsername());
+
+        Map<String, String> map = new HashMap<>();
+        map.put("message", msg);
+        return builder.body(map);
+    }
+
+    @GetMapping("/clearLoginInfo")
+    public ResponseEntity<?> logout(){
+        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        String msg = authService.logout("zsy");
+
+        Map<String, String> map = new HashMap<>();
+        map.put("message", msg);
+        return builder.body(map);
     }
 }
