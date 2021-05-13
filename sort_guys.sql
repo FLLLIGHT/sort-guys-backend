@@ -26,7 +26,7 @@ CREATE TABLE `authority` (
   `aid` int NOT NULL AUTO_INCREMENT,
   `authority` varchar(256) NOT NULL,
   PRIMARY KEY (`aid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -35,7 +35,7 @@ CREATE TABLE `authority` (
 
 LOCK TABLES `authority` WRITE;
 /*!40000 ALTER TABLE `authority` DISABLE KEYS */;
-INSERT INTO `authority` VALUES (1,'player');
+INSERT INTO `authority` VALUES (1,'player'),(2,'admin');
 /*!40000 ALTER TABLE `authority` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -51,7 +51,7 @@ CREATE TABLE `user` (
   `username` varchar(256) NOT NULL,
   `password` varchar(256) NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,7 +60,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (6,'Bob','$2a$10$z7d5Cty6/SgRB1R.bFTcLe4iEij4BZn0cDu/V57sK.GdNKIqkSux2'),(7,'Cathy','$2a$10$CF9Md3CSSKEpEDZIzgJFp.c9FLJYOj2QAz7Iri4m/CV0YxpdBSK6u');
+INSERT INTO `user` VALUES (6,'Bob','$2a$10$z7d5Cty6/SgRB1R.bFTcLe4iEij4BZn0cDu/V57sK.GdNKIqkSux2'),(7,'Cathy','$2a$10$CF9Md3CSSKEpEDZIzgJFp.c9FLJYOj2QAz7Iri4m/CV0YxpdBSK6u'),(9,'Admin','$2a$10$MDG1JTtkU01wiwQzxlGXsOwG492.ZbL6J.RQZLGC85IZhASezv6/G');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -80,7 +80,7 @@ CREATE TABLE `user_authority` (
   KEY `aid` (`aid`),
   CONSTRAINT `aid` FOREIGN KEY (`aid`) REFERENCES `authority` (`aid`),
   CONSTRAINT `uid` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,7 +89,7 @@ CREATE TABLE `user_authority` (
 
 LOCK TABLES `user_authority` WRITE;
 /*!40000 ALTER TABLE `user_authority` DISABLE KEYS */;
-INSERT INTO `user_authority` VALUES (6,1,6),(7,1,7);
+INSERT INTO `user_authority` VALUES (6,1,6),(7,1,7),(9,1,9),(10,2,9);
 /*!40000 ALTER TABLE `user_authority` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -102,4 +102,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-26  0:29:01
+-- Dump completed on 2021-05-13 18:31:37
