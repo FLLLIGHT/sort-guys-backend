@@ -95,7 +95,6 @@ public class AuthController {
     @PostMapping("/clearLoginInfo")
     public ResponseEntity<?> logout(@RequestBody LogoutRequest request){
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        System.out.println("logout");
         String msg = authService.logout(request.getUsername());
 
         Map<String, String> map = new HashMap<>();

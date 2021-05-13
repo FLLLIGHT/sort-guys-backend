@@ -51,7 +51,7 @@ CREATE TABLE `user` (
   `username` varchar(256) NOT NULL,
   `password` varchar(256) NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -62,6 +62,33 @@ LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES (6,'Bob','$2a$10$z7d5Cty6/SgRB1R.bFTcLe4iEij4BZn0cDu/V57sK.GdNKIqkSux2'),(7,'Cathy','$2a$10$CF9Md3CSSKEpEDZIzgJFp.c9FLJYOj2QAz7Iri4m/CV0YxpdBSK6u'),(9,'Admin','$2a$10$MDG1JTtkU01wiwQzxlGXsOwG492.ZbL6J.RQZLGC85IZhASezv6/G');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_appearance`
+--
+
+DROP TABLE IF EXISTS `user_appearance`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_appearance` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `uid` int NOT NULL,
+  `color` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  CONSTRAINT `user_appearance_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_appearance`
+--
+
+LOCK TABLES `user_appearance` WRITE;
+/*!40000 ALTER TABLE `user_appearance` DISABLE KEYS */;
+INSERT INTO `user_appearance` VALUES (1,6,'#FFFFFF'),(2,7,'#FFFFFF'),(3,9,'#FFFFFF');
+/*!40000 ALTER TABLE `user_appearance` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -80,7 +107,7 @@ CREATE TABLE `user_authority` (
   KEY `aid` (`aid`),
   CONSTRAINT `aid` FOREIGN KEY (`aid`) REFERENCES `authority` (`aid`),
   CONSTRAINT `uid` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +134,7 @@ CREATE TABLE `user_login_info` (
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`),
   CONSTRAINT `user_login_info_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,7 +143,6 @@ CREATE TABLE `user_login_info` (
 
 LOCK TABLES `user_login_info` WRITE;
 /*!40000 ALTER TABLE `user_login_info` DISABLE KEYS */;
-INSERT INTO `user_login_info` VALUES (1,6,'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJCb2IiLCJpYXQiOjE2MjA5MTM3NDksImV4cCI6MTYyMDkxMzc1MH0._Qx9O5WQMGCVorsOb8a6fAQxxc_YAYqkJfx3fs_qEObK7_i0zYIDze-HT_-Qw8te173xZkvtC7CmG48pD3nctQ');
 /*!40000 ALTER TABLE `user_login_info` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -129,4 +155,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-13 21:54:12
+-- Dump completed on 2021-05-13 23:44:57

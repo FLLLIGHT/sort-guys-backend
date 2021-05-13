@@ -2,6 +2,7 @@ package fudan.adweb.project.sortguysbackend.service;
 
 import fudan.adweb.project.sortguysbackend.entity.User;
 import fudan.adweb.project.sortguysbackend.entity.UserLoginInfo;
+import fudan.adweb.project.sortguysbackend.mapper.UserAppearanceMapper;
 import fudan.adweb.project.sortguysbackend.mapper.UserAuthorityMapper;
 import fudan.adweb.project.sortguysbackend.mapper.UserLoginInfoMapper;
 import fudan.adweb.project.sortguysbackend.mapper.UserMapper;
@@ -21,15 +22,18 @@ public class AuthService {
     private final PasswordEncoder encoder;
     private final UserLoginInfoMapper userLoginInfoMapper;
     private final JwtTokenUtil jwtTokenUtil;
+    private final UserService userService;
 
     @Autowired
     public AuthService(UserMapper userMapper, UserAuthorityMapper userAuthorityMapper, PasswordEncoder encoder,
-                       UserLoginInfoMapper userLoginInfoMapper, JwtTokenUtil jwtTokenUtil) {
+                       UserLoginInfoMapper userLoginInfoMapper, JwtTokenUtil jwtTokenUtil,
+                       UserService userService) {
         this.userMapper = userMapper;
         this.userAuthorityMapper = userAuthorityMapper;
         this.encoder = encoder;
         this.userLoginInfoMapper = userLoginInfoMapper;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.userService = userService;
     }
 
     public User login(String username, String password) throws UsernameNotFoundException, BadCredentialsException {
@@ -55,6 +59,8 @@ public class AuthService {
             userMapper.insert(newUser);
             //默认注册为玩家账号
             userAuthorityMapper.insert(1, newUser.getUid());
+            // 初始化外观
+            userService.initAppearance(newUser.getUid());
             return newUser;
         }
     }
