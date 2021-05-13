@@ -5,6 +5,7 @@ import fudan.adweb.project.sortguysbackend.entity.User;
 import fudan.adweb.project.sortguysbackend.security.jwt.JwtTokenUtil;
 import fudan.adweb.project.sortguysbackend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,16 +34,32 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         User user = authService.login(request.getUsername(), request.getPassword());
+        String token = jwtTokenUtil.generateToken(user);
+        // 判断该 user 账号是否已经处于登录状态
+        boolean isOnline = authService.checkIsOnlineAndUpdate(user, token);
+        if (isOnline){
+            // 禁止该用户登录
+            return new ResponseEntity<>("用户已经登录", HttpStatus.FORBIDDEN);
+        }
+
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        builder.header("token", jwtTokenUtil.generateToken(user));
+        builder.header("token", token);
         return builder.body(user);
     }
 
     @GetMapping("/login")
     public ResponseEntity<?> login() {
         User user = authService.login("Bob", "123456");
+        String token = jwtTokenUtil.generateToken(user);
+        // 判断该 user 账号是否已经处于登录状态
+        boolean isOnline = authService.checkIsOnlineAndUpdate(user, token);
+        if (isOnline){
+            // 禁止该用户登录
+            return new ResponseEntity<>("用户已经登录", HttpStatus.FORBIDDEN);
+        }
+
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        builder.header("token", jwtTokenUtil.generateToken(user));
+        builder.header("token", token);
         return builder.body(user);
     }
 
