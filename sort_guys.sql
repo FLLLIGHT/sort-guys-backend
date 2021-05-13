@@ -92,6 +92,33 @@ LOCK TABLES `user_authority` WRITE;
 INSERT INTO `user_authority` VALUES (6,1,6),(7,1,7),(9,1,9),(10,2,9);
 /*!40000 ALTER TABLE `user_authority` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `user_login_info`
+--
+
+DROP TABLE IF EXISTS `user_login_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_login_info` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `uid` int NOT NULL,
+  `token` varchar(1024) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  CONSTRAINT `user_login_info_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_login_info`
+--
+
+LOCK TABLES `user_login_info` WRITE;
+/*!40000 ALTER TABLE `user_login_info` DISABLE KEYS */;
+INSERT INTO `user_login_info` VALUES (1,6,'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJCb2IiLCJpYXQiOjE2MjA5MTM3NDksImV4cCI6MTYyMDkxMzc1MH0._Qx9O5WQMGCVorsOb8a6fAQxxc_YAYqkJfx3fs_qEObK7_i0zYIDze-HT_-Qw8te173xZkvtC7CmG48pD3nctQ');
+/*!40000 ALTER TABLE `user_login_info` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -102,4 +129,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-13 18:31:37
+-- Dump completed on 2021-05-13 21:54:12
