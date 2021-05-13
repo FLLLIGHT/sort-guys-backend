@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 public class AuthController {
     private final AuthService authService;
@@ -47,6 +50,12 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody AuthRequest request) {
         User user = authService.register(request.getUsername(), request.getPassword());
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        // 用户名重复，该用户已存在
+        if (user == null){
+            Map<String, String> map = new HashMap<>();
+            map.put("message", "用户名已被注册");
+            return builder.body(map);
+        }
         builder.header("token", jwtTokenUtil.generateToken(user));
         return builder.body(user);
     }
@@ -55,6 +64,12 @@ public class AuthController {
     public ResponseEntity<?> register() {
         User user = authService.register("Cathy", "123456");
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        // 用户名重复，该用户已存在
+        if (user == null){
+            Map<String, String> map = new HashMap<>();
+            map.put("message", "用户名已被注册");
+            return builder.body(map);
+        }
         builder.header("token", jwtTokenUtil.generateToken(user));
         return builder.body(user);
     }
