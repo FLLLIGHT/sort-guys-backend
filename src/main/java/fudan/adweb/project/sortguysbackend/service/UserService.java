@@ -46,6 +46,9 @@ public class UserService {
         if (uid == null || userInfo == null){
             return "uid 错误";
         }
+        if (userMapper.getUserByUid(uid) == null){
+            return "用户不存在";
+        }
 
         Integer uidOfInfo = userMapper.getUidByUsername(userInfo.getUsername());
         // 该用户名以及被使用且不是这个用户
