@@ -32,6 +32,9 @@ public class UserAppearanceService {
         if (uid == null || userAppearance == null || !uid.equals(userAppearance.getUid())){
             return "uid 错误";
         }
+        if (userMapper.getUserByUid(uid) == null){
+            return "用户不存在";
+        }
         userAppearanceMapper.update(userAppearance);
         return "success";
     }
