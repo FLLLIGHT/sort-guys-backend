@@ -1,13 +1,13 @@
 package fudan.adweb.project.sortguysbackend.controller.request;
 
 public class LogoutRequest {
-    private String username;
+    private Integer uid;
 
-    public String getUsername() {
-        return username;
+    public Integer getUid() {
+        return uid;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUid(Integer uid) {
+        this.uid = uid;
     }
 }

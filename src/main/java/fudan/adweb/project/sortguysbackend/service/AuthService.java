@@ -2,7 +2,6 @@ package fudan.adweb.project.sortguysbackend.service;
 
 import fudan.adweb.project.sortguysbackend.entity.User;
 import fudan.adweb.project.sortguysbackend.entity.UserLoginInfo;
-import fudan.adweb.project.sortguysbackend.mapper.UserAuthorityMapper;
 import fudan.adweb.project.sortguysbackend.mapper.UserLoginInfoMapper;
 import fudan.adweb.project.sortguysbackend.mapper.UserMapper;
 import fudan.adweb.project.sortguysbackend.security.jwt.JwtTokenUtil;
@@ -72,9 +71,8 @@ public class AuthService {
         return true;
     }
 
-    public String logout(String username) {
+    public String logout(Integer uid) {
         // 找到对应的 user
-        Integer uid = userMapper.getUidByUsername(username);
         if (uid == null){
             return "用户不存在";
         }
@@ -89,5 +87,9 @@ public class AuthService {
             return "success";
         }
         return "该用户没有登录";
+    }
+
+    public void insertLoginInfo(Integer uid, String token) {
+        userLoginInfoMapper.insert(uid, token);
     }
 }

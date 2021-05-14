@@ -2,7 +2,9 @@ package fudan.adweb.project.sortguysbackend.service;
 
 import fudan.adweb.project.sortguysbackend.entity.User;
 import fudan.adweb.project.sortguysbackend.entity.UserInfo;
+import fudan.adweb.project.sortguysbackend.entity.UserLoginInfo;
 import fudan.adweb.project.sortguysbackend.mapper.UserAuthorityMapper;
+import fudan.adweb.project.sortguysbackend.mapper.UserLoginInfoMapper;
 import fudan.adweb.project.sortguysbackend.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,10 +46,13 @@ public class UserService {
         if (uid == null || userInfo == null){
             return "uid 错误";
         }
+
         Integer uidOfInfo = userMapper.getUidByUsername(userInfo.getUsername());
-        if (!uid.equals(uidOfInfo)){
-            return "uid 错误";
+        // 该用户名以及被使用且不是这个用户
+        if (uidOfInfo != null && !uid.equals(uidOfInfo)){
+            return "用户名已被注册";
         }
+
         String encodedPassword = encoder.encode(userInfo.getPassword().trim());
         userInfo.setPassword(encodedPassword);
         userInfo.setUid(uid);

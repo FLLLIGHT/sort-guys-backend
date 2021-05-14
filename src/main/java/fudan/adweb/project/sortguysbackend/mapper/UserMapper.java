@@ -31,6 +31,6 @@ public interface UserMapper {
     @Options(useGeneratedKeys = true, keyProperty = "uid", keyColumn="uid")
     public Integer insert(User user);
 
-    @Update("update user set password = #{password} where uid = #{uid}")
+    @Update("update user set username = #{username}, password = #{password} where uid = #{uid}")
     void update(UserInfo userInfo);
 }

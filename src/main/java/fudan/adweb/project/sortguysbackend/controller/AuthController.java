@@ -67,17 +67,7 @@ public class AuthController {
     @PostMapping("/clearLoginInfo")
     public ResponseEntity<?> logout(@RequestBody LogoutRequest request){
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        String msg = authService.logout(request.getUsername());
-
-        Map<String, String> map = new HashMap<>();
-        map.put("message", msg);
-        return builder.body(map);
-    }
-
-    @GetMapping("/clearLoginInfo")
-    public ResponseEntity<?> logout(){
-        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        String msg = authService.logout("zsy");
+        String msg = authService.logout(request.getUid());
 
         Map<String, String> map = new HashMap<>();
         map.put("message", msg);

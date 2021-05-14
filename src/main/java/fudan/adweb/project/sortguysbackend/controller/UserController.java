@@ -4,6 +4,7 @@ import fudan.adweb.project.sortguysbackend.controller.request.AuthRequest;
 import fudan.adweb.project.sortguysbackend.entity.User;
 import fudan.adweb.project.sortguysbackend.entity.UserInfo;
 import fudan.adweb.project.sortguysbackend.security.jwt.JwtTokenUtil;
+import fudan.adweb.project.sortguysbackend.service.AuthService;
 import fudan.adweb.project.sortguysbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,11 +18,13 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
+    private final AuthService authService;
 
     @Autowired
-    public UserController(UserService userService, JwtTokenUtil jwtTokenUtil) {
+    public UserController(UserService userService, JwtTokenUtil jwtTokenUtil, AuthService authService) {
         this.userService = userService;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.authService = authService;
     }
 
     @PostMapping("/user")
@@ -34,7 +37,9 @@ public class UserController {
             map.put("message", "用户名已被注册");
             return builder.body(map);
         }
-        builder.header("token", jwtTokenUtil.generateToken(user));
+        String token = jwtTokenUtil.generateToken(user);
+        builder.header("token", token);
+        authService.insertLoginInfo(user.getUid(), token);
         return builder.body(user);
     }
 
@@ -44,6 +49,11 @@ public class UserController {
         String message = userService.update(uid, userInfo);
         Map<String, String> map = new HashMap<>();
         map.put("message", message);
+        // 登出
+        if (message.equals("success")){
+            authService.logout(uid);
+        }
+
         return builder.body(map);
     }
 
