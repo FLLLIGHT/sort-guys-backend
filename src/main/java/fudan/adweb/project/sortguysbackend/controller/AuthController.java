@@ -64,34 +64,6 @@ public class AuthController {
         return builder.body(user);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody AuthRequest request) {
-        User user = authService.register(request.getUsername(), request.getPassword());
-        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        // 用户名重复，该用户已存在
-        if (user == null){
-            Map<String, String> map = new HashMap<>();
-            map.put("message", "用户名已被注册");
-            return builder.body(map);
-        }
-        builder.header("token", jwtTokenUtil.generateToken(user));
-        return builder.body(user);
-    }
-
-    @GetMapping("/register")
-    public ResponseEntity<?> register() {
-        User user = authService.register("Cathy", "123456");
-        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        // 用户名重复，该用户已存在
-        if (user == null){
-            Map<String, String> map = new HashMap<>();
-            map.put("message", "用户名已被注册");
-            return builder.body(map);
-        }
-        builder.header("token", jwtTokenUtil.generateToken(user));
-        return builder.body(user);
-    }
-
     @PostMapping("/clearLoginInfo")
     public ResponseEntity<?> logout(@RequestBody LogoutRequest request){
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();

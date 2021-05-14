@@ -38,13 +38,8 @@ public class UserAppearanceController {
     public ResponseEntity<?> modifyAppearance(@PathVariable("uid") Integer uid, @RequestBody UserAppearance userAppearance){
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         String message = userAppearanceService.updateAppearance(uid, userAppearance);
-        if (message == null){
-            Map<String, String> map = new HashMap<>();
-            map.put("message", "uid 错误");
-            return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
-        }
         Map<String, String> map = new HashMap<>();
-        map.put("message", "success");
+        map.put("message", message);
         return builder.body(map);
     }
 }

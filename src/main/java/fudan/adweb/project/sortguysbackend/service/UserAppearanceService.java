@@ -30,7 +30,7 @@ public class UserAppearanceService {
 
     public String updateAppearance(Integer uid, UserAppearance userAppearance) {
         if (uid == null || userAppearance == null || !uid.equals(userAppearance.getUid())){
-            return null;
+            return "uid 错误";
         }
         userAppearanceMapper.update(userAppearance);
         return "success";

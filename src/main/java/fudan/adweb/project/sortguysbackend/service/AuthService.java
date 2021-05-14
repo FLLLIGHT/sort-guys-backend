@@ -17,22 +17,17 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserMapper userMapper;
-    private final UserAuthorityMapper userAuthorityMapper;
     private final PasswordEncoder encoder;
     private final UserLoginInfoMapper userLoginInfoMapper;
     private final JwtTokenUtil jwtTokenUtil;
-    private final UserAppearanceService userService;
 
     @Autowired
-    public AuthService(UserMapper userMapper, UserAuthorityMapper userAuthorityMapper, PasswordEncoder encoder,
-                       UserLoginInfoMapper userLoginInfoMapper, JwtTokenUtil jwtTokenUtil,
-                       UserAppearanceService userService) {
+    public AuthService(UserMapper userMapper, PasswordEncoder encoder,
+                       UserLoginInfoMapper userLoginInfoMapper, JwtTokenUtil jwtTokenUtil) {
         this.userMapper = userMapper;
-        this.userAuthorityMapper = userAuthorityMapper;
         this.encoder = encoder;
         this.userLoginInfoMapper = userLoginInfoMapper;
         this.jwtTokenUtil = jwtTokenUtil;
-        this.userService = userService;
     }
 
     public User login(String username, String password) throws UsernameNotFoundException, BadCredentialsException {
@@ -46,22 +41,6 @@ public class AuthService {
             throw new BadCredentialsException("User: '" + username + "' got wrong password.");
         System.out.println(user);
         return user;
-    }
-
-    public User register(String username, String password) {
-        Integer uid = userMapper.getUidByUsername(username);
-        if(uid!=null){
-            return null;
-        }else {
-            String encodedPassword = encoder.encode(password.trim());
-            User newUser = new User(username, encodedPassword);
-            userMapper.insert(newUser);
-            //默认注册为玩家账号
-            userAuthorityMapper.insert(1, newUser.getUid());
-            // 初始化外观
-            userService.initAppearance(newUser.getUid());
-            return newUser;
-        }
     }
 
     // 检查该用户是否已经登录，如已经登录则返回 false，否则更新登录信息表并返回 true
