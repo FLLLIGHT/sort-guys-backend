@@ -72,13 +72,11 @@ DROP TABLE IF EXISTS `user_appearance`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_appearance` (
-  `id` int NOT NULL AUTO_INCREMENT,
   `uid` int NOT NULL,
   `color` varchar(128) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `uid` (`uid`),
+  PRIMARY KEY (`uid`),
   CONSTRAINT `user_appearance_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -87,7 +85,7 @@ CREATE TABLE `user_appearance` (
 
 LOCK TABLES `user_appearance` WRITE;
 /*!40000 ALTER TABLE `user_appearance` DISABLE KEYS */;
-INSERT INTO `user_appearance` VALUES (1,6,'#FFFFFF'),(2,7,'#FFFFFF'),(3,9,'#FFFFFF');
+INSERT INTO `user_appearance` VALUES (6,'#FFFFFF'),(7,'#FFFFFF'),(9,'#FFFFFF');
 /*!40000 ALTER TABLE `user_appearance` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -155,4 +153,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-13 23:44:57
+-- Dump completed on 2021-05-14 11:19:03

@@ -2,7 +2,6 @@ package fudan.adweb.project.sortguysbackend.service;
 
 import fudan.adweb.project.sortguysbackend.entity.User;
 import fudan.adweb.project.sortguysbackend.entity.UserLoginInfo;
-import fudan.adweb.project.sortguysbackend.mapper.UserAppearanceMapper;
 import fudan.adweb.project.sortguysbackend.mapper.UserAuthorityMapper;
 import fudan.adweb.project.sortguysbackend.mapper.UserLoginInfoMapper;
 import fudan.adweb.project.sortguysbackend.mapper.UserMapper;
@@ -22,12 +21,12 @@ public class AuthService {
     private final PasswordEncoder encoder;
     private final UserLoginInfoMapper userLoginInfoMapper;
     private final JwtTokenUtil jwtTokenUtil;
-    private final UserService userService;
+    private final UserAppearanceService userService;
 
     @Autowired
     public AuthService(UserMapper userMapper, UserAuthorityMapper userAuthorityMapper, PasswordEncoder encoder,
                        UserLoginInfoMapper userLoginInfoMapper, JwtTokenUtil jwtTokenUtil,
-                       UserService userService) {
+                       UserAppearanceService userService) {
         this.userMapper = userMapper;
         this.userAuthorityMapper = userAuthorityMapper;
         this.encoder = encoder;

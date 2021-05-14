@@ -4,6 +4,7 @@ import fudan.adweb.project.sortguysbackend.entity.UserAppearance;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -14,4 +15,7 @@ public interface UserAppearanceMapper {
 
     @Select("select * from user_appearance where uid = #{uid}")
     UserAppearance findByUid(Integer uid);
+
+    @Update("update user_appearance set color = #{color} where uid = #{uid}")
+    void update(UserAppearance userAppearance);
 }

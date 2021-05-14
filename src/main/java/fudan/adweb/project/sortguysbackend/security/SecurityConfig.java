@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // We dont't need CSRF for this project.
-        http.csrf().ignoringAntMatchers("/*");
+        http.csrf().ignoringAntMatchers("/**");
 
         // Here we use JWT(Json Web Token) to authenticate the user.
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

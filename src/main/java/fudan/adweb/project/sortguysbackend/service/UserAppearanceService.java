@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class UserAppearanceService {
 
     private final UserAppearanceMapper userAppearanceMapper;
     private final UserMapper userMapper;
 
     @Autowired
-    public UserService(UserAppearanceMapper userAppearanceMapper, UserMapper userMapper) {
+    public UserAppearanceService(UserAppearanceMapper userAppearanceMapper, UserMapper userMapper) {
         this.userAppearanceMapper = userAppearanceMapper;
         this.userMapper = userMapper;
     }
@@ -23,10 +23,16 @@ public class UserService {
         userAppearanceMapper.insert(uid, "#FFFFFF");
     }
 
-    public UserAppearance getAppearance(String username) {
-        Integer uid = userMapper.getUidByUsername(username);
+    public UserAppearance getAppearance(Integer uid) {
         if (uid == null) return null;
-
         return userAppearanceMapper.findByUid(uid);
+    }
+
+    public String updateAppearance(Integer uid, UserAppearance userAppearance) {
+        if (uid == null || userAppearance == null || !uid.equals(userAppearance.getUid())){
+            return null;
+        }
+        userAppearanceMapper.update(userAppearance);
+        return "success";
     }
 }
