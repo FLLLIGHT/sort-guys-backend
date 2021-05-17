@@ -35,6 +35,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         User user = authService.login(request.getUsername(), request.getPassword());
+        if (user == null) return new ResponseEntity<>("账户或密码错误", HttpStatus.FORBIDDEN);
         String token = jwtTokenUtil.generateToken(user);
         // 判断该 user 账号是否已经处于登录状态
         boolean isOnline = authService.checkIsOnlineAndUpdate(user, token);
@@ -50,7 +51,9 @@ public class AuthController {
 
     @GetMapping("/login")
     public ResponseEntity<?> login() {
-        User user = authService.login("Bob", "123456");
+        User user = authService.login("Bob", "1234567");
+        if (user == null) return new ResponseEntity<>("账户或密码错误", HttpStatus.FORBIDDEN);
+
         String token = jwtTokenUtil.generateToken(user);
         // 判断该 user 账号是否已经处于登录状态
         boolean isOnline = authService.checkIsOnlineAndUpdate(user, token);
