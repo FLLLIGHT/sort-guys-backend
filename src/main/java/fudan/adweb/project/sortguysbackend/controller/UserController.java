@@ -40,6 +40,7 @@ public class UserController {
         String token = jwtTokenUtil.generateToken(user);
         builder.header("token", token);
         authService.insertLoginInfo(user.getUid(), token);
+        user = authService.login(userInfo.getUsername(), userInfo.getPassword());
         return builder.body(user);
     }
 
