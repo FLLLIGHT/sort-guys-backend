@@ -40,6 +40,99 @@ INSERT INTO `authority` VALUES (1,'player'),(2,'admin');
 UNLOCK TABLES;
 
 --
+-- Table structure for table `garbage`
+--
+
+DROP TABLE IF EXISTS `garbage`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `garbage` (
+  `gid` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(256) NOT NULL,
+  `type` varchar(256) NOT NULL,
+  `description` varchar(1024) DEFAULT NULL,
+  `updateTime` datetime NOT NULL,
+  PRIMARY KEY (`gid`),
+  CONSTRAINT `garbage_chk_1` CHECK ((`type` in (_utf8mb4'干垃圾',_utf8mb4'湿垃圾',_utf8mb4'有害垃圾',_utf8mb4'可回收物')))
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `garbage`
+--
+
+LOCK TABLES `garbage` WRITE;
+/*!40000 ALTER TABLE `garbage` DISABLE KEYS */;
+INSERT INTO `garbage` VALUES (1,'餐巾纸','干垃圾','一张普通的餐巾纸。没什么特别的，不过很常见。','2021-05-20 17:45:00'),(2,'头发','干垃圾','满地都是头发。只有我的头上没有。','2021-05-20 17:45:00'),(3,'口香糖','干垃圾','平淡无奇的口香糖。','2021-05-20 17:45:00'),(4,'外卖餐盒','干垃圾','再忙也要记得按时吃饭呀。','2021-05-20 17:45:00'),(5,'椰子壳','干垃圾','左半边还是右半边？其实都无所谓啦。','2021-05-20 17:45:00'),(6,'口红','干垃圾','一支口红。是因为过期还是别的原因被丢掉的就不得而知了。','2021-05-20 17:45:00'),(7,'西瓜皮','湿垃圾','还好没有直接踩上去。','2021-05-20 17:45:00'),(8,'鸡蛋壳','湿垃圾','鸡蛋的壳。','2021-05-20 17:45:00'),(9,'过期的薯片','湿垃圾','夜宵时间到了。等等，那包薯片过期了。','2021-05-20 17:45:00'),(10,'未吃完的饭菜','湿垃圾','好吃?不好吃。','2021-05-20 17:45:00'),(11,'花','湿垃圾','一束花。它盛开的样子很美呢。','2021-05-20 17:45:00'),(12,'废电池','有害垃圾','一块废旧电池。','2021-05-20 17:45:00'),(13,'过期药物','有害垃圾','过期啦！过期啦！过期啦！重要的事情说三遍。','2021-05-20 17:45:00'),(14,'水银温度计','有害垃圾','测体温用的水银温度计。','2021-05-20 17:45:00'),(15,'空药瓶','有害垃圾','空空的药瓶。空空是谁？','2021-05-20 17:45:00'),(16,'矿泉水瓶','可回收物','没有水的矿泉水瓶。','2021-05-20 17:45:00'),(17,'牛奶盒','可回收物','一个牛奶盒，牛奶已经都被喝掉啦。','2021-05-20 17:45:00'),(18,'易拉罐','可回收物','看上去很有质感，不知道味道怎么样。','2021-05-20 17:45:00'),(19,'装快递的纸板箱','可回收物','一个快递盒！是寄给谁的礼物呢？','2021-05-20 17:45:00'),(20,'操作系统的课本','可回收物','别扔掉啊喂！','2021-05-20 17:45:00'),(21,'碎玻璃','可回收物','玻璃水杯的碎片。记得先包起来以免划伤哦。','2021-05-20 17:45:00'),(22,'毛绒玩具','可回收物','很可爱的毛绒玩具。不要的话可以送给我。','2021-05-20 17:45:00'),(23,'餐巾纸','干垃圾','一张普通的餐巾纸。没什么特别的，不过很常见。','2021-05-20 17:57:30'),(24,'头发','干垃圾','满地都是头发。只有我的头上没有。','2021-05-20 17:57:30'),(25,'口香糖','干垃圾','平淡无奇的口香糖。','2021-05-20 17:57:30'),(26,'外卖餐盒','干垃圾','再忙也要记得按时吃饭呀。','2021-05-20 17:57:30'),(27,'椰子壳','干垃圾','半边椰子壳。','2021-05-20 17:57:30'),(28,'口红','干垃圾','一支口红。是因为过期还是别的原因被丢掉的就不得而知了。','2021-05-20 17:57:30'),(29,'西瓜皮','湿垃圾','还好没有直接踩上去。','2021-05-20 17:57:30'),(30,'鸡蛋壳','湿垃圾','鸡蛋的壳。','2021-05-20 17:57:30'),(31,'过期的薯片','湿垃圾','夜宵时间到了。等等，那包薯片过期了。','2021-05-20 17:57:30'),(32,'未吃完的饭菜','湿垃圾','好吃?不好吃。','2021-05-20 17:57:30'),(33,'花','湿垃圾','一束花。它盛开的样子很美呢。','2021-05-20 17:57:30'),(34,'废电池','有害垃圾','一块废旧电池。','2021-05-20 17:57:30'),(35,'过期药物','有害垃圾','过期啦！过期啦！过期啦！重要的事情说三遍。','2021-05-20 17:57:30'),(36,'水银温度计','有害垃圾','测体温用的水银温度计。','2021-05-20 17:57:30'),(37,'空药瓶','有害垃圾','空空的药瓶。空空是谁？','2021-05-20 17:57:30'),(38,'矿泉水瓶','可回收物','没有水的矿泉水瓶。','2021-05-20 17:57:30'),(39,'牛奶盒','可回收物','一个牛奶盒，牛奶已经都被喝掉啦。','2021-05-20 17:57:30'),(40,'易拉罐','可回收物','看上去很有质感，不知道味道怎么样。','2021-05-20 17:57:30'),(41,'装快递的纸板箱','可回收物','一个快递盒！是寄给谁的礼物呢？','2021-05-20 17:57:30'),(42,'操作系统的课本','可回收物','别扔掉啊喂！','2021-05-20 17:57:30'),(43,'碎玻璃','可回收物','玻璃水杯的碎片。记得先包起来以免划伤哦。','2021-05-20 17:57:30'),(44,'毛绒玩具','可回收物','很可爱的毛绒玩具。不要的话可以送给我。','2021-05-20 17:57:30');
+/*!40000 ALTER TABLE `garbage` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `garbage_sort_record`
+--
+
+DROP TABLE IF EXISTS `garbage_sort_record`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `garbage_sort_record` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `uid` int NOT NULL,
+  `garbage_id` int NOT NULL,
+  `game_id` int NOT NULL,
+  `sortType` varchar(256) NOT NULL,
+  `score` int NOT NULL,
+  `time` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  KEY `garbage_id` (`garbage_id`),
+  CONSTRAINT `garbage_sort_record_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`),
+  CONSTRAINT `garbage_sort_record_ibfk_2` FOREIGN KEY (`garbage_id`) REFERENCES `garbage` (`gid`),
+  CONSTRAINT `garbage_sort_record_chk_1` CHECK ((`sortType` in (_utf8mb4'干垃圾',_utf8mb4'湿垃圾',_utf8mb4'有害垃圾',_utf8mb4'可回收物')))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `garbage_sort_record`
+--
+
+LOCK TABLES `garbage_sort_record` WRITE;
+/*!40000 ALTER TABLE `garbage_sort_record` DISABLE KEYS */;
+/*!40000 ALTER TABLE `garbage_sort_record` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `garbage_sort_result`
+--
+
+DROP TABLE IF EXISTS `garbage_sort_result`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `garbage_sort_result` (
+  `gid` int NOT NULL,
+  `uid` int NOT NULL,
+  `times` int NOT NULL DEFAULT '0',
+  `correctTimes` int NOT NULL DEFAULT '0',
+  `unlockTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`gid`,`uid`),
+  KEY `uid` (`uid`),
+  CONSTRAINT `garbage_sort_result_ibfk_1` FOREIGN KEY (`gid`) REFERENCES `garbage` (`gid`),
+  CONSTRAINT `garbage_sort_result_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`),
+  CONSTRAINT `garbage_sort_result_chk_1` CHECK ((`correctTimes` <= `times`)),
+  CONSTRAINT `garbage_sort_result_chk_2` CHECK ((((`unlockTime` is not null) and (`times` > 0)) or ((`unlockTime` is null) and (`times` = 0))))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `garbage_sort_result`
+--
+
+LOCK TABLES `garbage_sort_result` WRITE;
+/*!40000 ALTER TABLE `garbage_sort_result` DISABLE KEYS */;
+INSERT INTO `garbage_sort_result` VALUES (1,19,0,0,NULL),(2,19,0,0,NULL),(3,19,0,0,NULL),(4,19,0,0,NULL),(5,19,0,0,NULL),(6,19,0,0,NULL),(7,19,0,0,NULL),(8,19,0,0,NULL),(9,19,0,0,NULL),(10,19,0,0,NULL),(11,19,0,0,NULL),(12,19,0,0,NULL),(13,19,0,0,NULL),(14,19,0,0,NULL),(15,19,0,0,NULL),(16,19,0,0,NULL),(17,19,0,0,NULL),(18,19,0,0,NULL),(19,19,0,0,NULL),(20,19,0,0,NULL),(21,19,0,0,NULL),(22,19,0,0,NULL),(23,19,0,0,NULL),(24,19,0,0,NULL),(25,19,0,0,NULL),(26,19,0,0,NULL),(27,19,0,0,NULL),(28,19,0,0,NULL),(29,19,0,0,NULL),(30,19,0,0,NULL),(31,19,0,0,NULL),(32,19,0,0,NULL),(33,19,0,0,NULL),(34,19,0,0,NULL),(35,19,0,0,NULL),(36,19,0,0,NULL),(37,19,0,0,NULL),(38,19,0,0,NULL),(39,19,0,0,NULL),(40,19,0,0,NULL),(41,19,0,0,NULL),(42,19,0,0,NULL),(43,19,0,0,NULL),(44,19,0,0,NULL);
+/*!40000 ALTER TABLE `garbage_sort_result` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user`
 --
 
@@ -51,7 +144,7 @@ CREATE TABLE `user` (
   `username` varchar(256) NOT NULL,
   `password` varchar(256) NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,7 +153,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (6,'Bob','$2a$10$z7d5Cty6/SgRB1R.bFTcLe4iEij4BZn0cDu/V57sK.GdNKIqkSux2'),(7,'Cathy','$2a$10$CF9Md3CSSKEpEDZIzgJFp.c9FLJYOj2QAz7Iri4m/CV0YxpdBSK6u'),(9,'Admin','$2a$10$MDG1JTtkU01wiwQzxlGXsOwG492.ZbL6J.RQZLGC85IZhASezv6/G'),(15,'Test2','$2a$10$qXu3W3yGNJbJXcBBrTw5R.VZvPxs.Y4P4ERuWsqBDOzVXDSEv9TOu');
+INSERT INTO `user` VALUES (6,'Bob','$2a$10$z7d5Cty6/SgRB1R.bFTcLe4iEij4BZn0cDu/V57sK.GdNKIqkSux2'),(7,'Cathy','$2a$10$CF9Md3CSSKEpEDZIzgJFp.c9FLJYOj2QAz7Iri4m/CV0YxpdBSK6u'),(9,'Admin','$2a$10$MDG1JTtkU01wiwQzxlGXsOwG492.ZbL6J.RQZLGC85IZhASezv6/G'),(19,'Test','$2a$10$sTrwSOqoKXK8PYVp6juQxu3NszKU1dA8eJRvFRFiawRUZWVnOx222');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +178,7 @@ CREATE TABLE `user_appearance` (
 
 LOCK TABLES `user_appearance` WRITE;
 /*!40000 ALTER TABLE `user_appearance` DISABLE KEYS */;
-INSERT INTO `user_appearance` VALUES (6,'#FFFFFF'),(7,'#FFFFFF'),(9,'#FFFFFF'),(15,'#FFFFFF');
+INSERT INTO `user_appearance` VALUES (6,'#FFFFFF'),(7,'#FFFFFF'),(9,'#FFFFFF'),(19,'#FFFFFF');
 /*!40000 ALTER TABLE `user_appearance` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -105,7 +198,7 @@ CREATE TABLE `user_authority` (
   KEY `aid` (`aid`),
   CONSTRAINT `aid` FOREIGN KEY (`aid`) REFERENCES `authority` (`aid`),
   CONSTRAINT `uid` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -114,7 +207,7 @@ CREATE TABLE `user_authority` (
 
 LOCK TABLES `user_authority` WRITE;
 /*!40000 ALTER TABLE `user_authority` DISABLE KEYS */;
-INSERT INTO `user_authority` VALUES (6,1,6),(7,1,7),(9,1,9),(10,2,9),(17,1,15);
+INSERT INTO `user_authority` VALUES (6,1,6),(7,1,7),(9,1,9),(10,2,9),(21,1,19);
 /*!40000 ALTER TABLE `user_authority` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -132,7 +225,7 @@ CREATE TABLE `user_login_info` (
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`),
   CONSTRAINT `user_login_info_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -141,6 +234,7 @@ CREATE TABLE `user_login_info` (
 
 LOCK TABLES `user_login_info` WRITE;
 /*!40000 ALTER TABLE `user_login_info` DISABLE KEYS */;
+INSERT INTO `user_login_info` VALUES (25,19,'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJUZXN0IiwiaWF0IjoxNjIxNTA0NjcyLCJleHAiOjE2MjE1MjI2NzJ9.SHBZB93BqLn-kdfA2OK99Y5BxjIXowkEYRuHWA9BuoGlumMrhClwSoOJaRPiY9srhmTi5xgTvyid91ouhDlAsQ');
 /*!40000 ALTER TABLE `user_login_info` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -153,4 +247,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-14 12:57:00
+-- Dump completed on 2021-05-20 17:59:34

@@ -16,14 +16,16 @@ public class UserService {
     private final UserAuthorityMapper userAuthorityMapper;
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
+    private final GarbageSortResultService garbageSortResultService;
 
     @Autowired
     public UserService(UserAppearanceService userAppearanceService, UserAuthorityMapper userAuthorityMapper,
-                       UserMapper userMapper, PasswordEncoder encoder) {
+                       UserMapper userMapper, PasswordEncoder encoder, GarbageSortResultService garbageSortResultService) {
         this.userAppearanceService = userAppearanceService;
         this.userAuthorityMapper = userAuthorityMapper;
         this.userMapper = userMapper;
         this.encoder = encoder;
+        this.garbageSortResultService = garbageSortResultService;
     }
 
     public User addUser(String username, String password) {
@@ -38,6 +40,8 @@ public class UserService {
             userAuthorityMapper.insert(1, newUser.getUid());
             // 初始化外观
             userAppearanceService.initAppearance(newUser.getUid());
+            // 初始化垃圾图鉴 garbage sort result
+            garbageSortResultService.init(newUser.getUid());
             return newUser;
         }
     }

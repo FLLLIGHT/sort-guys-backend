@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserMapper {
     //根据id得到用户
@@ -33,4 +35,7 @@ public interface UserMapper {
 
     @Update("update user set username = #{username}, password = #{password} where uid = #{uid}")
     void update(UserInfo userInfo);
+
+    @Select("select * from user")
+    List<UserInfo> getAll();
 }
