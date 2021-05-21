@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @ServerEndpoint(value = "/websocketPosition/{roomId}/{nickname}")
 @Component
@@ -30,6 +31,8 @@ public class WebSocketPosition {
 
     private Session session;
 
+    private final AtomicInteger roomCount = new AtomicInteger(0);
+
     /**
      * on connect
      */
@@ -40,6 +43,11 @@ public class WebSocketPosition {
         this.session = session;
         usersMap.put(nickname, session.getId());
         PositionMsg positionMsg = new PositionMsg(nickname, 0d, 30d, 0d, 1);
+
+        // 另一种方式：roomId = -1 代表新建房间，返回房间号。但可能会冲突（和直接创建的方式），两者不能并存，要讨论
+        if(roomId==-1){
+            roomId = roomCount.incrementAndGet();
+        }
 
         Map<String, PositionMsg> positionMap = roomPositionMap.get(roomId);
         // 若房间不存在，则创建新房间；若房间存在，则将用户放入房间
@@ -67,6 +75,8 @@ public class WebSocketPosition {
         message.put("people",roomMap.get(roomId).size());
         message.put("name",nickname);
         message.put("aisle",session.getId());
+
+        message.put("roomId", roomId);
         synchronized (this.session){
             this.session.getBasicRemote().sendText(new Gson().toJson(message));
         }
@@ -115,6 +125,7 @@ public class WebSocketPosition {
             positionMsg = objectMapper.readValue(message, PositionMsg.class);
             // 设置正常消息
             positionMsg.setType(1);
+            // 更新位置信息
             roomPositionMap.get(roomId).put(nickname, positionMsg);
             multicast(positionMsg, roomId);
         } catch (IOException e) {
