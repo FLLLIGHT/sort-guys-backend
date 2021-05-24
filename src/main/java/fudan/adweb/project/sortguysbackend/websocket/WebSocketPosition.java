@@ -36,9 +36,6 @@ public class WebSocketPosition {
     // 记录房间内的用户（及session）
     private static final Map<Integer, Set<WebSocketPosition>> roomMap = new ConcurrentHashMap<>();
 
-    // 记录房间内用户的位置
-//    private static final Map<Integer, Map<String, PositionMsg>> roomPositionMap = new ConcurrentHashMap<>();
-
     private Session session;
 
     private final AtomicInteger roomCount = new AtomicInteger(0);
@@ -53,6 +50,7 @@ public class WebSocketPosition {
     @OnOpen
     public void onOpen(Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) throws IOException {
         // todo: 1. 判断房间是否存在，如果房间不存在，则拒绝连接
+        System.out.println("========IN OPEN===========");
         System.out.println(roomService.isExisted("1"));
 
 
@@ -104,8 +102,8 @@ public class WebSocketPosition {
         }
 
         // 给房间中的人广播新的人的信息
-        PositionMsg positionMsg = new PositionMsg(nickname, 0d, 30d, 0d, 1);
-        multicast(positionMsg, roomId);
+        PositionMsg positionMsg = new PositionMsg(nickname, 0d, 30d, 0d, GameConstant.POSITION_CHANGE_MESSAGE);
+        multicastPosition(positionMsg, roomId);
     }
 
     /**
@@ -132,7 +130,7 @@ public class WebSocketPosition {
 
         roomService.leaveRoom(String.valueOf(roomId), username);
 
-        multicast(new PositionMsg(username, -1d, -1d, -1d, 2), roomId);
+        multicastPosition(new PositionMsg(username, -1d, -1d, -1d, GameConstant.POSITION_REMOVE_MESSAGE), roomId);
     }
 
     /**
@@ -155,10 +153,10 @@ public class WebSocketPosition {
                 gameService.updatePosition(String.valueOf(roomId), nickname, positionMsg.getX(), positionMsg.getY(), positionMsg.getZ());
 
                 // 设置正常消息
-                positionMsg.setType(1);
+                positionMsg.setType(GameConstant.POSITION_CHANGE_MESSAGE);
 
                 // 广播用户位置
-                multicast(positionMsg, roomId);
+                multicastPosition(positionMsg, roomId);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -168,13 +166,18 @@ public class WebSocketPosition {
             GameControlMsg gameControlMsg;
             try {
                 gameControlMsg = objectMapper.readValue(message, GameControlMsg.class);
+                Map<String,Object> returnMessageMap = new HashMap<>();
+                String returnMessage = "";
                 if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_GET_READY) {
-                    gameService.getReady(String.valueOf(roomId), nickname);
+                    returnMessage = gameService.getReady(String.valueOf(roomId), nickname);
                 }else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_START) {
-                    gameService.getStart(String.valueOf(roomId), nickname);
+                    returnMessage = gameService.getStart(String.valueOf(roomId), nickname);
                 }else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_STOP) {
-                    gameService.getStop(String.valueOf(roomId));
+                    returnMessage = gameService.getStop(String.valueOf(roomId));
                 }
+
+                returnMessageMap.put("message", returnMessage);
+                multicastMessage(returnMessageMap, roomId);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -197,11 +200,20 @@ public class WebSocketPosition {
     }
 
     // 组播位置信息（基于房间号）
-    private void multicast(PositionMsg positionMsg, Integer roomId) throws IOException {
+    private void multicastPosition(PositionMsg positionMsg, Integer roomId) throws IOException {
         Set<WebSocketPosition> room = roomMap.get(roomId);
         for (WebSocketPosition item : room) {
             synchronized (item.session){
                 item.session.getBasicRemote().sendText(asJsonString(positionMsg));
+            }
+        }
+    }
+
+    private void multicastMessage(Map<String,Object> message, Integer roomId) throws IOException {
+        Set<WebSocketPosition> room = roomMap.get(roomId);
+        for (WebSocketPosition item : room) {
+            synchronized (item.session){
+                item.session.getBasicRemote().sendText(asJsonString(message));
             }
         }
     }

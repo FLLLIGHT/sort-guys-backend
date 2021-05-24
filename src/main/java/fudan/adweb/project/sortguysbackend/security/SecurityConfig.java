@@ -48,12 +48,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                     .antMatchers("/login").permitAll()
                     .antMatchers("/user").permitAll()
-                    .antMatchers("/sortResult").hasAuthority("admin")
-                    .antMatchers("/**").hasAuthority("player");
+                    .antMatchers("/sortResult").hasAuthority("admin");
+//                    .antMatchers("/**").hasAuthority("player");
 
         http.csrf().disable();
 
-        http.exceptionHandling().accessDeniedHandler(accessDenied);
+//        http.exceptionHandling().accessDeniedHandler(accessDenied);
 
         // Here we use JWT(Json Web Token) to authenticate the user.
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

@@ -6,9 +6,6 @@ public class GarbageInfo {
     private Double y;
     private Double z;
 
-    // 未准备：0；已准备：1；游戏中：2
-    private int status;
-
     // 干垃圾：1；湿垃圾：2；有害垃圾：3；可回收垃圾：4
     private int type;
 
@@ -17,4 +14,71 @@ public class GarbageInfo {
 
     // 所属玩家名
     private String username;
+
+    // UUID
+    private String garbageId;
+
+    public String getGarbageId() {
+        return garbageId;
+    }
+
+    public void setGarbageId(String garbageId) {
+        this.garbageId = garbageId;
+    }
+
+    public String getGarbageName() {
+        return garbageName;
+    }
+
+    public void setGarbageName(String garbageName) {
+        this.garbageName = garbageName;
+    }
+
+    public Double getX() {
+        return x;
+    }
+
+    public void setX(Double x) {
+        this.x = x;
+    }
+
+    public Double getY() {
+        return y;
+    }
+
+    public void setY(Double y) {
+        this.y = y;
+    }
+
+    public Double getZ() {
+        return z;
+    }
+
+    public void setZ(Double z) {
+        this.z = z;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }
