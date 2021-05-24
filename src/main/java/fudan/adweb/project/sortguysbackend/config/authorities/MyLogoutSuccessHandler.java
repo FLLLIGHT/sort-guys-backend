@@ -48,21 +48,12 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
                 UserLoginInfo userLoginInfo = userLoginInfoMapper.findByUid(uid);
                 if (userLoginInfo != null){
                     userLoginInfoMapper.deleteByUid(uid);
-                    responseBody.setStatus("200");
-                    responseBody.setMessage("success");
-                    httpServletResponse.getWriter().write(JSON.toJSONString(responseBody));
-                    return;
                 }
-                userLoginInfoMapper.deleteByUid(uid);
-                responseBody.setStatus("403");
-                responseBody.setMessage("not online");
-                httpServletResponse.getWriter().write(JSON.toJSONString(responseBody));
-                return;
             }
         }
 
-        responseBody.setStatus("403");
-        responseBody.setMessage("log out failed");
+        responseBody.setStatus("200");
+        responseBody.setMessage("success");
 
         httpServletResponse.getWriter().write(JSON.toJSONString(responseBody));
     }

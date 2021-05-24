@@ -31,10 +31,12 @@ public class AuthService {
 
     public User login(String username, String password) throws UsernameNotFoundException, BadCredentialsException {
         Integer uid = userMapper.getUidByUsername(username);
+        System.out.println(uid);
 //        if (uid == null) throw new UsernameNotFoundException("User: '" + username + "' not found.");
         if (uid == null) return null;
 
         User user = userMapper.getUserByUid(uid);
+        System.out.println(user);
 //        if (user == null) throw new UsernameNotFoundException("User: '" + username + "' not found.");
         if (user == null) return null;
 

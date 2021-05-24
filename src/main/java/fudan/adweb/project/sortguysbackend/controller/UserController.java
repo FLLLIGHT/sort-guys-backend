@@ -9,6 +9,7 @@ import fudan.adweb.project.sortguysbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -46,6 +47,13 @@ public class UserController {
 
     @PutMapping("/user/{uid}")
     public ResponseEntity<?> modifyUser(@PathVariable("uid") Integer uid, @RequestBody UserInfo userInfo){
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!user.getUid().equals(uid)){
+            Map<String, String> map = new HashMap<>();
+            map.put("message", "只能修改自己的个人信息");
+            return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
+        }
+
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         String message = userService.update(uid, userInfo);
         Map<String, String> map = new HashMap<>();
