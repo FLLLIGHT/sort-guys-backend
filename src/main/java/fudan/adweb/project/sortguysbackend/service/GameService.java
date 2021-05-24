@@ -106,6 +106,8 @@ public class GameService {
             redisUtil.lSet(garbageListKey, garbageInfo);
         }
 
+        // todo: 将用户位置归到中心/随机点
+
         return "游戏开始！";
     }
 
@@ -114,5 +116,17 @@ public class GameService {
         return "暂停成功";
     }
 
+    public List<GarbageInfo> getAllGarbageInfo(String roomId){
+        String garbageListKey = (String) redisUtil.hget(roomId, "garbageListKey");
+        return castFromObjectToGarbageInfo(Objects.requireNonNull(redisUtil.lGet(garbageListKey, 0, -1)));
+    }
+
+    private List<GarbageInfo> castFromObjectToGarbageInfo(List<Object> garbageList){
+        List<GarbageInfo> list = new LinkedList<>();
+        for (Object o : garbageList){
+            list.add((GarbageInfo) o);
+        }
+        return list;
+    }
 
 }
