@@ -98,4 +98,9 @@ public class RoomService {
         }
         return true;
     }
+
+    // 判断游戏是否已经开始，返回true表示已经开始
+    public boolean checkRoomStatus(String roomId){
+        return !((Integer) redisUtil.hget(roomId, "status") == GameConstant.ROOM_WAITING);
+    }
 }

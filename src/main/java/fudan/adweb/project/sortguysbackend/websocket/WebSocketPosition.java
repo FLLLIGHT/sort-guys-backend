@@ -52,13 +52,12 @@ public class WebSocketPosition {
      */
     @OnOpen
     public void onOpen(Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) throws IOException {
-        // todo: 1. 判断房间是否存在，如果房间不存在，则拒绝连接
         System.out.println("========IN OPEN===========");
-        System.out.println(roomService.isExisted("1"));
 
+        // todo: 1. 判断房间是否存在，如果房间不存在，则拒绝连接
 
-        // todo: 2. 判断游戏是否已经开始，如果已经开始，则拒绝连接
-        if(roomId==-2){
+        // 2. 判断游戏是否已经开始，如果已经开始，则拒绝连接
+        if (roomService.checkRoomStatus(String.valueOf(roomId))) {
             session.close(new CloseReason(getCloseCode(GameConstant.GAME_ALREADY_START), "already start"));
             return;
         }
