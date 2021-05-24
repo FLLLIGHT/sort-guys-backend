@@ -2,6 +2,8 @@ package fudan.adweb.project.sortguysbackend.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import fudan.adweb.project.sortguysbackend.constant.GameConstant;
+import fudan.adweb.project.sortguysbackend.entity.GameControlMsg;
 import fudan.adweb.project.sortguysbackend.entity.PositionMsg;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
 import fudan.adweb.project.sortguysbackend.service.GameService;
@@ -28,9 +30,6 @@ import static javax.websocket.CloseReason.CloseCodes.getCloseCode;
 @ServerEndpoint(value = "/websocketPosition/{roomId}/{nickname}")
 @Component
 public class WebSocketPosition {
-
-    public static final int GAME_ALREADY_START = 4000;
-    public static final int ROOM_NOT_EXIST = 4001;
 
     private static Map<String, String> usersMap = new HashMap<>();
 
@@ -59,7 +58,7 @@ public class WebSocketPosition {
 
         // todo: 2. 判断游戏是否已经开始，如果已经开始，则拒绝连接
         if(roomId==-2){
-            session.close(new CloseReason(getCloseCode(GAME_ALREADY_START), "already start"));
+            session.close(new CloseReason(getCloseCode(GameConstant.GAME_ALREADY_START), "already start"));
             return;
         }
 
@@ -115,7 +114,7 @@ public class WebSocketPosition {
     @OnClose
     public void onClose(Session session, CloseReason closeReason, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) throws IOException {
         // 游戏已经开始
-        if(closeReason.getCloseCode().getCode() == GAME_ALREADY_START){
+        if(closeReason.getCloseCode().getCode() == GameConstant.GAME_ALREADY_START){
             return;
         }
         if(roomMap.containsKey(roomId)){
@@ -142,19 +141,52 @@ public class WebSocketPosition {
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) {
         ObjectMapper objectMapper = new ObjectMapper();
-        PositionMsg positionMsg;
 
-        try {
-            positionMsg = objectMapper.readValue(message, PositionMsg.class);
+        // 请求类型作为url参数进行传递，保证是同一个连接
+        Integer messageType = Integer.parseInt(session.getRequestParameterMap().get("messageType").get(0));
+        System.out.println(messageType);
+        // 用户位置移动信息
+        if (messageType == GameConstant.POSITION_MESSAGE){
+            PositionMsg positionMsg;
+            try {
+                positionMsg = objectMapper.readValue(message, PositionMsg.class);
 
-            // 更新位置信息
-            gameService.updatePosition(String.valueOf(roomId), nickname, positionMsg.getX(), positionMsg.getY(), positionMsg.getZ());
+                // 更新位置信息
+                gameService.updatePosition(String.valueOf(roomId), nickname, positionMsg.getX(), positionMsg.getY(), positionMsg.getZ());
 
-            // 设置正常消息
-            positionMsg.setType(1);
-            multicast(positionMsg, roomId);
-        } catch (IOException e) {
-            e.printStackTrace();
+                // 设置正常消息
+                positionMsg.setType(1);
+
+                // 广播用户位置
+                multicast(positionMsg, roomId);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        // 游戏控制信息
+        else if (messageType == GameConstant.GAME_CONTROL_MESSAGE) {
+            GameControlMsg gameControlMsg;
+            try {
+                gameControlMsg = objectMapper.readValue(message, GameControlMsg.class);
+                if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_GET_READY) {
+                    gameService.getReady(String.valueOf(roomId), nickname);
+                }else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_START) {
+                    gameService.getStart(String.valueOf(roomId), nickname);
+                }else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_STOP) {
+                    gameService.getStop(String.valueOf(roomId));
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        //todo: 捡垃圾
+        else if (messageType == GameConstant.PICK_GARBAGE_MESSAGE){
+
+        }
+        //todo: 扔垃圾
+        else if (messageType == GameConstant.THROW_GARBAGE_MESSAGE){
+
         }
     }
 

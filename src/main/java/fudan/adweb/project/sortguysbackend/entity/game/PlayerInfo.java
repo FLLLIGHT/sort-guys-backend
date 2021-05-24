@@ -6,7 +6,7 @@ public class PlayerInfo {
     private Double y;
     private Double z;
 
-    // 未准备：0；已准备：1；游戏中：2
+    // 未准备：1；已准备：2；游戏中：3
     private int status;
     private boolean isRoomOwner;
 

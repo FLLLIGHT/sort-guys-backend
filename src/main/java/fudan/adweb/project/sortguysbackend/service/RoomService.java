@@ -1,5 +1,6 @@
 package fudan.adweb.project.sortguysbackend.service;
 
+import fudan.adweb.project.sortguysbackend.constant.GameConstant;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
 import fudan.adweb.project.sortguysbackend.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -28,7 +30,7 @@ public class RoomService {
         // 创建新房间并设置房间信息
         Map<String, Object> map = new HashMap<>();
         map.put("roomOwner", roomOwner);
-        map.put("status", 1);
+        map.put("status", GameConstant.ROOM_WAITING);
 
         String userMapKey = UUID.randomUUID().toString().replaceAll("-","");
         map.put("userMapKey", userMapKey);
@@ -67,5 +69,23 @@ public class RoomService {
         // todo: 判断是否是房主？
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         redisUtil.hdel(userMapKey, username);
+    }
+
+    // 判断用户是否是房主
+    public boolean checkRoomOwner(String roomId, String username){
+        return redisUtil.hget(roomId, "roomOwner").equals(username);
+    }
+
+    // 判断房间内除房主外所有用户是否已经准备好了（房主随意）
+    public boolean checkReadyStatus(String roomId){
+        String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
+        Map<Object, Object> userMap = redisUtil.hmget(userMapKey);
+        for (Map.Entry<Object, Object> entry : userMap.entrySet()){
+            PlayerInfo playerInfo = (PlayerInfo) entry.getValue();
+            if(!playerInfo.isRoomOwner() && playerInfo.getStatus() != GameConstant.PLAYER_READY){
+                return false;
+            }
+        }
+        return true;
     }
 }
