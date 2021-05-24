@@ -23,10 +23,11 @@ public final class GameConstant {
     public static final int ROOM_GAMING = 2;
     public static final int ROOM_STOPPING = 3;
 
-    // 游戏控制信息类型 - 1：准备  2：开始游戏  3：暂停游戏
+    // 游戏控制信息类型 - 1：准备  2：开始游戏  3：暂停游戏  4：结束游戏
     public static final int GAME_CONTROL_GET_READY = 1;
     public static final int GAME_CONTROL_START = 2;
     public static final int GAME_CONTROL_STOP = 3;
+    public static final int GAME_CONTROL_OVER = 4;
 
     // 位置消息类型 - 1：位置改变信息  2：位置移除信息（用户退出房间时触发）
     public static final int POSITION_CHANGE_MESSAGE = 1;
