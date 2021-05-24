@@ -1,5 +1,7 @@
 package fudan.adweb.project.sortguysbackend.security;
 
+import fudan.adweb.project.sortguysbackend.config.authorities.AccessDenied;
+import fudan.adweb.project.sortguysbackend.config.authorities.NotLoginEntryPoint;
 import fudan.adweb.project.sortguysbackend.security.jwt.JwtRequestFilter;
 import fudan.adweb.project.sortguysbackend.service.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtUserDetailsService jwtUserDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
+    private final NotLoginEntryPoint notLoginEntryPoint;
+    private final AccessDenied accessDenied;
 
     @Autowired
-    public SecurityConfig(JwtUserDetailsService jwtUserDetailsService, JwtRequestFilter jwtRequestFilter) {
+    public SecurityConfig(JwtUserDetailsService jwtUserDetailsService, JwtRequestFilter jwtRequestFilter,
+                          NotLoginEntryPoint notLoginEntryPoint, AccessDenied accessDenied) {
         this.jwtUserDetailsService = jwtUserDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
+        this.notLoginEntryPoint = notLoginEntryPoint;
+        this.accessDenied = accessDenied;
     }
 
     @Override
@@ -36,7 +43,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // We dont't need CSRF for this project.
-        http.csrf().ignoringAntMatchers("/**");
+//        http.csrf().ignoringAntMatchers("/**");
+        http.httpBasic().authenticationEntryPoint(notLoginEntryPoint).and()
+                    .authorizeRequests()
+                    .antMatchers("/login").permitAll()
+                    .antMatchers("/user").permitAll()
+                    .antMatchers("/sortResult").hasAuthority("admin")
+                    .antMatchers("/**").hasAuthority("player");
+
+        http.csrf().disable();
+
+        http.exceptionHandling().accessDeniedHandler(accessDenied);
 
         // Here we use JWT(Json Web Token) to authenticate the user.
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
@@ -44,8 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        // Hint: Now you can view h2-console page at `http://IP-Address:<port>/h2-console` without authentication.
-        web.ignoring().antMatchers("/h2-console/**");
+//        web.ignoring().antMatchers("/**");
     }
 
     @Bean

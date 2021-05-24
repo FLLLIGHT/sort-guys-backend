@@ -42,7 +42,7 @@ public class AuthService {
             return null;
 //        if (!password.equals(user.getPassword()))
 //            throw new BadCredentialsException("User: '" + username + "' got wrong password.");
-        System.out.println(user);
+//        System.out.println(user);
         return user;
     }
 

@@ -96,7 +96,12 @@
 			<artifactId>activation</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-		<!-- Java 8 以上的环境所需要的依赖 结束 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.29</version>
+        </dependency>
+        <!-- Java 8 以上的环境所需要的依赖 结束 -->
 	</dependencies>
 
 	<build>
