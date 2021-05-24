@@ -9,6 +9,7 @@ public class Garbage implements Serializable {
     private String type;
     private String description;
     private String updateTime;
+    private String url;
 
     public Integer getGid() {
         return gid;
@@ -48,5 +49,13 @@ public class Garbage implements Serializable {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

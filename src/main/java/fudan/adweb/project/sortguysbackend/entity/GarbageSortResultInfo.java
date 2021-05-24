@@ -3,13 +3,14 @@ package fudan.adweb.project.sortguysbackend.entity;
 public class GarbageSortResultInfo {
     private Integer gid;
     private String name;
+    private String url;
     private String description;
     private Integer times;
     private Integer correctTimes;
     private String unlockTime;  // 管理员获取全部的垃圾分类信息时该项为垃圾初始化的时间
 
     public GarbageSortResultInfo(Integer gid, String name, String description, Integer times,
-                                 Integer correctTimes, String unlockTime) {
+                                 Integer correctTimes, String unlockTime, String url) {
         this.gid = gid;
         this.name = name;
         this.description = description;
@@ -64,5 +65,13 @@ public class GarbageSortResultInfo {
 
     public void setUnlockTime(String unlockTime) {
         this.unlockTime = unlockTime;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

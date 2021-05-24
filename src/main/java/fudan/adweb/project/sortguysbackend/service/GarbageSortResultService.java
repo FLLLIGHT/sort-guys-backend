@@ -50,7 +50,7 @@ public class GarbageSortResultService {
             Integer gid = re.getGid();
             Garbage garbage = garbageMapper.findByGid(gid);
             GarbageSortResultInfo info = new GarbageSortResultInfo(gid, garbage.getName(), garbage.getDescription(),
-                    re.getTimes(), re.getCorrectTimes(), re.getUnlockTime());
+                    re.getTimes(), re.getCorrectTimes(), re.getUnlockTime(), garbage.getUrl());
             result.add(info);
         }
 
@@ -62,7 +62,7 @@ public class GarbageSortResultService {
         List<Garbage> garbageList = garbageMapper.findAll();
         for (Garbage g: garbageList){
             GarbageSortResultInfo info = new GarbageSortResultInfo(g.getGid(), g.getName(), g.getDescription(),
-                    0, 0, g.getUpdateTime());
+                    0, 0, g.getUpdateTime(), g.getUrl());
             result.add(info);
         }
 
