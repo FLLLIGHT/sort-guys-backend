@@ -91,11 +91,12 @@ public class GameService {
         redisUtil.hset(roomId, "status", GameConstant.ROOM_GAMING);
 
         // 在房间内随机生成垃圾
-        String garbageListKey = (String) redisUtil.hget(roomId, "garbageListKey");
+        String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
         List<Garbage> garbageList = garbageMapper.findRandom5();
         for (Garbage garbage : garbageList) {
+            String garbageId = UUID.randomUUID().toString().replaceAll("-","");
             GarbageInfo garbageInfo = new GarbageInfo();
-            garbageInfo.setGarbageId(UUID.randomUUID().toString().replaceAll("-",""));
+            garbageInfo.setGarbageId(garbageId);
             garbageInfo.setScore(1);
             // todo：生成在随机位置
             garbageInfo.setX(0d);
@@ -103,7 +104,7 @@ public class GameService {
             garbageInfo.setZ(0d);
             garbageInfo.setGarbageName(garbage.getName());
             garbageInfo.setType(GameConstant.GARBAGE_TYPE_MAP.get(garbage.getType()));
-            redisUtil.lSet(garbageListKey, garbageInfo);
+            redisUtil.hset(garbageMapKey, garbageId, garbageInfo);
         }
 
         // todo: 将用户位置归到中心/随机点
@@ -117,16 +118,45 @@ public class GameService {
     }
 
     public List<GarbageInfo> getAllGarbageInfo(String roomId){
-        String garbageListKey = (String) redisUtil.hget(roomId, "garbageListKey");
-        return castFromObjectToGarbageInfo(Objects.requireNonNull(redisUtil.lGet(garbageListKey, 0, -1)));
+        String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
+        return castFromObjectToGarbageInfo(Objects.requireNonNull(redisUtil.hmget(garbageMapKey)));
     }
 
-    private List<GarbageInfo> castFromObjectToGarbageInfo(List<Object> garbageList){
+    private List<GarbageInfo> castFromObjectToGarbageInfo(Map<Object, Object> garbageMap){
         List<GarbageInfo> list = new LinkedList<>();
-        for (Object o : garbageList){
-            list.add((GarbageInfo) o);
+        for (Map.Entry<Object, Object> entry : garbageMap.entrySet()){
+            list.add((GarbageInfo) entry.getValue());
         }
         return list;
+    }
+
+    public void pickUpGarbage(String roomId, String username, String garbageId){
+        String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
+        GarbageInfo garbageInfo = (GarbageInfo) redisUtil.hget(garbageMapKey, garbageId);
+        garbageInfo.setUsername(username);
+        redisUtil.hset(garbageMapKey, garbageId, garbageInfo);
+    }
+
+    public void throwGarbage(String roomId, String username, String garbageId, int garbageBinType){
+        // 判断垃圾扔的是否正确
+        String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
+        GarbageInfo garbageInfo = (GarbageInfo) redisUtil.hget(garbageMapKey, garbageId);
+        boolean correct = checkGarbageType(garbageInfo, garbageBinType);
+
+        // 从redis中移除垃圾
+        redisUtil.hdel(garbageMapKey, garbageId);
+
+        // 若扔对了，添加分数
+        if(correct){
+            String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");
+            redisUtil.zIncr(scoreZSetKey, username, garbageInfo.getScore());
+        }
+
+        // 添加拾取记录（到MySQL）
+    }
+
+    private boolean checkGarbageType(GarbageInfo garbageInfo, int garbageBinType){
+        return garbageInfo.getType() == garbageBinType;
     }
 
 }

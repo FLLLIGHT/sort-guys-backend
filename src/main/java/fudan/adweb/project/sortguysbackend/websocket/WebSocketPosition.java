@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import fudan.adweb.project.sortguysbackend.constant.GameConstant;
 import fudan.adweb.project.sortguysbackend.entity.GameControlMsg;
+import fudan.adweb.project.sortguysbackend.entity.GarbageControlMsg;
 import fudan.adweb.project.sortguysbackend.entity.PositionMsg;
+import fudan.adweb.project.sortguysbackend.entity.game.GarbageInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
 import fudan.adweb.project.sortguysbackend.service.GameService;
 import fudan.adweb.project.sortguysbackend.service.MessageService;
@@ -19,6 +21,7 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -168,11 +171,18 @@ public class WebSocketPosition {
                 gameControlMsg = objectMapper.readValue(message, GameControlMsg.class);
                 Map<String,Object> returnMessageMap = new HashMap<>();
                 String returnMessage = "";
+                // 准备
                 if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_GET_READY) {
                     returnMessage = gameService.getReady(String.valueOf(roomId), nickname);
-                }else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_START) {
+                }
+                // 开始游戏（房主）
+                else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_START) {
                     returnMessage = gameService.getStart(String.valueOf(roomId), nickname);
-                }else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_STOP) {
+                    List<GarbageInfo> garbageInfos = gameService.getAllGarbageInfo(String.valueOf(roomId));
+                    multicastGarbage(garbageInfos, roomId);
+                }
+                // 暂停游戏
+                else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_STOP) {
                     returnMessage = gameService.getStop(String.valueOf(roomId));
                 }
 
@@ -183,13 +193,27 @@ public class WebSocketPosition {
                 e.printStackTrace();
             }
         }
-        //todo: 捡垃圾
-        else if (messageType == GameConstant.PICK_GARBAGE_MESSAGE){
-
-        }
-        //todo: 扔垃圾
-        else if (messageType == GameConstant.THROW_GARBAGE_MESSAGE){
-
+        // 操纵垃圾
+        else if (messageType == GameConstant.GARBAGE_CONTROL_MESSAGE){
+            GarbageControlMsg garbageControlMsg;
+            try {
+                garbageControlMsg = objectMapper.readValue(message, GarbageControlMsg.class);
+                // 捡垃圾
+                if (garbageControlMsg.getAction() == GameConstant.GARBAGE_CONTROL_GET) {
+                    gameService.pickUpGarbage(String.valueOf(roomId), nickname, garbageControlMsg.getGarbageId());
+                }
+                // 扔垃圾（到地上）
+                else if (garbageControlMsg.getAction() == GameConstant.GARBAGE_CONTROL_THROW_GROUND) {
+                    // 等同于大地捡起了垃圾^^
+                    gameService.pickUpGarbage(String.valueOf(roomId), "", garbageControlMsg.getGarbageId());
+                }
+                // 扔垃圾（到垃圾桶）
+                else if (garbageControlMsg.getAction() == GameConstant.GARBAGE_CONTROL_THROW_BIN) {
+                    gameService.throwGarbage(String.valueOf(roomId), nickname, garbageControlMsg.getGarbageId(), garbageControlMsg.getGarbageBinType());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -209,11 +233,22 @@ public class WebSocketPosition {
         }
     }
 
+    // 组播消息
     private void multicastMessage(Map<String,Object> message, Integer roomId) throws IOException {
         Set<WebSocketPosition> room = roomMap.get(roomId);
         for (WebSocketPosition item : room) {
             synchronized (item.session){
                 item.session.getBasicRemote().sendText(asJsonString(message));
+            }
+        }
+    }
+
+    // 组播所有垃圾
+    private void multicastGarbage(List<GarbageInfo> garbageInfos, Integer roomId) throws IOException {
+        Set<WebSocketPosition> room = roomMap.get(roomId);
+        for (WebSocketPosition item : room) {
+            synchronized (item.session){
+                item.session.getBasicRemote().sendText(asJsonString(garbageInfos));
             }
         }
     }

@@ -8,11 +8,10 @@ public final class GameConstant {
     public static final int GAME_ALREADY_START = 4000;
     public static final int ROOM_NOT_EXIST = 4001;
 
-    // websocket传递message类型 - 1：位置信息  2：游戏控制信息（准备/开始/暂停）  3：捡垃圾  4：扔垃圾
+    // websocket传递message类型 - 1：位置信息  2：游戏控制信息（准备/开始/暂停）  3：垃圾操纵动作
     public static final int POSITION_MESSAGE = 1;
     public static final int GAME_CONTROL_MESSAGE = 2;
-    public static final int PICK_GARBAGE_MESSAGE = 3;
-    public static final int THROW_GARBAGE_MESSAGE = 4;
+    public static final int GARBAGE_CONTROL_MESSAGE = 3;
 
     // 用户游戏状态 - 1：未准备  2：准备  3：游戏中
     public static final int PLAYER_NOT_READY = 1;
@@ -45,5 +44,10 @@ public final class GameConstant {
         put("可回收物", RECYCLABLE_GARBAGE);
         put("有害垃圾", HAZARDOUS_GARBAGE);
     }};
+
+    // 操纵垃圾的动作 - 1：获取  2：扔掉（到地上）  3:扔掉（到垃圾桶）
+    public static final int GARBAGE_CONTROL_GET = 1;
+    public static final int GARBAGE_CONTROL_THROW_GROUND = 2;
+    public static final int GARBAGE_CONTROL_THROW_BIN = 3;
 
 }
