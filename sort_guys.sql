@@ -68,39 +68,6 @@ INSERT INTO `garbage` VALUES (1,'餐巾纸','干垃圾','一张普通的餐巾�
 UNLOCK TABLES;
 
 --
--- Table structure for table `garbage_sort_record`
---
-
-DROP TABLE IF EXISTS `garbage_sort_record`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `garbage_sort_record` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `uid` int NOT NULL,
-  `garbage_id` int NOT NULL,
-  `game_id` int NOT NULL,
-  `sortType` varchar(256) NOT NULL,
-  `score` int NOT NULL,
-  `time` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `uid` (`uid`),
-  KEY `garbage_id` (`garbage_id`),
-  CONSTRAINT `garbage_sort_record_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`),
-  CONSTRAINT `garbage_sort_record_ibfk_2` FOREIGN KEY (`garbage_id`) REFERENCES `garbage` (`gid`),
-  CONSTRAINT `garbage_sort_record_chk_1` CHECK ((`sortType` in (_utf8mb4'干垃圾',_utf8mb4'湿垃圾',_utf8mb4'有害垃圾',_utf8mb4'可回收物')))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `garbage_sort_record`
---
-
-LOCK TABLES `garbage_sort_record` WRITE;
-/*!40000 ALTER TABLE `garbage_sort_record` DISABLE KEYS */;
-/*!40000 ALTER TABLE `garbage_sort_record` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `garbage_sort_result`
 --
 
@@ -128,7 +95,7 @@ CREATE TABLE `garbage_sort_result` (
 
 LOCK TABLES `garbage_sort_result` WRITE;
 /*!40000 ALTER TABLE `garbage_sort_result` DISABLE KEYS */;
-INSERT INTO `garbage_sort_result` VALUES (1,19,0,0,NULL),(2,19,0,0,NULL),(3,19,0,0,NULL),(4,19,0,0,NULL),(5,19,0,0,NULL),(6,19,0,0,NULL),(7,19,0,0,NULL),(8,19,0,0,NULL),(9,19,0,0,NULL),(10,19,0,0,NULL),(11,19,0,0,NULL),(12,19,0,0,NULL),(13,19,0,0,NULL),(14,19,0,0,NULL),(15,19,0,0,NULL),(16,19,0,0,NULL),(17,19,0,0,NULL),(18,19,0,0,NULL),(19,19,0,0,NULL),(20,19,0,0,NULL),(21,19,0,0,NULL),(22,19,0,0,NULL);
+INSERT INTO `garbage_sort_result` VALUES (1,1,0,0,NULL),(1,2,0,0,NULL),(1,3,0,0,NULL),(2,1,0,0,NULL),(2,2,0,0,NULL),(2,3,0,0,NULL),(3,1,0,0,NULL),(3,2,0,0,NULL),(3,3,0,0,NULL),(4,1,0,0,NULL),(4,2,0,0,NULL),(4,3,0,0,NULL),(5,1,0,0,NULL),(5,2,0,0,NULL),(5,3,0,0,NULL),(6,1,0,0,NULL),(6,2,0,0,NULL),(6,3,0,0,NULL),(7,1,0,0,NULL),(7,2,0,0,NULL),(7,3,0,0,NULL),(8,1,0,0,NULL),(8,2,0,0,NULL),(8,3,0,0,NULL),(9,1,0,0,NULL),(9,2,0,0,NULL),(9,3,0,0,NULL),(10,1,0,0,NULL),(10,2,0,0,NULL),(10,3,0,0,NULL),(11,1,0,0,NULL),(11,2,0,0,NULL),(11,3,0,0,NULL),(12,1,0,0,NULL),(12,2,0,0,NULL),(12,3,0,0,NULL),(13,1,0,0,NULL),(13,2,0,0,NULL),(13,3,0,0,NULL),(14,1,0,0,NULL),(14,2,0,0,NULL),(14,3,0,0,NULL),(15,1,0,0,NULL),(15,2,0,0,NULL),(15,3,0,0,NULL),(16,1,0,0,NULL),(16,2,0,0,NULL),(16,3,0,0,NULL),(17,1,0,0,NULL),(17,2,0,0,NULL),(17,3,0,0,NULL),(18,1,0,0,NULL),(18,2,0,0,NULL),(18,3,0,0,NULL),(19,1,0,0,NULL),(19,2,0,0,NULL),(19,3,0,0,NULL),(20,1,0,0,NULL),(20,2,0,0,NULL),(20,3,0,0,NULL),(21,1,0,0,NULL),(21,2,0,0,NULL),(21,3,0,0,NULL),(22,1,0,0,NULL),(22,2,0,0,NULL),(22,3,0,0,NULL);
 /*!40000 ALTER TABLE `garbage_sort_result` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,8 +110,9 @@ CREATE TABLE `user` (
   `uid` int NOT NULL AUTO_INCREMENT,
   `username` varchar(256) NOT NULL,
   `password` varchar(256) NOT NULL,
+  `score` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,7 +121,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (6,'Bob','$2a$10$z7d5Cty6/SgRB1R.bFTcLe4iEij4BZn0cDu/V57sK.GdNKIqkSux2'),(7,'Cathy','$2a$10$CF9Md3CSSKEpEDZIzgJFp.c9FLJYOj2QAz7Iri4m/CV0YxpdBSK6u'),(9,'Admin','$2a$10$MDG1JTtkU01wiwQzxlGXsOwG492.ZbL6J.RQZLGC85IZhASezv6/G'),(19,'Test','$2a$10$sTrwSOqoKXK8PYVp6juQxu3NszKU1dA8eJRvFRFiawRUZWVnOx222'),(20,'Test2','$2a$10$OhTC.2Wyne7CwQsnqvi64eb8zIMttNk43wCyID1vApSFqVWLMtkaO');
+INSERT INTO `user` VALUES (1,'Admin','$2a$10$NM7s19sWIN4LBfBWHqkIKuaAk15j4kZndX5mqtDONmdxWseECQoxW',0),(2,'Alice','$2a$10$pKMujZhdPtNDKwnY8I.RjOj1N2eGe9KiNv2a/OBSv65tGxH0TdjDe',0),(3,'Bob','$2a$10$.e6FOBKAtWygZrGdPlrJiOHfAZH/F68C4rPH714aQRo.bF.s2uylq',0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -178,7 +146,7 @@ CREATE TABLE `user_appearance` (
 
 LOCK TABLES `user_appearance` WRITE;
 /*!40000 ALTER TABLE `user_appearance` DISABLE KEYS */;
-INSERT INTO `user_appearance` VALUES (6,'#FFFFFF'),(7,'#FFFFFF'),(9,'#FFFFFF'),(19,'#FFFFFF');
+INSERT INTO `user_appearance` VALUES (1,'#FFFFFF'),(2,'#FFFFFF'),(3,'#FFFFFF');
 /*!40000 ALTER TABLE `user_appearance` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -196,9 +164,9 @@ CREATE TABLE `user_authority` (
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`),
   KEY `aid` (`aid`),
-  CONSTRAINT `aid` FOREIGN KEY (`aid`) REFERENCES `authority` (`aid`),
-  CONSTRAINT `uid` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+  CONSTRAINT `user_authority_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`),
+  CONSTRAINT `user_authority_ibfk_2` FOREIGN KEY (`aid`) REFERENCES `authority` (`aid`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -207,7 +175,7 @@ CREATE TABLE `user_authority` (
 
 LOCK TABLES `user_authority` WRITE;
 /*!40000 ALTER TABLE `user_authority` DISABLE KEYS */;
-INSERT INTO `user_authority` VALUES (6,1,6),(7,1,7),(9,1,9),(10,2,9),(21,1,19);
+INSERT INTO `user_authority` VALUES (1,1,1),(2,2,1),(3,1,2),(4,1,3);
 /*!40000 ALTER TABLE `user_authority` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -225,7 +193,7 @@ CREATE TABLE `user_login_info` (
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`),
   CONSTRAINT `user_login_info_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,4 +214,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-20 22:48:38
+-- Dump completed on 2021-05-24 15:02:21

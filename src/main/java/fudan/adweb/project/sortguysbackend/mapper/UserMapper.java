@@ -16,6 +16,7 @@ public interface UserMapper {
             @Result(id = true, column = "uid", property = "uid"),
             @Result(column = "username", property = "username"),
             @Result(column = "password", property = "password"),
+            @Result(column = "score", property = "score"),
             @Result(column = "uid", property="authorities",
                     many=@Many(
                             select="fudan.adweb.project.sortguysbackend.mapper.AuthorityMapper.getAllAuthoritiesByUid",

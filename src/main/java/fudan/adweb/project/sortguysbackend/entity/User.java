@@ -13,6 +13,7 @@ public class User implements UserDetails {
     private Integer uid;
     private String username;
     private String password;
+    private Integer score;
     private Set<Authority> authorities;
 
     public User() {
@@ -79,12 +80,21 @@ public class User implements UserDetails {
         this.authorities = authorities;
     }
 
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "uid=" + uid +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", score=" + score +
                 ", authorities=" + authorities +
                 '}';
     }

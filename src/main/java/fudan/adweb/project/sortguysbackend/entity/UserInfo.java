@@ -4,6 +4,7 @@ public class UserInfo {
     private Integer uid;
     private String username;
     private String password;
+    private Integer score;
 
     public Integer getUid() {
         return uid;
@@ -27,5 +28,13 @@ public class UserInfo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
     }
 }
