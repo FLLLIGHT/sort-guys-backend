@@ -3,6 +3,13 @@ package fudan.adweb.project.sortguysbackend.websocket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import fudan.adweb.project.sortguysbackend.entity.PositionMsg;
+import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
+import fudan.adweb.project.sortguysbackend.service.GameService;
+import fudan.adweb.project.sortguysbackend.service.MessageService;
+import fudan.adweb.project.sortguysbackend.service.RoomService;
+import fudan.adweb.project.sortguysbackend.util.RedisUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -16,48 +23,56 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static javax.websocket.CloseReason.CloseCodes.getCloseCode;
+
 @ServerEndpoint(value = "/websocketPosition/{roomId}/{nickname}")
 @Component
 public class WebSocketPosition {
-//    private static CopyOnWriteArraySet<WebSocketPosition> webSocketSet = new CopyOnWriteArraySet<>();
+
+    public static final int GAME_ALREADY_START = 4000;
+    public static final int ROOM_NOT_EXIST = 4001;
+
     private static Map<String, String> usersMap = new HashMap<>();
-//    private static Map<String, PositionMsg> positionMap = new HashMap<>();
 
     // 记录房间内的用户（及session）
     private static final Map<Integer, Set<WebSocketPosition>> roomMap = new ConcurrentHashMap<>();
 
     // 记录房间内用户的位置
-    private static final Map<Integer, Map<String, PositionMsg>> roomPositionMap = new ConcurrentHashMap<>();
+//    private static final Map<Integer, Map<String, PositionMsg>> roomPositionMap = new ConcurrentHashMap<>();
 
     private Session session;
 
     private final AtomicInteger roomCount = new AtomicInteger(0);
+
+    public static RoomService roomService;
+    public static GameService gameService;
+    public static MessageService messageService;
 
     /**
      * on connect
      */
     @OnOpen
     public void onOpen(Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) throws IOException {
+        // todo: 1. 判断房间是否存在，如果房间不存在，则拒绝连接
+        System.out.println(roomService.isExisted("1"));
 
-        Map<String,Object> message= new HashMap<>();
+
+        // todo: 2. 判断游戏是否已经开始，如果已经开始，则拒绝连接
+        if(roomId==-2){
+            session.close(new CloseReason(getCloseCode(GAME_ALREADY_START), "already start"));
+            return;
+        }
+
+        // 存入用户session
         this.session = session;
         usersMap.put(nickname, session.getId());
-        PositionMsg positionMsg = new PositionMsg(nickname, 0d, 30d, 0d, 1);
 
-        // 另一种方式：roomId = -1 代表新建房间，返回房间号。但可能会冲突（和直接创建的方式），两者不能并存，要讨论
-        if(roomId==-1){
-            roomId = roomCount.incrementAndGet();
+        // 若房间不存在，则创建新房间；若房间存在，则将用户放入房间（并发？）
+        if(!roomService.isExisted(String.valueOf(roomId))){
+            roomService.createRoom(String.valueOf(roomId), nickname);
+        }else{
+            roomService.addPlayerIntoRoom(false, String.valueOf(roomId), nickname);
         }
-
-        Map<String, PositionMsg> positionMap = roomPositionMap.get(roomId);
-        // 若房间不存在，则创建新房间；若房间存在，则将用户放入房间
-        if (positionMap == null){
-            positionMap = new HashMap<>();
-        }
-        positionMap.put(nickname, positionMsg);
-        roomPositionMap.put(roomId, positionMap);
-
-//        webSocketSet.add(this);
 
         Set<WebSocketPosition> room = roomMap.get(roomId);
         // 若房间不存在，则创建新房间；若房间存在，则将用户放入房间
@@ -69,20 +84,28 @@ public class WebSocketPosition {
             room.add(this);
         }
 
-
+        // 创建要返回的message
+        Map<String,Object> message= new HashMap<>();
         System.out.println("New connection: " + nickname + ", id: " + session.getId() + ", current people:" + roomMap.get(roomId).size());
         message.put("type",0); // 0-connect success，1-message
         message.put("people",roomMap.get(roomId).size());
         message.put("name",nickname);
         message.put("aisle",session.getId());
-
         message.put("roomId", roomId);
+
+        // 给新连进的人发送信息和当前房间中其他所有人的位置
         synchronized (this.session){
             this.session.getBasicRemote().sendText(new Gson().toJson(message));
         }
+
+        Set<PlayerInfo> playerInfos = gameService.getAllPlayerInfo(String.valueOf(roomId));
+        Map<String, PositionMsg> positionMap = messageService.fromAllPlayerInfo2PositionMsg(playerInfos);
         synchronized (this.session){
             this.session.getBasicRemote().sendText(asJsonString(positionMap));
         }
+
+        // 给房间中的人广播新的人的信息
+        PositionMsg positionMsg = new PositionMsg(nickname, 0d, 30d, 0d, 1);
         multicast(positionMsg, roomId);
     }
 
@@ -90,8 +113,11 @@ public class WebSocketPosition {
      * close
      */
     @OnClose
-    public void onClose(Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) throws IOException {
-//        webSocketSet.remove(this);
+    public void onClose(Session session, CloseReason closeReason, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) throws IOException {
+        // 游戏已经开始
+        if(closeReason.getCloseCode().getCode() == GAME_ALREADY_START){
+            return;
+        }
         if(roomMap.containsKey(roomId)){
             roomMap.get(roomId).remove(this);
         }
@@ -104,12 +130,9 @@ public class WebSocketPosition {
                 break;
             }
         }
-        for (Map.Entry<String, PositionMsg> entry : roomPositionMap.get(roomId).entrySet()){
-            if (entry.getKey().equals(username)){
-                roomPositionMap.get(roomId).remove(entry.getKey());
-                break;
-            }
-        }
+
+        roomService.leaveRoom(String.valueOf(roomId), username);
+
         multicast(new PositionMsg(username, -1d, -1d, -1d, 2), roomId);
     }
 
@@ -123,10 +146,12 @@ public class WebSocketPosition {
 
         try {
             positionMsg = objectMapper.readValue(message, PositionMsg.class);
+
+            // 更新位置信息
+            gameService.updatePosition(String.valueOf(roomId), nickname, positionMsg.getX(), positionMsg.getY(), positionMsg.getZ());
+
             // 设置正常消息
             positionMsg.setType(1);
-            // 更新位置信息
-            roomPositionMap.get(roomId).put(nickname, positionMsg);
             multicast(positionMsg, roomId);
         } catch (IOException e) {
             e.printStackTrace();
