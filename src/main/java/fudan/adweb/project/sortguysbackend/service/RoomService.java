@@ -35,8 +35,12 @@ public class RoomService {
         String userMapKey = UUID.randomUUID().toString().replaceAll("-","");
         map.put("userMapKey", userMapKey);
 
-        String garbageListKey = UUID.randomUUID().toString().replaceAll("-","");
-        map.put("garbageListKey", garbageListKey);
+        String garbageMapKey = UUID.randomUUID().toString().replaceAll("-","");
+        map.put("garbageMapKey", garbageMapKey);
+
+        String scoreZSetKey = UUID.randomUUID().toString().replaceAll("-","");
+        map.put("scoreZSetKey", scoreZSetKey);
+
         redisUtil.hmset(roomId, map);
 
 
@@ -61,6 +65,9 @@ public class RoomService {
         playerInfo.setY(30d);
         playerInfo.setZ(0d);
         redisUtil.hset(userMapKey, username, playerInfo);
+
+        String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");
+        redisUtil.zSet(scoreZSetKey, username, 0);
     }
 
     public void leaveRoom(String roomId, String username){
@@ -69,6 +76,9 @@ public class RoomService {
         // todo: 判断是否是房主？
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         redisUtil.hdel(userMapKey, username);
+
+        String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");
+        redisUtil.zSetRemove(scoreZSetKey, username);
     }
 
     // 判断用户是否是房主

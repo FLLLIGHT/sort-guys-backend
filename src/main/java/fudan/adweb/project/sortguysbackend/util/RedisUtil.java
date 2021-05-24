@@ -531,4 +531,29 @@ public final class RedisUtil {
             return 0;
         }
     }
+
+    // ===============================zSet=================================
+    public boolean zSet(String key, String username, double score){
+        try {
+            redisTemplate.opsForZSet().add(key, username, score);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Double zIncr(String key, String username, double score){
+        return redisTemplate.opsForZSet().incrementScore(key, username, score);
+    }
+
+    public long zSetRemove(String key, Object... values) {
+        try {
+            Long count = redisTemplate.opsForZSet().remove(key, values);
+            return count;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }
