@@ -1,0 +1,44 @@
+networks:
+  sort_guys_network:
+    external:
+      name: sort_guys_network
+
+services:
+  springboot-backend:
+    container_name: springboot-backend
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/sort_guys?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true
+      SPRING_REDIS_HOST: redis-db
+    depends_on:
+      - mysql-db
+      - redis-db
+    networks:
+      - sort_guys_network
+    restart: always
+
+  mysql-db:
+    container_name: mysql-db
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: sort_guys
+      MYSQL_USER: zitao
+      MYSQL_PASSWORD: 123456
+    networks:
+      - sort_guys_network
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+
+  redis-db:
+    container_name: redis-db
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - sort_guys_network
