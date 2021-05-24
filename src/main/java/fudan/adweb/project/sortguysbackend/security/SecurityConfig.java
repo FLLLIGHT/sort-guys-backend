@@ -55,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/sortResult").hasAuthority("admin")
                     .antMatchers("/**").hasAuthority("player")
                 .and().logout()
-                .logoutUrl("/clearLoginInfo")
+                .logoutUrl("/logout")
                 .logoutSuccessHandler(logoutSuccessHandler)
                 .deleteCookies("JSESSIONID")
                 .permitAll();
