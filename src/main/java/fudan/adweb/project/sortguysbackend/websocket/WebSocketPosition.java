@@ -57,10 +57,10 @@ public class WebSocketPosition {
         // todo: 1. 判断房间是否存在，如果房间不存在，则拒绝连接
 
         // 2. 判断游戏是否已经开始，如果已经开始，则拒绝连接
-        if (roomService.checkRoomStatus(String.valueOf(roomId))) {
-            session.close(new CloseReason(getCloseCode(GameConstant.GAME_ALREADY_START), "already start"));
-            return;
-        }
+//        if (roomService.checkRoomStatus(String.valueOf(roomId))) {
+//            session.close(new CloseReason(getCloseCode(GameConstant.GAME_ALREADY_START), "already start"));
+//            return;
+//        }
 
         // 存入用户session
         this.session = session;
@@ -183,6 +183,10 @@ public class WebSocketPosition {
                 // 暂停游戏
                 else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_STOP) {
                     returnMessage = gameService.getStop(String.valueOf(roomId));
+                }
+                // 结束游戏
+                else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_OVER) {
+                    returnMessage = gameService.getOver(String.valueOf(roomId), nickname);
                 }
 
                 returnMessageMap.put("message", returnMessage);

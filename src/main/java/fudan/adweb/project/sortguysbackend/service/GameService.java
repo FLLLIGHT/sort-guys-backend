@@ -1,5 +1,6 @@
 package fudan.adweb.project.sortguysbackend.service;
 
+import com.alibaba.fastjson.JSON;
 import fudan.adweb.project.sortguysbackend.constant.GameConstant;
 import fudan.adweb.project.sortguysbackend.entity.Garbage;
 import fudan.adweb.project.sortguysbackend.entity.game.GarbageInfo;
@@ -8,6 +9,7 @@ import fudan.adweb.project.sortguysbackend.mapper.GarbageMapper;
 import fudan.adweb.project.sortguysbackend.util.RedisUtil;
 import org.springframework.aop.target.LazyInitTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.PlainDocument;
@@ -115,6 +117,25 @@ public class GameService {
     public String getStop(String roomId){
         redisUtil.hset(roomId, "status", GameConstant.ROOM_STOPPING);
         return "暂停成功";
+    }
+
+    // 游戏结束，删除游戏相关信息，将游戏记录写入MySQL
+    public String getOver(String roomId, String username){
+        // 删除游戏相关信息 或 归零
+        String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
+        Map<Object, Object> garbageMap = redisUtil.hmget(garbageMapKey);
+        for (Map.Entry<Object, Object> entry : garbageMap.entrySet()){
+            redisUtil.hdel(garbageMapKey, (String) entry.getKey());
+        }
+
+        String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");
+        Set<ZSetOperations.TypedTuple<Object>> rangeWithScores = redisUtil.zReverseRangeWithScore(scoreZSetKey, 0, 4);
+
+        // 更新房间/用户状态
+        redisUtil.hset(roomId, "status", GameConstant.ROOM_WAITING);
+        updateAllPlayerStatus(roomId, GameConstant.PLAYER_NOT_READY);
+
+        return JSON.toJSONString(rangeWithScores);
     }
 
     public List<GarbageInfo> getAllGarbageInfo(String roomId){

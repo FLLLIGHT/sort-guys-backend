@@ -3,6 +3,7 @@ package fudan.adweb.project.sortguysbackend.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -555,5 +556,17 @@ public final class RedisUtil {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    public Double zScore(String key, String username){
+        return redisTemplate.opsForZSet().score(key, username);
+    }
+
+    public Set<Object> zReverseRange(String key, long start, long end){
+        return redisTemplate.opsForZSet().reverseRange(key, start, end);
+    }
+
+    public Set<ZSetOperations.TypedTuple<Object>> zReverseRangeWithScore(String key, long start, long end){
+        return redisTemplate.opsForZSet().reverseRangeWithScores(key, start, end);
     }
 }
