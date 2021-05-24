@@ -1,6 +1,7 @@
 package fudan.adweb.project.sortguysbackend.security;
 
 import fudan.adweb.project.sortguysbackend.config.authorities.AccessDenied;
+import fudan.adweb.project.sortguysbackend.config.authorities.MyLogoutSuccessHandler;
 import fudan.adweb.project.sortguysbackend.config.authorities.NotLoginEntryPoint;
 import fudan.adweb.project.sortguysbackend.security.jwt.JwtRequestFilter;
 import fudan.adweb.project.sortguysbackend.service.JwtUserDetailsService;
@@ -25,14 +26,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtRequestFilter jwtRequestFilter;
     private final NotLoginEntryPoint notLoginEntryPoint;
     private final AccessDenied accessDenied;
+    private final MyLogoutSuccessHandler logoutSuccessHandler;
 
     @Autowired
     public SecurityConfig(JwtUserDetailsService jwtUserDetailsService, JwtRequestFilter jwtRequestFilter,
-                          NotLoginEntryPoint notLoginEntryPoint, AccessDenied accessDenied) {
+                          NotLoginEntryPoint notLoginEntryPoint, AccessDenied accessDenied,
+                          MyLogoutSuccessHandler logoutSuccessHandler) {
         this.jwtUserDetailsService = jwtUserDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
         this.notLoginEntryPoint = notLoginEntryPoint;
         this.accessDenied = accessDenied;
+        this.logoutSuccessHandler = logoutSuccessHandler;
     }
 
     @Override
@@ -49,7 +53,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/login").permitAll()
                     .antMatchers("/user").permitAll()
                     .antMatchers("/sortResult").hasAuthority("admin")
-                    .antMatchers("/**").hasAuthority("player");
+                    .antMatchers("/**").hasAuthority("player")
+                .and().logout()
+                .logoutUrl("/clearLoginInfo")
+                .logoutSuccessHandler(logoutSuccessHandler)
+                .deleteCookies("JSESSIONID")
+                .permitAll();
 
         http.csrf().disable();
 

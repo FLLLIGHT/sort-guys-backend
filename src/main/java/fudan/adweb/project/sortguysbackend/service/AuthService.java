@@ -75,22 +75,20 @@ public class AuthService {
         return true;
     }
 
-    public String logout(Integer uid) {
+    public void logout(Integer uid) {
         // 找到对应的 user
         if (uid == null){
-            return "用户不存在";
+            return;
         }
         User user = userMapper.getUserByUid(uid);
         if (user == null){
-            return "用户不存在";
+            return;
         }
 
         UserLoginInfo userLoginInfo = userLoginInfoMapper.findByUid(uid);
         if (userLoginInfo != null){
             userLoginInfoMapper.deleteByUid(uid);
-            return "success";
         }
-        return "该用户没有登录";
     }
 
     public void insertLoginInfo(Integer uid, String token) {

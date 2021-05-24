@@ -1,18 +1,19 @@
 package fudan.adweb.project.sortguysbackend.controller;
 
 import fudan.adweb.project.sortguysbackend.controller.request.AuthRequest;
-import fudan.adweb.project.sortguysbackend.controller.request.LogoutRequest;
 import fudan.adweb.project.sortguysbackend.entity.User;
 import fudan.adweb.project.sortguysbackend.security.jwt.JwtTokenUtil;
 import fudan.adweb.project.sortguysbackend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,15 +66,5 @@ public class AuthController {
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         builder.header("token", token);
         return builder.body(user);
-    }
-
-    @PostMapping("/clearLoginInfo")
-    public ResponseEntity<?> logout(@RequestBody LogoutRequest request){
-        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        String msg = authService.logout(request.getUid());
-
-        Map<String, String> map = new HashMap<>();
-        map.put("message", msg);
-        return builder.body(map);
     }
 }
