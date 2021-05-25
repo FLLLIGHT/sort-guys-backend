@@ -17,15 +17,18 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
     private final GarbageSortResultService garbageSortResultService;
+    private final UserScoreService userScoreService;
 
     @Autowired
     public UserService(UserAppearanceService userAppearanceService, UserAuthorityMapper userAuthorityMapper,
-                       UserMapper userMapper, PasswordEncoder encoder, GarbageSortResultService garbageSortResultService) {
+                       UserMapper userMapper, PasswordEncoder encoder, GarbageSortResultService garbageSortResultService,
+                       UserScoreService userScoreService) {
         this.userAppearanceService = userAppearanceService;
         this.userAuthorityMapper = userAuthorityMapper;
         this.userMapper = userMapper;
         this.encoder = encoder;
         this.garbageSortResultService = garbageSortResultService;
+        this.userScoreService = userScoreService;
     }
 
     public User addUser(String username, String password) {
@@ -42,6 +45,8 @@ public class UserService {
             userAppearanceService.initAppearance(newUser.getUid());
             // 初始化垃圾图鉴 garbage sort result
             garbageSortResultService.init(newUser.getUid());
+            // 在积分表中新增
+            userScoreService.init(newUser.getUid());
             return newUser;
         }
     }

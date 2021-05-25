@@ -111,7 +111,6 @@ CREATE TABLE `user` (
   `uid` int NOT NULL AUTO_INCREMENT,
   `username` varchar(256) NOT NULL,
   `password` varchar(256) NOT NULL,
-  `score` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -122,7 +121,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Admin','$2a$10$NM7s19sWIN4LBfBWHqkIKuaAk15j4kZndX5mqtDONmdxWseECQoxW',0),(2,'Alice','$2a$10$pKMujZhdPtNDKwnY8I.RjOj1N2eGe9KiNv2a/OBSv65tGxH0TdjDe',0),(3,'Bob','$2a$10$.e6FOBKAtWygZrGdPlrJiOHfAZH/F68C4rPH714aQRo.bF.s2uylq',0),(5,'Test','$2a$10$gCbghuuAjsd.EUpIWFCNTOYgALSL4arbYpbdqkFTG2WFE4Ca4uHo2',0);
+INSERT INTO `user` VALUES (1,'Admin','$2a$10$NM7s19sWIN4LBfBWHqkIKuaAk15j4kZndX5mqtDONmdxWseECQoxW'),(2,'Alice','$2a$10$pKMujZhdPtNDKwnY8I.RjOj1N2eGe9KiNv2a/OBSv65tGxH0TdjDe'),(3,'Bob','$2a$10$.e6FOBKAtWygZrGdPlrJiOHfAZH/F68C4rPH714aQRo.bF.s2uylq'),(5,'Test','$2a$10$gCbghuuAjsd.EUpIWFCNTOYgALSL4arbYpbdqkFTG2WFE4Ca4uHo2');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -205,6 +204,31 @@ LOCK TABLES `user_login_info` WRITE;
 /*!40000 ALTER TABLE `user_login_info` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_login_info` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `user_score`
+--
+
+DROP TABLE IF EXISTS `user_score`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_score` (
+  `uid` int NOT NULL,
+  `score` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`uid`),
+  CONSTRAINT `user_score_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_score`
+--
+
+LOCK TABLES `user_score` WRITE;
+/*!40000 ALTER TABLE `user_score` DISABLE KEYS */;
+INSERT INTO `user_score` VALUES (1,0),(2,0),(3,0),(5,0);
+/*!40000 ALTER TABLE `user_score` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -215,4 +239,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-25  0:15:07
+-- Dump completed on 2021-05-25 16:31:59
