@@ -41,7 +41,7 @@ public class RoomController {
     }
 
     @GetMapping("/room/{roomId}")
-    public ResponseEntity<?> getSortResult(@PathVariable("roomId") Integer roomId){
+    public ResponseEntity<?> getRoomInfo(@PathVariable("roomId") Integer roomId){
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         RoomInfo roomInfo = roomService.getRoomInfo(String.valueOf(roomId));
         return builder.body(roomInfo);
