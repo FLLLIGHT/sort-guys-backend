@@ -20,7 +20,7 @@ public class GarbageController {
         this.garbageService = garbageService;
     }
 
-    @GetMapping("/garbage/{gid}")
+    @GetMapping("/garbageInfo/{gid}")
     public ResponseEntity<?> getGarbageByGid(@PathVariable("gid") Integer gid){
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         Garbage garbage = garbageService.getByGid(gid);
