@@ -22,4 +22,11 @@ public class MessageService {
         return positionMsgMap;
     }
 
+    public Map<String, Object> generatePacket(Integer messageType, Object data){
+        Map<String, Object> map = new HashMap<>();
+        map.put("messageType", messageType);
+        map.put("data", data);
+        return map;
+    }
+
 }
