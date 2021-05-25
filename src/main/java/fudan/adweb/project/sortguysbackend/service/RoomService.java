@@ -22,7 +22,7 @@ public class RoomService {
 
     // 创建房间（指定房间号）
     // 并发控制：防止两个用户同时创建相同roomId
-    public synchronized String createRoom(String roomId, String roomOwner){
+    public String createRoom(String roomId, String roomOwner){
         if(isExisted(roomId)){
             return "room already exists";
         }
@@ -102,5 +102,9 @@ public class RoomService {
     // 判断游戏是否已经开始，返回true表示已经开始
     public boolean checkRoomStatus(String roomId){
         return !((Integer) redisUtil.hget(roomId, "status") == GameConstant.ROOM_WAITING);
+    }
+
+    public long getAvailableRoomIdAndIncr(){
+        return redisUtil.incr("availableRoomId", 1);
     }
 }

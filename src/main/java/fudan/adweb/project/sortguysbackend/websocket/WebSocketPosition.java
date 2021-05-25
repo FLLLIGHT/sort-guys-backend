@@ -54,13 +54,17 @@ public class WebSocketPosition {
     public void onOpen(Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) throws IOException {
         System.out.println("========IN OPEN===========");
 
-        // todo: 1. 判断房间是否存在，如果房间不存在，则拒绝连接
+        // 1. 判断房间是否存在，如果房间不存在，则拒绝连接
+        if (!roomService.isExisted(String.valueOf(roomId))) {
+            session.close(new CloseReason(getCloseCode(GameConstant.ROOM_NOT_EXIST), "room not exist"));
+            return;
+        }
 
         // 2. 判断游戏是否已经开始，如果已经开始，则拒绝连接
-//        if (roomService.checkRoomStatus(String.valueOf(roomId))) {
-//            session.close(new CloseReason(getCloseCode(GameConstant.GAME_ALREADY_START), "already start"));
-//            return;
-//        }
+        if (roomService.checkRoomStatus(String.valueOf(roomId))) {
+            session.close(new CloseReason(getCloseCode(GameConstant.GAME_ALREADY_START), "already start"));
+            return;
+        }
 
         // 存入用户session
         this.session = session;
