@@ -55,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/models/**").permitAll()
                     .antMatchers("/garbage/**").permitAll()
                     .antMatchers("/sortResult").hasAuthority("admin")
-                    .antMatchers("/**").hasAuthority("player")
+//                    .antMatchers("/**").hasAuthority("player")
                 .and().logout()
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(logoutSuccessHandler)
