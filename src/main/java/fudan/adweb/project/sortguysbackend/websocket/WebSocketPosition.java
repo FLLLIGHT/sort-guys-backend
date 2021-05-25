@@ -182,6 +182,10 @@ public class WebSocketPosition {
                 if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_GET_READY) {
                     returnMessage = gameService.getReady(String.valueOf(roomId), nickname);
                 }
+                // 取消准备
+                else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_GET_UNREADY) {
+                    returnMessage = gameService.getUnready(String.valueOf(roomId), nickname);
+                }
                 // 开始游戏（房主）
                 else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_START) {
                     returnMessage = gameService.getStart(String.valueOf(roomId), nickname);

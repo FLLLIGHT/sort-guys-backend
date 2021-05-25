@@ -30,6 +30,7 @@ public class GameService {
         this.garbageMapper = garbageMapper;
     }
 
+    // 更新用户在房间内的位置信息
     public void updatePosition(String roomId, String username, Double x, Double y, Double z){
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         PlayerInfo playerInfo = (PlayerInfo) redisUtil.hget(userMapKey, username);
@@ -39,6 +40,7 @@ public class GameService {
         redisUtil.hset(userMapKey, username, playerInfo);
     }
 
+    // 更新用户的准备状态（1：未准备  2：准备  3：游戏中）
     public void updatePlayerStatus(String roomId, String username, int status){
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         PlayerInfo playerInfo = (PlayerInfo) redisUtil.hget(userMapKey, username);
@@ -46,6 +48,7 @@ public class GameService {
         redisUtil.hset(userMapKey, username, playerInfo);
     }
 
+    // 统一更新所有用户的准备状态（1：未准备  2：准备  3：游戏中）
     public void updateAllPlayerStatus(String roomId, int status){
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         Map<Object, Object> userMap = redisUtil.hmget(userMapKey);
@@ -56,11 +59,16 @@ public class GameService {
         }
     }
 
+    // 准备
     public String getReady(String roomId, String username){
-        // todo: 判断用户是不是已经准备好了
-
         updatePlayerStatus(roomId, username, GameConstant.PLAYER_READY);
         return "准备成功";
+    }
+
+    // 取消准备
+    public String getUnready(String roomId, String username){
+        updatePlayerStatus(roomId, username, GameConstant.PLAYER_NOT_READY);
+        return "取消准备成功";
     }
 
     public String getStart(String roomId, String username){
