@@ -2,14 +2,12 @@ package fudan.adweb.project.sortguysbackend.service;
 
 import fudan.adweb.project.sortguysbackend.constant.GameConstant;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
+import fudan.adweb.project.sortguysbackend.entity.game.RoomInfo;
 import fudan.adweb.project.sortguysbackend.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class RoomService {
@@ -43,9 +41,11 @@ public class RoomService {
 
         redisUtil.hmset(roomId, map);
 
-
         // 创建房间的用户集合，并将房主放入
         addPlayerIntoRoom(true, roomId, roomOwner);
+
+        // 加入总的房间
+        redisUtil.sSet("existedRoomId", roomId);
 
         return roomId;
     }
@@ -106,5 +106,42 @@ public class RoomService {
 
     public long getAvailableRoomIdAndIncr(){
         return redisUtil.incr("availableRoomId", 1);
+    }
+
+    public List<RoomInfo> getAllRoomInfo(){
+        Set<Object> existedRoomIds = redisUtil.sGet("existedRoomId");
+        List<RoomInfo> roomInfos = new LinkedList<>();
+        for (Object existedRoomId : existedRoomIds){
+            roomInfos.add(getRoomInfo((String) existedRoomId));
+        }
+        return roomInfos;
+    }
+
+    public RoomInfo getRoomInfo(String roomId){
+        // 若不存在，则直接返回
+        if (!isExisted(roomId)) {
+            return null;
+        }
+
+        // 获取房间信息
+        RoomInfo roomInfo = new RoomInfo();
+        roomInfo.setStatus((Integer) redisUtil.hget(roomId, "status"));
+        roomInfo.setRoomOwner((String) redisUtil.hget(roomId, "roomOwner"));
+        roomInfo.setPlayerInfos(getAllPlayerInfo(roomId));
+
+        return roomInfo;
+    }
+
+    public Set<PlayerInfo> getAllPlayerInfo(String roomId){
+        String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
+        return castFromObjectToPlayerInfo(Objects.requireNonNull(redisUtil.hmget(userMapKey)));
+    }
+
+    private Set<PlayerInfo> castFromObjectToPlayerInfo(Map<Object, Object> userMap){
+        Set<PlayerInfo> set = new HashSet<>();
+        for (Map.Entry<Object, Object> entry : userMap.entrySet()){
+            set.add((PlayerInfo) entry.getValue());
+        }
+        return set;
     }
 }

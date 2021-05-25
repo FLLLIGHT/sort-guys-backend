@@ -29,19 +29,6 @@ public class GameService {
         this.garbageMapper = garbageMapper;
     }
 
-    public Set<PlayerInfo> getAllPlayerInfo(String roomId){
-        String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
-        return castFromObjectToPlayerInfo(Objects.requireNonNull(redisUtil.hmget(userMapKey)));
-    }
-
-    private Set<PlayerInfo> castFromObjectToPlayerInfo(Map<Object, Object> userMap){
-        Set<PlayerInfo> set = new HashSet<>();
-        for (Map.Entry<Object, Object> entry : userMap.entrySet()){
-            set.add((PlayerInfo) entry.getValue());
-        }
-        return set;
-    }
-
     public void updatePosition(String roomId, String username, Double x, Double y, Double z){
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         PlayerInfo playerInfo = (PlayerInfo) redisUtil.hget(userMapKey, username);

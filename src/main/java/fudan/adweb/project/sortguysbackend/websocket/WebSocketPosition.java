@@ -101,7 +101,7 @@ public class WebSocketPosition {
             this.session.getBasicRemote().sendText(new Gson().toJson(message));
         }
 
-        Set<PlayerInfo> playerInfos = gameService.getAllPlayerInfo(String.valueOf(roomId));
+        Set<PlayerInfo> playerInfos = roomService.getAllPlayerInfo(String.valueOf(roomId));
         Map<String, PositionMsg> positionMap = messageService.fromAllPlayerInfo2PositionMsg(playerInfos);
         synchronized (this.session){
             this.session.getBasicRemote().sendText(asJsonString(positionMap));
