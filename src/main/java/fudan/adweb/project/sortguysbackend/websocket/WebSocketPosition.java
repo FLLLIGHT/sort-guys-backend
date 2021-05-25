@@ -3,18 +3,17 @@ package fudan.adweb.project.sortguysbackend.websocket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import fudan.adweb.project.sortguysbackend.constant.GameConstant;
+import fudan.adweb.project.sortguysbackend.entity.ChatMsg;
 import fudan.adweb.project.sortguysbackend.entity.GameControlMsg;
 import fudan.adweb.project.sortguysbackend.entity.GarbageControlMsg;
 import fudan.adweb.project.sortguysbackend.entity.PositionMsg;
 import fudan.adweb.project.sortguysbackend.entity.game.GarbageInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.ScoreInfo;
+import fudan.adweb.project.sortguysbackend.service.EmojiService;
 import fudan.adweb.project.sortguysbackend.service.GameService;
 import fudan.adweb.project.sortguysbackend.service.MessageService;
 import fudan.adweb.project.sortguysbackend.service.RoomService;
-import fudan.adweb.project.sortguysbackend.util.RedisUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -34,7 +33,8 @@ import static javax.websocket.CloseReason.CloseCodes.getCloseCode;
 @ServerEndpoint(value = "/websocketPosition/{roomId}/{nickname}")
 @Component
 public class WebSocketPosition {
-
+    // session id 和 session 的对应关系，在单聊时用到
+    private static Map<String, Session> sessionMap = new HashMap<>();
     private static Map<String, String> usersMap = new HashMap<>();
 
     // 记录房间内的用户（及session）
@@ -47,6 +47,7 @@ public class WebSocketPosition {
     public static RoomService roomService;
     public static GameService gameService;
     public static MessageService messageService;
+    public static EmojiService emojiService;
 
     /**
      * on connect
@@ -69,6 +70,7 @@ public class WebSocketPosition {
 
         // 存入用户session
         this.session = session;
+        sessionMap.put(session.getId(), session);
         usersMap.put(nickname, session.getId());
 
         // 房主在创建房间时就已经加入内存了，不需要重复加入
@@ -137,6 +139,8 @@ public class WebSocketPosition {
                 break;
             }
         }
+
+        sessionMap.remove(this.session.getId());
 
         roomService.leaveRoom(String.valueOf(roomId), username);
 
@@ -247,6 +251,59 @@ public class WebSocketPosition {
                 e.printStackTrace();
             }
         }
+        // 群聊类型
+        else if (messageType == GameConstant.CHAT_CONTROL_MESSAGE){
+            ChatMsg chatMsg;
+            try {
+                chatMsg = objectMapper.readValue(message, ChatMsg.class);
+                // 单聊
+                if (chatMsg.getType() == GameConstant.CHAT_WITH_USER) {
+                    Session fromSession = sessionMap.get(session.getId());
+                    String toUsername = chatMsg.getToUser();
+                    String toId = usersMap.get(toUsername);
+                    Session toSession = sessionMap.get(toId);
+
+                    if (toSession != null) {
+                        Map<String, Object> m = new HashMap<>();
+                        m.put("type", GameConstant.CHAT_WITH_USER);
+                        m.put("toUser", toUsername);
+                        m.put("fromUser", nickname);
+                        m.put("msg", getMessage(chatMsg.getContentType(), chatMsg.getMsg()));
+                        m.put("contentType", chatMsg.getContentType());
+                        sendMessage(fromSession, new Gson().toJson(m));
+                        sendMessage(toSession, new Gson().toJson(m));
+                    } else {
+                        Map<String, String> map = new HashMap<>();
+                        map.put("msg", "发送失败，对方不在线");
+                        fromSession.getAsyncRemote().sendText(new Gson().toJson(map));
+                    }
+                }
+                // 群聊
+                else if (chatMsg.getType() == GameConstant.CHAT_WITH_GROUP) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("type", GameConstant.CHAT_WITH_GROUP);
+                    map.put("fromUser", nickname);
+                    map.put("msg", getMessage(chatMsg.getContentType(), chatMsg.getMsg()));
+                    map.put("contentType", chatMsg.getContentType());
+                    multicastMessage(map, roomId);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // 根据消息类型生成 msg
+    private String getMessage(int contentType, String msg) {
+        if (contentType == GameConstant.CHAT_CONTENT_TEXT){
+            return msg;
+        }
+        else if (contentType == GameConstant.CHAT_CONTENT_EMOJI){
+            // 找到 msg 对应的 url
+            return emojiService.findUrlByName(msg);
+        }
+        return "";
     }
 
 
@@ -306,6 +363,13 @@ public class WebSocketPosition {
             return jsonContent;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    // 单播
+    private void sendMessage(Session session, String message) throws IOException {
+        synchronized (session) {
+            session.getBasicRemote().sendText(message);
         }
     }
 

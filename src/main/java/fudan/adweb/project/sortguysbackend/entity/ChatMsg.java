@@ -1,10 +1,11 @@
 package fudan.adweb.project.sortguysbackend.entity;
 
 public class ChatMsg {
-    private int type; //0：群聊，1：单聊.
+    private int type; // 1：群聊 2：单聊
     private String fromUser;
     private String toUser;
     private String msg;
+    private int contentType; // 1：文字 2：表情包
 
     public int getType() {
         return type;
@@ -38,4 +39,11 @@ public class ChatMsg {
         this.msg = msg;
     }
 
+    public int getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(int contentType) {
+        this.contentType = contentType;
+    }
 }

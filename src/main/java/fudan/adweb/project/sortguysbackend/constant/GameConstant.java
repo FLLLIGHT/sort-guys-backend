@@ -8,10 +8,11 @@ public final class GameConstant {
     public static final int GAME_ALREADY_START = 4000;
     public static final int ROOM_NOT_EXIST = 4001;
 
-    // websocket传递message类型 - 1：位置信息  2：游戏控制信息（准备/开始/暂停）  3：垃圾操纵动作
+    // websocket传递message类型 - 1：位置信息  2：游戏控制信息（准备/开始/暂停）  3：垃圾操纵动作 4：聊天
     public static final int POSITION_MESSAGE = 1;
     public static final int GAME_CONTROL_MESSAGE = 2;
     public static final int GARBAGE_CONTROL_MESSAGE = 3;
+    public static final int CHAT_CONTROL_MESSAGE = 4;
 
     // 用户游戏状态 - 1：未准备  2：准备  3：游戏中
     public static final int PLAYER_NOT_READY = 1;
@@ -51,5 +52,13 @@ public final class GameConstant {
     public static final int GARBAGE_CONTROL_GET = 1;
     public static final int GARBAGE_CONTROL_THROW_GROUND = 2;
     public static final int GARBAGE_CONTROL_THROW_BIN = 3;
+
+    // 聊天形式 1：群聊 2：单聊
+    public static final int CHAT_WITH_GROUP = 1;
+    public static final int CHAT_WITH_USER = 2;
+
+    // 发送的内容 - 1：文字 2：表情包
+    public static final int CHAT_CONTENT_TEXT = 1;
+    public static final int CHAT_CONTENT_EMOJI = 2;
 
 }

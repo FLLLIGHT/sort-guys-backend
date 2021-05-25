@@ -1,5 +1,6 @@
 package fudan.adweb.project.sortguysbackend.config;
 
+import fudan.adweb.project.sortguysbackend.service.EmojiService;
 import fudan.adweb.project.sortguysbackend.service.GameService;
 import fudan.adweb.project.sortguysbackend.service.MessageService;
 import fudan.adweb.project.sortguysbackend.service.RoomService;
@@ -32,6 +33,11 @@ public class WebSocketConfig {
     @Autowired
     public void setMessageService(MessageService messageService) {
         WebSocketPosition.messageService = messageService;
+    }
+
+    @Autowired
+    public void setEmojiService(EmojiService emojiService){
+        WebSocketPosition.emojiService = emojiService;
     }
 
     @Bean
