@@ -73,7 +73,7 @@ public class WebSocketPosition {
 
         // 房主在创建房间时就已经加入内存了，不需要重复加入
         if(!roomService.checkRoomOwner(String.valueOf(roomId), nickname)){
-            roomService.addPlayerIntoRoom(false, String.valueOf(roomId), nickname);
+            roomService.enterRoom(false, String.valueOf(roomId), nickname);
         }
 
         Set<WebSocketPosition> room = roomMap.get(roomId);

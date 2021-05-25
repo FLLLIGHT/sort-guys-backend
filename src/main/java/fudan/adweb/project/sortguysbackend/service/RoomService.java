@@ -42,7 +42,7 @@ public class RoomService {
         redisUtil.hmset(roomId, map);
 
         // 创建房间的用户集合，并将房主放入
-        addPlayerIntoRoom(true, roomId, roomOwner);
+        enterRoom(true, roomId, roomOwner);
 
         // 加入总的房间
         redisUtil.sSet("existedRoomId", roomId);
@@ -55,7 +55,8 @@ public class RoomService {
         return redisUtil.hget(roomId, "roomOwner") != null;
     }
 
-    public void addPlayerIntoRoom(boolean isRoomOwner, String roomId, String username){
+    // 用户进入房间
+    public void enterRoom(boolean isRoomOwner, String roomId, String username){
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         PlayerInfo playerInfo = new PlayerInfo();
         playerInfo.setRoomOwner(isRoomOwner);
@@ -70,6 +71,7 @@ public class RoomService {
         redisUtil.zSet(scoreZSetKey, username, 0);
     }
 
+    // 用户离开房间
     public void leaveRoom(String roomId, String username){
         // todo: 判断游戏是否已经开始？
 
@@ -104,10 +106,12 @@ public class RoomService {
         return !((Integer) redisUtil.hget(roomId, "status") == GameConstant.ROOM_WAITING);
     }
 
+    // 获取全局可用房间号，并+1
     public long getAvailableRoomIdAndIncr(){
         return redisUtil.incr("availableRoomId", 1);
     }
 
+    // 获取所有房间的信息
     public List<RoomInfo> getAllRoomInfo(){
         Set<Object> existedRoomIds = redisUtil.sGet("existedRoomId");
         List<RoomInfo> roomInfos = new LinkedList<>();
@@ -117,6 +121,7 @@ public class RoomService {
         return roomInfos;
     }
 
+    // 获取指定房间的信息
     public RoomInfo getRoomInfo(String roomId){
         // 若不存在，则直接返回
         if (!isExisted(roomId)) {
@@ -132,6 +137,7 @@ public class RoomService {
         return roomInfo;
     }
 
+    // 获取房间内所有玩家信息
     public Set<PlayerInfo> getAllPlayerInfo(String roomId){
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         return castFromObjectToPlayerInfo(Objects.requireNonNull(redisUtil.hmget(userMapKey)));
