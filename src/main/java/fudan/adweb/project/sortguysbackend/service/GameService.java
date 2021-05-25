@@ -5,6 +5,7 @@ import fudan.adweb.project.sortguysbackend.constant.GameConstant;
 import fudan.adweb.project.sortguysbackend.entity.Garbage;
 import fudan.adweb.project.sortguysbackend.entity.game.GarbageInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
+import fudan.adweb.project.sortguysbackend.entity.game.ScoreInfo;
 import fudan.adweb.project.sortguysbackend.mapper.GarbageMapper;
 import fudan.adweb.project.sortguysbackend.util.RedisUtil;
 import org.springframework.aop.target.LazyInitTargetSource;
@@ -29,6 +30,7 @@ public class GameService {
         this.garbageMapper = garbageMapper;
     }
 
+    // 更新用户在房间内的位置信息
     public void updatePosition(String roomId, String username, Double x, Double y, Double z){
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         PlayerInfo playerInfo = (PlayerInfo) redisUtil.hget(userMapKey, username);
@@ -38,6 +40,7 @@ public class GameService {
         redisUtil.hset(userMapKey, username, playerInfo);
     }
 
+    // 更新用户的准备状态（1：未准备  2：准备  3：游戏中）
     public void updatePlayerStatus(String roomId, String username, int status){
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         PlayerInfo playerInfo = (PlayerInfo) redisUtil.hget(userMapKey, username);
@@ -45,6 +48,7 @@ public class GameService {
         redisUtil.hset(userMapKey, username, playerInfo);
     }
 
+    // 统一更新所有用户的准备状态（1：未准备  2：准备  3：游戏中）
     public void updateAllPlayerStatus(String roomId, int status){
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         Map<Object, Object> userMap = redisUtil.hmget(userMapKey);
@@ -55,13 +59,19 @@ public class GameService {
         }
     }
 
+    // 准备
     public String getReady(String roomId, String username){
-        // todo: 判断用户是不是已经准备好了
-
         updatePlayerStatus(roomId, username, GameConstant.PLAYER_READY);
         return "准备成功";
     }
 
+    // 取消准备
+    public String getUnready(String roomId, String username){
+        updatePlayerStatus(roomId, username, GameConstant.PLAYER_NOT_READY);
+        return "取消准备成功";
+    }
+
+    // 开始游戏
     public String getStart(String roomId, String username){
         // 检查是否是房主
         if (!roomService.checkRoomOwner(roomId, username)) {
@@ -83,17 +93,7 @@ public class GameService {
         String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
         List<Garbage> garbageList = garbageMapper.findRandom5();
         for (Garbage garbage : garbageList) {
-            String garbageId = UUID.randomUUID().toString().replaceAll("-","");
-            GarbageInfo garbageInfo = new GarbageInfo();
-            garbageInfo.setGarbageId(garbageId);
-            garbageInfo.setScore(1);
-            // todo：生成在随机位置
-            garbageInfo.setX(0d);
-            garbageInfo.setY(30d);
-            garbageInfo.setZ(0d);
-            garbageInfo.setGarbageName(garbage.getName());
-            garbageInfo.setType(GameConstant.GARBAGE_TYPE_MAP.get(garbage.getType()));
-            redisUtil.hset(garbageMapKey, garbageId, garbageInfo);
+            generateGarbageInRoom(garbage, garbageMapKey);
         }
 
         // todo: 将用户位置归到中心/随机点
@@ -101,13 +101,51 @@ public class GameService {
         return "游戏开始！";
     }
 
+    // 在房间内随机生成垃圾（添加到redis）——内部方法
+    private GarbageInfo generateGarbageInRoom(Garbage garbage, String garbageMapKey){
+        String garbageId = UUID.randomUUID().toString().replaceAll("-","");
+        GarbageInfo garbageInfo = new GarbageInfo();
+        garbageInfo.setGarbageId(garbageId);
+        garbageInfo.setScore(1);
+        // todo：生成在随机位置
+        garbageInfo.setX(0d);
+        garbageInfo.setY(30d);
+        garbageInfo.setZ(0d);
+        garbageInfo.setGarbageName(garbage.getName());
+        garbageInfo.setType(GameConstant.GARBAGE_TYPE_MAP.get(garbage.getType()));
+        redisUtil.hset(garbageMapKey, garbageId, garbageInfo);
+        return garbageInfo;
+    }
+
+    // 在房间内随机生成垃圾（添加到redis）——对外暴露
+    public GarbageInfo generateGarbageInRoom(String roomId){
+        String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
+        Garbage garbage = garbageMapper.findRandom1();
+        return generateGarbageInRoom(garbage, roomId);
+    }
+
+    // 暂停游戏
     public String getStop(String roomId){
         redisUtil.hset(roomId, "status", GameConstant.ROOM_STOPPING);
         return "暂停成功";
     }
 
+    // 获取排行榜
+    public List<ScoreInfo> getScoreList(String roomId){
+        String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");
+        Set<ZSetOperations.TypedTuple<Object>> rangeWithScores = redisUtil.zReverseRangeWithScore(scoreZSetKey, 0, 4);
+
+        Iterator<ZSetOperations.TypedTuple<Object>> iterator = rangeWithScores.iterator();
+        List<ScoreInfo> list = new LinkedList<>();
+        while(iterator.hasNext()){
+            ZSetOperations.TypedTuple<Object> next = iterator.next();
+            list.add(new ScoreInfo((String) next.getValue(), next.getScore()));
+        }
+        return list;
+    }
+
     // 游戏结束，删除游戏相关信息，将游戏记录写入MySQL
-    public String getOver(String roomId, String username){
+    public List<ScoreInfo> getOver(String roomId, String username){
         // 删除游戏相关信息 或 归零
         String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
         Map<Object, Object> garbageMap = redisUtil.hmget(garbageMapKey);
@@ -115,16 +153,16 @@ public class GameService {
             redisUtil.hdel(garbageMapKey, (String) entry.getKey());
         }
 
-        String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");
-        Set<ZSetOperations.TypedTuple<Object>> rangeWithScores = redisUtil.zReverseRangeWithScore(scoreZSetKey, 0, 4);
+        List<ScoreInfo> list = getScoreList(roomId);
 
         // 更新房间/用户状态
         redisUtil.hset(roomId, "status", GameConstant.ROOM_WAITING);
         updateAllPlayerStatus(roomId, GameConstant.PLAYER_NOT_READY);
 
-        return JSON.toJSONString(rangeWithScores);
+        return list;
     }
 
+    // 获取房间内所有垃圾信息
     public List<GarbageInfo> getAllGarbageInfo(String roomId){
         String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
         return castFromObjectToGarbageInfo(Objects.requireNonNull(redisUtil.hmget(garbageMapKey)));
@@ -138,14 +176,17 @@ public class GameService {
         return list;
     }
 
-    public void pickUpGarbage(String roomId, String username, String garbageId){
+    // 拾取垃圾
+    public GarbageInfo pickUpGarbage(String roomId, String username, String garbageId){
         String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
         GarbageInfo garbageInfo = (GarbageInfo) redisUtil.hget(garbageMapKey, garbageId);
         garbageInfo.setUsername(username);
         redisUtil.hset(garbageMapKey, garbageId, garbageInfo);
+        return garbageInfo;
     }
 
-    public void throwGarbage(String roomId, String username, String garbageId, int garbageBinType){
+    // 扔垃圾
+    public GarbageInfo throwGarbage(String roomId, String username, String garbageId, int garbageBinType){
         // 判断垃圾扔的是否正确
         String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
         GarbageInfo garbageInfo = (GarbageInfo) redisUtil.hget(garbageMapKey, garbageId);
@@ -160,9 +201,12 @@ public class GameService {
             redisUtil.zIncr(scoreZSetKey, username, garbageInfo.getScore());
         }
 
-        // 添加拾取记录（到MySQL）
+        // todo: 添加拾取记录（到MySQL）
+
+        return garbageInfo;
     }
 
+    // 验证垃圾分类是否正确
     private boolean checkGarbageType(GarbageInfo garbageInfo, int garbageBinType){
         return garbageInfo.getType() == garbageBinType;
     }

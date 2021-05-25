@@ -8,6 +8,7 @@ import fudan.adweb.project.sortguysbackend.entity.GarbageControlMsg;
 import fudan.adweb.project.sortguysbackend.entity.PositionMsg;
 import fudan.adweb.project.sortguysbackend.entity.game.GarbageInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
+import fudan.adweb.project.sortguysbackend.entity.game.ScoreInfo;
 import fudan.adweb.project.sortguysbackend.service.GameService;
 import fudan.adweb.project.sortguysbackend.service.MessageService;
 import fudan.adweb.project.sortguysbackend.service.RoomService;
@@ -70,11 +71,9 @@ public class WebSocketPosition {
         this.session = session;
         usersMap.put(nickname, session.getId());
 
-        // 若房间不存在，则创建新房间；若房间存在，则将用户放入房间（并发？）
-        if(!roomService.isExisted(String.valueOf(roomId))){
-            roomService.createRoom(String.valueOf(roomId), nickname);
-        }else{
-            roomService.addPlayerIntoRoom(false, String.valueOf(roomId), nickname);
+        // 房主在创建房间时就已经加入内存了，不需要重复加入
+        if(!roomService.checkRoomOwner(String.valueOf(roomId), nickname)){
+            roomService.enterRoom(false, String.valueOf(roomId), nickname);
         }
 
         Set<WebSocketPosition> room = roomMap.get(roomId);
@@ -117,6 +116,11 @@ public class WebSocketPosition {
      */
     @OnClose
     public void onClose(Session session, CloseReason closeReason, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) throws IOException {
+        // 房间不存在
+        if(closeReason.getCloseCode().getCode() == GameConstant.ROOM_NOT_EXIST){
+            return;
+        }
+
         // 游戏已经开始
         if(closeReason.getCloseCode().getCode() == GameConstant.GAME_ALREADY_START){
             return;
@@ -178,9 +182,22 @@ public class WebSocketPosition {
                 if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_GET_READY) {
                     returnMessage = gameService.getReady(String.valueOf(roomId), nickname);
                 }
+                // 取消准备
+                else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_GET_UNREADY) {
+                    returnMessage = gameService.getUnready(String.valueOf(roomId), nickname);
+                }
                 // 开始游戏（房主）
                 else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_START) {
                     returnMessage = gameService.getStart(String.valueOf(roomId), nickname);
+                    if (!returnMessage.equals("游戏开始！")){
+                        returnMessageMap.put("message", returnMessage);
+                        returnMessageMap.put("username", nickname);
+                        synchronized (this.session){
+                            this.session.getBasicRemote().sendText(asJsonString(returnMessageMap));
+                        }
+                        return;
+                    }
+                    System.out.println("开始！");
                     List<GarbageInfo> garbageInfos = gameService.getAllGarbageInfo(String.valueOf(roomId));
                     multicastGarbage(garbageInfos, roomId);
                 }
@@ -190,10 +207,12 @@ public class WebSocketPosition {
                 }
                 // 结束游戏
                 else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_OVER) {
-                    returnMessage = gameService.getOver(String.valueOf(roomId), nickname);
+                    List<ScoreInfo> scoreInfoList = gameService.getOver(String.valueOf(roomId), nickname);
+                    multicastScoreList(scoreInfoList, roomId);
                 }
 
                 returnMessageMap.put("message", returnMessage);
+                returnMessageMap.put("username", nickname);
                 multicastMessage(returnMessageMap, roomId);
 
             } catch (IOException e) {
@@ -205,19 +224,25 @@ public class WebSocketPosition {
             GarbageControlMsg garbageControlMsg;
             try {
                 garbageControlMsg = objectMapper.readValue(message, GarbageControlMsg.class);
+                Map<String,Object> returnMessageMap = new HashMap<>();
+                GarbageInfo oldGarbageInfo = null;
                 // 捡垃圾
                 if (garbageControlMsg.getAction() == GameConstant.GARBAGE_CONTROL_GET) {
-                    gameService.pickUpGarbage(String.valueOf(roomId), nickname, garbageControlMsg.getGarbageId());
+                    oldGarbageInfo = gameService.pickUpGarbage(String.valueOf(roomId), nickname, garbageControlMsg.getGarbageId());
                 }
                 // 扔垃圾（到地上）
                 else if (garbageControlMsg.getAction() == GameConstant.GARBAGE_CONTROL_THROW_GROUND) {
                     // 等同于大地捡起了垃圾^^
-                    gameService.pickUpGarbage(String.valueOf(roomId), "", garbageControlMsg.getGarbageId());
+                    oldGarbageInfo = gameService.pickUpGarbage(String.valueOf(roomId), "", garbageControlMsg.getGarbageId());
                 }
                 // 扔垃圾（到垃圾桶）
                 else if (garbageControlMsg.getAction() == GameConstant.GARBAGE_CONTROL_THROW_BIN) {
-                    gameService.throwGarbage(String.valueOf(roomId), nickname, garbageControlMsg.getGarbageId(), garbageControlMsg.getGarbageBinType());
+                    oldGarbageInfo = gameService.throwGarbage(String.valueOf(roomId), nickname, garbageControlMsg.getGarbageId(), garbageControlMsg.getGarbageBinType());
+                    GarbageInfo newGarbageInfo = gameService.generateGarbageInRoom(String.valueOf(roomId));
+                    returnMessageMap.put("newGarbageInfo", newGarbageInfo);
                 }
+                returnMessageMap.put("oldGarbageInfo", oldGarbageInfo);
+                multicastMessage(returnMessageMap, roomId);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -256,6 +281,16 @@ public class WebSocketPosition {
         for (WebSocketPosition item : room) {
             synchronized (item.session){
                 item.session.getBasicRemote().sendText(asJsonString(garbageInfos));
+            }
+        }
+    }
+
+    // 组播排行榜
+    private void multicastScoreList(List<ScoreInfo> scoreInfoList, Integer roomId) throws IOException {
+        Set<WebSocketPosition> room = roomMap.get(roomId);
+        for (WebSocketPosition item : room) {
+            synchronized (item.session){
+                item.session.getBasicRemote().sendText(asJsonString(scoreInfoList));
             }
         }
     }
