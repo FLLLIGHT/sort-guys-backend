@@ -40,6 +40,31 @@ INSERT INTO `authority` VALUES (1,'player'),(2,'admin');
 UNLOCK TABLES;
 
 --
+-- Table structure for table `emoji`
+--
+
+DROP TABLE IF EXISTS `emoji`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `emoji` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(256) NOT NULL,
+  `url` varchar(256) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `emoji`
+--
+
+LOCK TABLES `emoji` WRITE;
+/*!40000 ALTER TABLE `emoji` DISABLE KEYS */;
+INSERT INTO `emoji` VALUES (1,'1','/emoji/1.jpg');
+/*!40000 ALTER TABLE `emoji` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `garbage`
 --
 
@@ -239,4 +264,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-25 16:31:59
+-- Dump completed on 2021-05-25 23:46:31
