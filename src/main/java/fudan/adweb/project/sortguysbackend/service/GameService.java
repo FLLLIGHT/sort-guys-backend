@@ -224,8 +224,12 @@ public class GameService {
     }
 
     // 获取当前用户的剩余提示数并更新（如果可以更新的话）
-    public String updateHints(String roomId, String username, int updateValue) {
-        if (!roomService.isExisted(roomId)) return "room not found";
+    public Map<String, String> updateHints(String roomId, String username, int updateValue) {
+        Map<String, String> map = new HashMap<>();
+        if (!roomService.isExisted(roomId)) {
+            map.put("message", "room not found");
+            return map;
+        }
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         Map<Object, Object> userMap = redisUtil.hmget(userMapKey);
         for (Map.Entry<Object, Object> entry : userMap.entrySet()){
@@ -234,11 +238,15 @@ public class GameService {
                 int hintsNumLeft = playerInfo.getHintsNumLeft();
                 if (hintsNumLeft >= 1){
                     playerInfo.setHintsNumLeft(hintsNumLeft + updateValue);
-                    return "success";
+                    map.put("message", "success");
+                    map.put("hintsNumLeft", String.valueOf(playerInfo.getHintsNumLeft()));
                 }
-
+                else {
+                    map.put("message", "hint num not enough");
+                } return map;
             }
         }
-        return "hint num not enough";
+        map.put("message", "user and room not match");
+        return map;
     }
 }

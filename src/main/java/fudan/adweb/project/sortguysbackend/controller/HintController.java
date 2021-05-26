@@ -43,14 +43,13 @@ public class HintController {
             return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
         }
 
-        String msg = hintService.checkHintNum(request.getRoomId(), user.getUsername());
-        if (msg.equals("success")){
-            return builder.body(garbage.getType());
+        Map<String, String> map = hintService.checkHintNum(request.getRoomId(), user.getUsername());
+        if (map.get("message").equals("success")){
+            map.put("type", garbage.getType());
+            return builder.body(map);
         }
 
         // 失败的情况
-        Map<String, String> map = new HashMap<>();
-        map.put("message", msg);
         return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
     }
 }
