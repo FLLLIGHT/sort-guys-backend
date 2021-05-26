@@ -238,6 +238,7 @@ public class GameService {
                 int hintsNumLeft = playerInfo.getHintsNumLeft();
                 if (hintsNumLeft >= 1){
                     playerInfo.setHintsNumLeft(hintsNumLeft + updateValue);
+                    redisUtil.hset(userMapKey, playerInfo.getUsername(), playerInfo);
                     map.put("message", "success");
                     map.put("hintsNumLeft", String.valueOf(playerInfo.getHintsNumLeft()));
                 }
