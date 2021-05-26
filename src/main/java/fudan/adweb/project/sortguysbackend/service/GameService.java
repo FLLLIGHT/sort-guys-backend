@@ -158,8 +158,20 @@ public class GameService {
         // 更新房间/用户状态
         redisUtil.hset(roomId, "status", GameConstant.ROOM_WAITING);
         updateAllPlayerStatus(roomId, GameConstant.PLAYER_NOT_READY);
+        updateAllPlayerHintsNum(roomId, (int) redisUtil.hget(roomId, "hintsNum"));
 
         return list;
+    }
+
+    // 更新房间中所有玩家的提示次数信息
+    private void updateAllPlayerHintsNum(String roomId, int hintsNum) {
+        String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
+        Map<Object, Object> userMap = redisUtil.hmget(userMapKey);
+        for (Map.Entry<Object, Object> entry : userMap.entrySet()){
+            PlayerInfo playerInfo = (PlayerInfo) entry.getValue();
+            playerInfo.setHintsNumLeft(hintsNum);
+            redisUtil.hset(userMapKey, playerInfo.getUsername(), playerInfo);
+        }
     }
 
     // 获取房间内所有垃圾信息
@@ -211,4 +223,22 @@ public class GameService {
         return garbageInfo.getType() == garbageBinType;
     }
 
+    // 获取当前用户的剩余提示数并更新（如果可以更新的话）
+    public String updateHints(String roomId, String username, int updateValue) {
+        if (!roomService.isExisted(roomId)) return "room not found";
+        String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
+        Map<Object, Object> userMap = redisUtil.hmget(userMapKey);
+        for (Map.Entry<Object, Object> entry : userMap.entrySet()){
+            PlayerInfo playerInfo = (PlayerInfo) entry.getValue();
+            if (playerInfo.getUsername().equals(username)){
+                int hintsNumLeft = playerInfo.getHintsNumLeft();
+                if (hintsNumLeft >= 1){
+                    playerInfo.setHintsNumLeft(hintsNumLeft + updateValue);
+                    return "success";
+                }
+
+            }
+        }
+        return "hint num not enough";
+    }
 }

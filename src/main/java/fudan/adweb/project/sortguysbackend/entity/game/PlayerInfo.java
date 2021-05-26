@@ -10,6 +10,9 @@ public class PlayerInfo {
     private int status;
     private boolean isRoomOwner;
 
+    // 剩余可用的提示次数
+    private int hintsNumLeft;
+
     public boolean isRoomOwner() {
         return isRoomOwner;
     }
@@ -56,5 +59,13 @@ public class PlayerInfo {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public int getHintsNumLeft() {
+        return hintsNumLeft;
+    }
+
+    public void setHintsNumLeft(int hintsNumLeft) {
+        this.hintsNumLeft = hintsNumLeft;
     }
 }

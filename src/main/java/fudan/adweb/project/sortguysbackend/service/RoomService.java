@@ -20,7 +20,7 @@ public class RoomService {
 
     // 创建房间（指定房间号）
     // 并发控制：防止两个用户同时创建相同roomId
-    public String createRoom(String roomId, String roomOwner){
+    public String createRoom(String roomId, String roomOwner, int hintsNum){
         if(isExisted(roomId)){
             return "room already exists";
         }
@@ -29,6 +29,7 @@ public class RoomService {
         Map<String, Object> map = new HashMap<>();
         map.put("roomOwner", roomOwner);
         map.put("status", GameConstant.ROOM_WAITING);
+        map.put("hintsNum", hintsNum);
 
         String userMapKey = UUID.randomUUID().toString().replaceAll("-","");
         map.put("userMapKey", userMapKey);
@@ -58,6 +59,8 @@ public class RoomService {
     // 用户进入房间
     public void enterRoom(boolean isRoomOwner, String roomId, String username){
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
+        // 获取该房间的 hints 最大值
+        int hintsNum = (int)redisUtil.hget(roomId, "hintsNum");
         PlayerInfo playerInfo = new PlayerInfo();
         playerInfo.setRoomOwner(isRoomOwner);
         playerInfo.setStatus(0);
@@ -65,6 +68,7 @@ public class RoomService {
         playerInfo.setX(0d);
         playerInfo.setY(30d);
         playerInfo.setZ(0d);
+        playerInfo.setHintsNumLeft(hintsNum);
         redisUtil.hset(userMapKey, username, playerInfo);
 
         String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");

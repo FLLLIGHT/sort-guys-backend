@@ -251,7 +251,7 @@ public class WebSocketPosition {
                 e.printStackTrace();
             }
         }
-        // 群聊类型
+        // 聊天
         else if (messageType == GameConstant.CHAT_CONTROL_MESSAGE){
             ChatMsg chatMsg;
             try {

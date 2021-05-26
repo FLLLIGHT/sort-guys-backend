@@ -6,6 +6,7 @@ public class RoomInfo {
     private String roomOwner;
     private int status;
     private Set<PlayerInfo> playerInfos;
+    private int hintsNum;
 
     public String getRoomOwner() {
         return roomOwner;
@@ -29,5 +30,13 @@ public class RoomInfo {
 
     public void setPlayerInfos(Set<PlayerInfo> playerInfos) {
         this.playerInfos = playerInfos;
+    }
+
+    public int getHintsNum() {
+        return hintsNum;
+    }
+
+    public void setHintsNum(int hintsNum) {
+        this.hintsNum = hintsNum;
     }
 }

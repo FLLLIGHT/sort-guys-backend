@@ -34,8 +34,13 @@ public class RoomController {
             map.put("message", "不能为其他用户创建房间");
             return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
         }
+        if (request.getHintsNum() <= 0){
+            Map<String, String> map = new HashMap<>();
+            map.put("message", "提示次数不能为负");
+            return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
+        }
         long newRoomId = roomService.getAvailableRoomIdAndIncr();
-        String roomId = roomService.createRoom(String.valueOf(newRoomId), request.getUsername());
+        String roomId = roomService.createRoom(String.valueOf(newRoomId), request.getUsername(), request.getHintsNum());
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         Map<String, String> map = new HashMap<>();
         map.put("roomId", roomId);
