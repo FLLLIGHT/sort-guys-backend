@@ -1,5 +1,6 @@
 package fudan.adweb.project.sortguysbackend.controller;
 
+import fudan.adweb.project.sortguysbackend.constant.GameConstant;
 import fudan.adweb.project.sortguysbackend.controller.request.HintRequest;
 import fudan.adweb.project.sortguysbackend.entity.Garbage;
 import fudan.adweb.project.sortguysbackend.entity.User;
@@ -52,4 +53,31 @@ public class HintController {
         // 失败的情况
         return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
     }
+
+    @GetMapping("/hint/{roomId}/{uid}")
+    public ResponseEntity<?> getHintsNumLeft(@PathVariable("roomId") Integer roomId, @PathVariable("uid") Integer uid){
+        // 是不是本人
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!user.getUid().equals(uid)){
+            Map<String, String> map = new HashMap<>();
+            map.put("message", "uid 错误");
+            return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
+        }
+
+        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        int hintsNumLeft = hintService.getHintsNumLeft(roomId, user.getUsername());
+        if (hintsNumLeft == GameConstant.HINT_ROOM_NOT_EXIST){
+            Map<String, String> map = new HashMap<>();
+            map.put("message", "room not found");
+            return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
+        }
+        if (hintsNumLeft == GameConstant.HINT_ROOM_USER_NOT_MATCH){
+            Map<String, String> map = new HashMap<>();
+            map.put("message", "user and room not match");
+            return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
+        }
+
+        return builder.body(hintsNumLeft);
+    }
+
 }

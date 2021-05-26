@@ -61,4 +61,8 @@ public final class GameConstant {
     public static final int CHAT_CONTENT_TEXT = 1;
     public static final int CHAT_CONTENT_EMOJI = 2;
 
+    // 查询提示次数 - 1：房间号不存在 2：房间号与用户号不匹配
+    public static final int HINT_ROOM_NOT_EXIST = -100;
+    public static final int HINT_ROOM_USER_NOT_MATCH = -101;
+
 }

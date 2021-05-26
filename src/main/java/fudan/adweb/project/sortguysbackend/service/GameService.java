@@ -250,4 +250,19 @@ public class GameService {
         map.put("message", "user and room not match");
         return map;
     }
+
+    public int getHintsNumLeft(String roomId, String username) {
+        if (!roomService.isExisted(roomId)) {
+            return GameConstant.HINT_ROOM_NOT_EXIST;
+        }
+        String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
+        Map<Object, Object> userMap = redisUtil.hmget(userMapKey);
+        for (Map.Entry<Object, Object> entry : userMap.entrySet()){
+            PlayerInfo playerInfo = (PlayerInfo) entry.getValue();
+            if (playerInfo.getUsername().equals(username)){
+                return playerInfo.getHintsNumLeft();
+            }
+        }
+        return GameConstant.HINT_ROOM_USER_NOT_MATCH;
+    }
 }

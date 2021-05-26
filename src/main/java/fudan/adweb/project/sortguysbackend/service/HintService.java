@@ -18,4 +18,8 @@ public class HintService {
         // 是否有足够的提示数
         return gameService.updateHints(String.valueOf(roomId), username, -1);
     }
+
+    public int getHintsNumLeft(Integer roomId, String username) {
+        return gameService.getHintsNumLeft(String.valueOf(roomId), username);
+    }
 }

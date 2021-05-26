@@ -137,6 +137,7 @@ public class RoomService {
         roomInfo.setStatus((Integer) redisUtil.hget(roomId, "status"));
         roomInfo.setRoomOwner((String) redisUtil.hget(roomId, "roomOwner"));
         roomInfo.setPlayerInfos(getAllPlayerInfo(roomId));
+        roomInfo.setHintsNum((int) redisUtil.hget(roomId, "hintsNum"));
 
         return roomInfo;
     }
