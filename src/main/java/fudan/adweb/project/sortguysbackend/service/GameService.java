@@ -3,6 +3,8 @@ package fudan.adweb.project.sortguysbackend.service;
 import com.alibaba.fastjson.JSON;
 import fudan.adweb.project.sortguysbackend.constant.GameConstant;
 import fudan.adweb.project.sortguysbackend.entity.Garbage;
+import fudan.adweb.project.sortguysbackend.entity.Scene;
+import fudan.adweb.project.sortguysbackend.entity.game.GarbageBinInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.GarbageInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.ScoreInfo;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.text.PlainDocument;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class GameService {
@@ -93,7 +96,7 @@ public class GameService {
         String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
         List<Garbage> garbageList = garbageMapper.findRandom5();
         for (Garbage garbage : garbageList) {
-            generateGarbageInRoom(garbage, garbageMapKey);
+            generateGarbageInRoom(garbage, garbageMapKey, getSceneInfo(roomId));
         }
 
         // todo: 将用户位置归到中心/随机点
@@ -102,15 +105,19 @@ public class GameService {
     }
 
     // 在房间内随机生成垃圾（添加到redis）——内部方法
-    private GarbageInfo generateGarbageInRoom(Garbage garbage, String garbageMapKey){
+    private GarbageInfo generateGarbageInRoom(Garbage garbage, String garbageMapKey, Scene scene){
         String garbageId = UUID.randomUUID().toString().replaceAll("-","");
         GarbageInfo garbageInfo = new GarbageInfo();
         garbageInfo.setGarbageId(garbageId);
         garbageInfo.setScore(1);
-        // todo：生成在随机位置
-        garbageInfo.setX(0d);
+
+        // 生成在随机位置
+        int randomX = ThreadLocalRandom.current().nextInt(scene.getMinX(), scene.getMaxX() + 1);
+        int randomZ = ThreadLocalRandom.current().nextInt(scene.getMinZ(), scene.getMaxZ() + 1);
+        garbageInfo.setX((double) randomX);
         garbageInfo.setY(30d);
-        garbageInfo.setZ(0d);
+        garbageInfo.setZ((double) randomZ);
+
         garbageInfo.setGarbageName(garbage.getName());
         garbageInfo.setType(GameConstant.GARBAGE_TYPE_MAP.get(garbage.getType()));
         redisUtil.hset(garbageMapKey, garbageId, garbageInfo);
@@ -121,7 +128,8 @@ public class GameService {
     public GarbageInfo generateGarbageInRoom(String roomId){
         String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
         Garbage garbage = garbageMapper.findRandom1();
-        return generateGarbageInRoom(garbage, roomId);
+//        return generateGarbageInRoom(garbage, roomId);
+        return generateGarbageInRoom(garbage, garbageMapKey, getSceneInfo(roomId));
     }
 
     // 暂停游戏
@@ -264,5 +272,35 @@ public class GameService {
             }
         }
         return GameConstant.HINT_ROOM_USER_NOT_MATCH;
+    }
+
+    private Scene getSceneInfo(String roomId){
+        return (Scene) redisUtil.hget(roomId, "scene");
+    }
+
+    public List<GarbageBinInfo> generateGarbageBins(String roomId){
+        Scene scene = getSceneInfo(roomId);
+        int maxX = scene.getMaxX();
+        int minX = scene.getMinX();
+        int maxZ = scene.getMaxZ();
+        int minZ = scene.getMinZ();
+        // 取整
+        int midX = minX + (maxX - minX) / 2;
+        int midZ = minZ + (maxZ - minZ) / 2;
+
+        // 生成在随机位置
+        List<GarbageBinInfo> garbageBinInfos = new ArrayList<>();
+        garbageBinInfos.add(generateGarbageBin(minX, midX-2, minZ, midZ-2));
+        garbageBinInfos.add(generateGarbageBin(minX, midX-2, midZ, maxZ-2));
+        garbageBinInfos.add(generateGarbageBin(midX, maxX-2, minZ, midZ-2));
+        garbageBinInfos.add(generateGarbageBin(midX, maxX-2, midZ, maxZ-2));
+        return garbageBinInfos;
+    }
+
+    public GarbageBinInfo generateGarbageBin(int minX, int maxX, int minZ, int maxZ){
+        // 生成在随机位置
+        int randomX = ThreadLocalRandom.current().nextInt(minX, maxX + 1);
+        int randomZ = ThreadLocalRandom.current().nextInt(minZ, maxZ + 1);
+        return new GarbageBinInfo((double)randomX, (double)randomX+2, (double)randomZ, (double)randomZ+2);
     }
 }

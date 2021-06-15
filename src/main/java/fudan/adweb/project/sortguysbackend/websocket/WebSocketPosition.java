@@ -7,6 +7,7 @@ import fudan.adweb.project.sortguysbackend.entity.ChatMsg;
 import fudan.adweb.project.sortguysbackend.entity.GameControlMsg;
 import fudan.adweb.project.sortguysbackend.entity.GarbageControlMsg;
 import fudan.adweb.project.sortguysbackend.entity.PositionMsg;
+import fudan.adweb.project.sortguysbackend.entity.game.GarbageBinInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.GarbageInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.ScoreInfo;
@@ -204,6 +205,8 @@ public class WebSocketPosition {
                     System.out.println("开始！");
                     List<GarbageInfo> garbageInfos = gameService.getAllGarbageInfo(String.valueOf(roomId));
                     multicastGarbage(garbageInfos, roomId);
+                    List<GarbageBinInfo> garbageBinInfos = gameService.generateGarbageBins(String.valueOf(roomId));
+                    multicastGarbageBin(garbageBinInfos, roomId);
                 }
                 // 暂停游戏
                 else if (gameControlMsg.getType() == GameConstant.GAME_CONTROL_STOP) {
@@ -338,6 +341,16 @@ public class WebSocketPosition {
         for (WebSocketPosition item : room) {
             synchronized (item.session){
                 item.session.getBasicRemote().sendText(asJsonString(garbageInfos));
+            }
+        }
+    }
+
+    // 组播所有垃圾桶
+    private void multicastGarbageBin(List<GarbageBinInfo> garbageBinInfos, Integer roomId) throws IOException {
+        Set<WebSocketPosition> room = roomMap.get(roomId);
+        for (WebSocketPosition item : room) {
+            synchronized (item.session){
+                item.session.getBasicRemote().sendText(asJsonString(garbageBinInfos));
             }
         }
     }
