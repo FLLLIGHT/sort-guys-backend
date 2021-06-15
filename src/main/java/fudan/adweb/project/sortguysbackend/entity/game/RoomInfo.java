@@ -7,6 +7,15 @@ public class RoomInfo {
     private int status;
     private Set<PlayerInfo> playerInfos;
     private int hintsNum;
+    private String roomId;
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
 
     public String getRoomOwner() {
         return roomOwner;

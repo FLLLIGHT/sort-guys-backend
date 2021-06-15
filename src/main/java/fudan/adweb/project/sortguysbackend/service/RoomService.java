@@ -30,6 +30,7 @@ public class RoomService {
         map.put("roomOwner", roomOwner);
         map.put("status", GameConstant.ROOM_WAITING);
         map.put("hintsNum", hintsNum);
+        map.put("roomId", roomId);
 
         String userMapKey = UUID.randomUUID().toString().replaceAll("-","");
         map.put("userMapKey", userMapKey);
@@ -138,6 +139,7 @@ public class RoomService {
         roomInfo.setRoomOwner((String) redisUtil.hget(roomId, "roomOwner"));
         roomInfo.setPlayerInfos(getAllPlayerInfo(roomId));
         roomInfo.setHintsNum((int) redisUtil.hget(roomId, "hintsNum"));
+        roomInfo.setRoomId(roomId);
 
         return roomInfo;
     }
