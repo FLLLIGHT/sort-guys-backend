@@ -35,7 +35,7 @@ public class UserAppearanceService {
         if (userMapper.getUserByUid(uid) == null){
             return "用户不存在";
         }
-        userAppearance.setUrl("au_" + userAppearance.getColor());
+        userAppearance.setUrl("models/au_" + userAppearance.getColor());
         userAppearanceMapper.update(userAppearance);
         return "success";
     }
