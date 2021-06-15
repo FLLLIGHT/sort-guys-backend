@@ -75,6 +75,7 @@ public class RoomService {
         playerInfo.setY(30d);
         playerInfo.setZ(0d);
         playerInfo.setHintsNumLeft(hintsNum);
+        playerInfo.setCorrectNum(0);
         redisUtil.hset(userMapKey, username, playerInfo);
 
         String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");

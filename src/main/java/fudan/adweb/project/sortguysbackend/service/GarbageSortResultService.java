@@ -91,4 +91,21 @@ public class GarbageSortResultService {
 
         return result;
     }
+
+    // 判断是否是疑难垃圾
+    public boolean isGarbagePuzzle(Integer gid){
+        int correctNum = 0;
+        int totalNum = 0;
+        // 遍历所有的 sort result
+        List<GarbageSortResult> sortResults = garbageSortResultMapper.findByGid(gid);
+        for(GarbageSortResult result: sortResults){
+            correctNum += result.getCorrectTimes();
+            totalNum += result.getTimes();
+        }
+
+        if (totalNum == 0) return false;
+        if (correctNum == 0) return true;
+
+        return (double) correctNum / (double) totalNum <= 0.5;
+    }
 }

@@ -16,4 +16,7 @@ public interface GarbageSortResultMapper {
 
     @Select("select * from garbage_sort_result where uid = #{uid}")
     List<GarbageSortResult> findByUid(Integer uid);
+
+    @Select("select * from garbage_sort_result where gid = #{gid}")
+    List<GarbageSortResult> findByGid(Integer gid);
 }

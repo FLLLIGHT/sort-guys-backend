@@ -12,6 +12,8 @@ public class PlayerInfo {
 
     // 剩余可用的提示次数
     private int hintsNumLeft;
+    // 当前连续分对的垃圾数
+    private int correctNum;
 
     public boolean isRoomOwner() {
         return isRoomOwner;
@@ -67,5 +69,13 @@ public class PlayerInfo {
 
     public void setHintsNumLeft(int hintsNumLeft) {
         this.hintsNumLeft = hintsNumLeft;
+    }
+
+    public int getCorrectNum() {
+        return correctNum;
+    }
+
+    public void setCorrectNum(int correctNum) {
+        this.correctNum = correctNum;
     }
 }

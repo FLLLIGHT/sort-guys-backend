@@ -25,12 +25,15 @@ public class GameService {
     private final RedisUtil redisUtil;
     private final RoomService roomService;
     private final GarbageMapper garbageMapper;
+    private final GarbageSortResultService garbageSortResultService;
 
     @Autowired
-    public GameService(RedisUtil redisUtil, RoomService roomService, GarbageMapper garbageMapper){
+    public GameService(RedisUtil redisUtil, RoomService roomService, GarbageMapper garbageMapper,
+                       GarbageSortResultService garbageSortResultService){
         this.redisUtil = redisUtil;
         this.roomService = roomService;
         this.garbageMapper = garbageMapper;
+        this.garbageSortResultService = garbageSortResultService;
     }
 
     // 更新用户在房间内的位置信息
@@ -109,7 +112,8 @@ public class GameService {
         String garbageId = UUID.randomUUID().toString().replaceAll("-","");
         GarbageInfo garbageInfo = new GarbageInfo();
         garbageInfo.setGarbageId(garbageId);
-        garbageInfo.setScore(1);
+        // 是否是疑难垃圾
+        garbageInfo.setScore(GameConstant.GARBAGE_BASIC_SCORE + (garbageSortResultService.isGarbagePuzzle(garbage.getGid()) ? GameConstant.GARBAGE_PUZZLE_SCORE : 0));
 
         // 生成在随机位置
         int randomX = ThreadLocalRandom.current().nextInt(scene.getMinX(), scene.getMaxX() + 1);
@@ -212,13 +216,21 @@ public class GameService {
         GarbageInfo garbageInfo = (GarbageInfo) redisUtil.hget(garbageMapKey, garbageId);
         boolean correct = checkGarbageType(garbageInfo, garbageBinType);
 
+        int correctNum = updateCorrectNum(roomId, username, correct);
+
         // 从redis中移除垃圾
         redisUtil.hdel(garbageMapKey, garbageId);
 
         // 若扔对了，添加分数
         if(correct){
+            int bonusScore = 0;
+            if (correctNum > 1){
+                correctNum = Math.min(5, correctNum);
+                // 连续分对垃圾的附加分
+                bonusScore = GameConstant.GARBAGE_BONUS_CORRECT_SCORE.get(correctNum - 1);
+            }
             String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");
-            redisUtil.zIncr(scoreZSetKey, username, garbageInfo.getScore());
+            redisUtil.zIncr(scoreZSetKey, username, garbageInfo.getScore() + bonusScore);
         }
 
         // todo: 添加拾取记录（到MySQL）
@@ -252,7 +264,8 @@ public class GameService {
                 }
                 else {
                     map.put("message", "hint num not enough");
-                } return map;
+                }
+                return map;
             }
         }
         map.put("message", "user and room not match");
@@ -272,6 +285,25 @@ public class GameService {
             }
         }
         return GameConstant.HINT_ROOM_USER_NOT_MATCH;
+    }
+
+    // 更新用户的连续正确数，并返回更新后的正确数，如出现问题则返回 -1
+    private int updateCorrectNum(String roomId, String username, boolean correct) {
+        if (!roomService.isExisted(roomId)) {
+            return -1;
+        }
+        String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
+        Map<Object, Object> userMap = redisUtil.hmget(userMapKey);
+        for (Map.Entry<Object, Object> entry : userMap.entrySet()){
+            PlayerInfo playerInfo = (PlayerInfo) entry.getValue();
+            if (playerInfo.getUsername().equals(username)){
+                int oldCorrectNum = playerInfo.getCorrectNum();
+                playerInfo.setCorrectNum(correct ? oldCorrectNum + 1 : 0);
+                redisUtil.hset(userMapKey, username, playerInfo);
+                return playerInfo.getCorrectNum();
+            }
+        }
+        return -1;
     }
 
     private Scene getSceneInfo(String roomId){

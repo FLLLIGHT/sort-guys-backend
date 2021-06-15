@@ -1,6 +1,8 @@
 package fudan.adweb.project.sortguysbackend.constant;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class GameConstant {
@@ -64,5 +66,19 @@ public final class GameConstant {
     // 查询提示次数 - 1：房间号不存在 2：房间号与用户号不匹配
     public static final int HINT_ROOM_NOT_EXIST = -100;
     public static final int HINT_ROOM_USER_NOT_MATCH = -101;
+
+    // 垃圾分值 - 基础分 3 分，疑难额外 +2 分
+    public static final int GARBAGE_BASIC_SCORE = 3;
+    public static final int GARBAGE_PUZZLE_SCORE = 2;
+
+    // 连续分对垃圾的情况
+    public static final List<Integer> GARBAGE_BONUS_CORRECT_SCORE = new ArrayList<Integer>(){
+        {
+            add(1);
+            add(2);
+            add(3);
+            add(5);
+        }
+    };
 
 }
