@@ -171,8 +171,19 @@ public class GameService {
         redisUtil.hset(roomId, "status", GameConstant.ROOM_WAITING);
         updateAllPlayerStatus(roomId, GameConstant.PLAYER_NOT_READY);
         updateAllPlayerHintsNum(roomId, (int) redisUtil.hget(roomId, "hintsNum"));
+        updateAllPlayerCorrectNum(roomId, 0);
 
         return list;
+    }
+
+    private void updateAllPlayerCorrectNum(String roomId, int num) {
+        String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
+        Map<Object, Object> userMap = redisUtil.hmget(userMapKey);
+        for (Map.Entry<Object, Object> entry : userMap.entrySet()){
+            PlayerInfo playerInfo = (PlayerInfo) entry.getValue();
+            playerInfo.setCorrectNum(num);
+            redisUtil.hset(userMapKey, playerInfo.getUsername(), playerInfo);
+        }
     }
 
     // 更新房间中所有玩家的提示次数信息
