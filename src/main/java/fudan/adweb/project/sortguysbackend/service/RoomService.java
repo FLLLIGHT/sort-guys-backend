@@ -3,6 +3,7 @@ package fudan.adweb.project.sortguysbackend.service;
 import fudan.adweb.project.sortguysbackend.constant.GameConstant;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.RoomInfo;
+import fudan.adweb.project.sortguysbackend.mapper.SceneMapper;
 import fudan.adweb.project.sortguysbackend.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,15 +13,17 @@ import java.util.*;
 @Service
 public class RoomService {
     private RedisUtil redisUtil;
+    private SceneService sceneService;
 
     @Autowired
-    public RoomService(RedisUtil redisUtil){
+    public RoomService(RedisUtil redisUtil, SceneService sceneService){
+        this.sceneService = sceneService;
         this.redisUtil = redisUtil;
     }
 
     // 创建房间（指定房间号）
     // 并发控制：防止两个用户同时创建相同roomId
-    public String createRoom(String roomId, String roomOwner, int hintsNum){
+    public String createRoom(String roomId, String roomOwner, int hintsNum, int sid){
         if(isExisted(roomId)){
             return "room already exists";
         }
@@ -40,6 +43,8 @@ public class RoomService {
 
         String scoreZSetKey = UUID.randomUUID().toString().replaceAll("-","");
         map.put("scoreZSetKey", scoreZSetKey);
+
+        map.put("scene", sceneService.getSceneBySid(sid));
 
         redisUtil.hmset(roomId, map);
 

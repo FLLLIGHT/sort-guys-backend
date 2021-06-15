@@ -40,7 +40,7 @@ public class RoomController {
             return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
         }
         long newRoomId = roomService.getAvailableRoomIdAndIncr();
-        String roomId = roomService.createRoom(String.valueOf(newRoomId), request.getUsername(), request.getHintsNum());
+        String roomId = roomService.createRoom(String.valueOf(newRoomId), request.getUsername(), request.getHintsNum(), request.getSid());
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         Map<String, String> map = new HashMap<>();
         map.put("roomId", roomId);
