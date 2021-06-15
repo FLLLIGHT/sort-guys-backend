@@ -121,7 +121,7 @@ CREATE TABLE `garbage_sort_result` (
 
 LOCK TABLES `garbage_sort_result` WRITE;
 /*!40000 ALTER TABLE `garbage_sort_result` DISABLE KEYS */;
-INSERT INTO `garbage_sort_result` VALUES (1,1,0,0,NULL),(1,2,0,0,NULL),(1,3,0,0,NULL),(1,5,0,0,NULL),(2,1,0,0,NULL),(2,2,0,0,NULL),(2,3,0,0,NULL),(2,5,0,0,NULL),(3,1,0,0,NULL),(3,2,0,0,NULL),(3,3,0,0,NULL),(3,5,0,0,NULL),(4,1,0,0,NULL),(4,2,0,0,NULL),(4,3,0,0,NULL),(4,5,0,0,NULL),(5,1,0,0,NULL),(5,2,0,0,NULL),(5,3,0,0,NULL),(5,5,0,0,NULL),(6,1,0,0,NULL),(6,2,0,0,NULL),(6,3,0,0,NULL),(6,5,0,0,NULL),(7,1,0,0,NULL),(7,2,0,0,NULL),(7,3,0,0,NULL),(7,5,0,0,NULL),(8,1,0,0,NULL),(8,2,0,0,NULL),(8,3,0,0,NULL),(8,5,0,0,NULL),(9,1,0,0,NULL),(9,2,0,0,NULL),(9,3,0,0,NULL),(9,5,0,0,NULL),(10,1,0,0,NULL),(10,2,0,0,NULL),(10,3,0,0,NULL),(10,5,0,0,NULL),(11,1,0,0,NULL),(11,2,0,0,NULL),(11,3,0,0,NULL),(11,5,0,0,NULL),(12,1,0,0,NULL),(12,2,0,0,NULL),(12,3,0,0,NULL),(12,5,0,0,NULL),(13,1,0,0,NULL),(13,2,0,0,NULL),(13,3,0,0,NULL),(13,5,0,0,NULL),(14,1,0,0,NULL),(14,2,0,0,NULL),(14,3,0,0,NULL),(14,5,0,0,NULL),(15,1,0,0,NULL),(15,2,0,0,NULL),(15,3,0,0,NULL),(15,5,0,0,NULL),(16,1,0,0,NULL),(16,2,0,0,NULL),(16,3,0,0,NULL),(16,5,0,0,NULL),(17,1,0,0,NULL),(17,2,0,0,NULL),(17,3,0,0,NULL),(17,5,0,0,NULL),(18,1,0,0,NULL),(18,2,0,0,NULL),(18,3,0,0,NULL),(18,5,0,0,NULL),(19,1,0,0,NULL),(19,2,0,0,NULL),(19,3,0,0,NULL),(19,5,0,0,NULL),(20,1,0,0,NULL),(20,2,0,0,NULL),(20,3,0,0,NULL),(20,5,0,0,NULL),(21,1,0,0,NULL),(21,2,0,0,NULL),(21,3,0,0,NULL),(21,5,0,0,NULL),(22,1,0,0,NULL),(22,2,0,0,NULL),(22,3,0,0,NULL),(22,5,0,0,NULL);
+INSERT INTO `garbage_sort_result` VALUES (1,1,0,0,NULL),(1,2,0,0,NULL),(1,3,0,0,NULL),(2,1,0,0,NULL),(2,2,0,0,NULL),(2,3,0,0,NULL),(3,1,0,0,NULL),(3,2,0,0,NULL),(3,3,0,0,NULL),(4,1,0,0,NULL),(4,2,0,0,NULL),(4,3,0,0,NULL),(5,1,0,0,NULL),(5,2,0,0,NULL),(5,3,0,0,NULL),(6,1,0,0,NULL),(6,2,0,0,NULL),(6,3,0,0,NULL),(7,1,0,0,NULL),(7,2,0,0,NULL),(7,3,0,0,NULL),(8,1,0,0,NULL),(8,2,0,0,NULL),(8,3,0,0,NULL),(9,1,0,0,NULL),(9,2,0,0,NULL),(9,3,0,0,NULL),(10,1,0,0,NULL),(10,2,0,0,NULL),(10,3,0,0,NULL),(11,1,0,0,NULL),(11,2,0,0,NULL),(11,3,0,0,NULL),(12,1,0,0,NULL),(12,2,0,0,NULL),(12,3,0,0,NULL),(13,1,0,0,NULL),(13,2,0,0,NULL),(13,3,0,0,NULL),(14,1,0,0,NULL),(14,2,0,0,NULL),(14,3,0,0,NULL),(15,1,0,0,NULL),(15,2,0,0,NULL),(15,3,0,0,NULL),(16,1,0,0,NULL),(16,2,0,0,NULL),(16,3,0,0,NULL),(17,1,0,0,NULL),(17,2,0,0,NULL),(17,3,0,0,NULL),(18,1,0,0,NULL),(18,2,0,0,NULL),(18,3,0,0,NULL),(19,1,0,0,NULL),(19,2,0,0,NULL),(19,3,0,0,NULL),(20,1,0,0,NULL),(20,2,0,0,NULL),(20,3,0,0,NULL),(21,1,0,0,NULL),(21,2,0,0,NULL),(21,3,0,0,NULL),(22,1,0,0,NULL),(22,2,0,0,NULL),(22,3,0,0,NULL);
 /*!40000 ALTER TABLE `garbage_sort_result` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -137,7 +137,7 @@ CREATE TABLE `user` (
   `username` varchar(256) NOT NULL,
   `password` varchar(256) NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -146,7 +146,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Admin','$2a$10$NM7s19sWIN4LBfBWHqkIKuaAk15j4kZndX5mqtDONmdxWseECQoxW'),(2,'Alice','$2a$10$pKMujZhdPtNDKwnY8I.RjOj1N2eGe9KiNv2a/OBSv65tGxH0TdjDe'),(3,'Bob','$2a$10$.e6FOBKAtWygZrGdPlrJiOHfAZH/F68C4rPH714aQRo.bF.s2uylq'),(5,'Test','$2a$10$gCbghuuAjsd.EUpIWFCNTOYgALSL4arbYpbdqkFTG2WFE4Ca4uHo2');
+INSERT INTO `user` VALUES (1,'Admin','$2a$10$NM7s19sWIN4LBfBWHqkIKuaAk15j4kZndX5mqtDONmdxWseECQoxW'),(2,'Alice','$2a$10$pKMujZhdPtNDKwnY8I.RjOj1N2eGe9KiNv2a/OBSv65tGxH0TdjDe'),(3,'Bob','$2a$10$.e6FOBKAtWygZrGdPlrJiOHfAZH/F68C4rPH714aQRo.bF.s2uylq');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,6 +160,7 @@ DROP TABLE IF EXISTS `user_appearance`;
 CREATE TABLE `user_appearance` (
   `uid` int NOT NULL,
   `color` varchar(128) NOT NULL,
+  `url` varchar(128) NOT NULL,
   PRIMARY KEY (`uid`),
   CONSTRAINT `user_appearance_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -171,7 +172,7 @@ CREATE TABLE `user_appearance` (
 
 LOCK TABLES `user_appearance` WRITE;
 /*!40000 ALTER TABLE `user_appearance` DISABLE KEYS */;
-INSERT INTO `user_appearance` VALUES (1,'#FFFFFF'),(2,'#FFFFFF'),(3,'#FFFFFF'),(5,'#FFFFFF');
+INSERT INTO `user_appearance` VALUES (1,'blue','models/au_blue'),(2,'blue','models/au_blue'),(3,'blue','models/au_blue');
 /*!40000 ALTER TABLE `user_appearance` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -191,7 +192,7 @@ CREATE TABLE `user_authority` (
   KEY `aid` (`aid`),
   CONSTRAINT `user_authority_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`),
   CONSTRAINT `user_authority_ibfk_2` FOREIGN KEY (`aid`) REFERENCES `authority` (`aid`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -200,7 +201,7 @@ CREATE TABLE `user_authority` (
 
 LOCK TABLES `user_authority` WRITE;
 /*!40000 ALTER TABLE `user_authority` DISABLE KEYS */;
-INSERT INTO `user_authority` VALUES (1,1,1),(2,2,1),(3,1,2),(4,1,3),(6,1,5);
+INSERT INTO `user_authority` VALUES (1,1,1),(2,2,1),(3,1,2);
 /*!40000 ALTER TABLE `user_authority` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,7 +219,7 @@ CREATE TABLE `user_login_info` (
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`),
   CONSTRAINT `user_login_info_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -251,7 +252,7 @@ CREATE TABLE `user_score` (
 
 LOCK TABLES `user_score` WRITE;
 /*!40000 ALTER TABLE `user_score` DISABLE KEYS */;
-INSERT INTO `user_score` VALUES (1,0),(2,0),(3,0),(5,0);
+INSERT INTO `user_score` VALUES (1,0),(2,0),(3,0);
 /*!40000 ALTER TABLE `user_score` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -264,4 +265,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-25 23:46:31
+-- Dump completed on 2021-06-15 13:41:30

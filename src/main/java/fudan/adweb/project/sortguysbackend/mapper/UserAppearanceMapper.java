@@ -10,12 +10,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserAppearanceMapper {
 
-    @Insert("insert into user_appearance(uid, color) values(#{uid}, #{color})")
-    void insert(@Param("uid") Integer uid, @Param("color") String color);
+    @Insert("insert into user_appearance(uid, color, url) values(#{uid}, #{color}, #{url})")
+    void insert(@Param("uid") Integer uid, @Param("color") String color, @Param("url") String url);
 
     @Select("select * from user_appearance where uid = #{uid}")
     UserAppearance findByUid(Integer uid);
 
-    @Update("update user_appearance set color = #{color} where uid = #{uid}")
+    @Update("update user_appearance set color = #{color}, url = #{url} where uid = #{uid}")
     void update(UserAppearance userAppearance);
 }

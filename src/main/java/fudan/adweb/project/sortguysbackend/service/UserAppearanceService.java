@@ -19,8 +19,8 @@ public class UserAppearanceService {
     }
 
     public void initAppearance(Integer uid){
-        // 初始化为白色
-        userAppearanceMapper.insert(uid, "#FFFFFF");
+        // 初始化为蓝色对应的模型
+        userAppearanceMapper.insert(uid, "blue", "models/au_blue");
     }
 
     public UserAppearance getAppearance(Integer uid) {
@@ -35,6 +35,7 @@ public class UserAppearanceService {
         if (userMapper.getUserByUid(uid) == null){
             return "用户不存在";
         }
+        userAppearance.setUrl("au_" + userAppearance.getColor());
         userAppearanceMapper.update(userAppearance);
         return "success";
     }

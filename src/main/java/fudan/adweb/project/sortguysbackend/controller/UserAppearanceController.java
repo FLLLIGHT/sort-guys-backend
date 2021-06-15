@@ -1,5 +1,6 @@
 package fudan.adweb.project.sortguysbackend.controller;
 
+import fudan.adweb.project.sortguysbackend.constant.AppearanceConstant;
 import fudan.adweb.project.sortguysbackend.entity.User;
 import fudan.adweb.project.sortguysbackend.entity.UserAppearance;
 import fudan.adweb.project.sortguysbackend.service.UserAppearanceService;
@@ -42,6 +43,13 @@ public class UserAppearanceController {
         if (!user.getUid().equals(uid)){
             Map<String, String> map = new HashMap<>();
             map.put("message", "只能修改自己的虚拟形象");
+            return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
+        }
+
+        // 不在列表里，没有该颜色
+        if(!AppearanceConstant.COLOR_LIST.contains(userAppearance.getColor())){
+            Map<String, String> map = new HashMap<>();
+            map.put("message", "颜色信息无效");
             return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
         }
 
