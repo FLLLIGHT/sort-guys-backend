@@ -16,6 +16,15 @@ public class PlayerInfo {
     private int correctNum;
     // 用户颜色
     private String color;
+    private Double rotation;
+
+    public Double getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(Double rotation) {
+        this.rotation = rotation;
+    }
 
     public String getColor() {
         return color;

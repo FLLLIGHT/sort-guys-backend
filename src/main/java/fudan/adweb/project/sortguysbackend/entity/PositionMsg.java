@@ -9,18 +9,28 @@ public class PositionMsg {
     private int type;
 
     private String color;
+    private Double rotation;
 
     public PositionMsg(){
         //empty
     }
 
-    public PositionMsg(String username, Double x, Double y, Double z, int type, String color) {
+    public PositionMsg(String username, Double x, Double y, Double z, int type, String color, Double rotation) {
         this.username = username;
         this.x = x;
         this.y = y;
         this.z = z;
         this.type = type;
         this.color = color;
+        this.rotation = rotation;
+    }
+
+    public Double getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(Double rotation) {
+        this.rotation = rotation;
     }
 
     public String getColor() {

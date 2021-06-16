@@ -23,7 +23,7 @@ public class MessageService {
     public PositionMsg fromPlayerInfo2PositionMsg(PlayerInfo playerInfo){
         return new PositionMsg(
                 playerInfo.getUsername(), playerInfo.getX(), playerInfo.getY(),
-                playerInfo.getZ(), 1, playerInfo.getColor());
+                playerInfo.getZ(), 1, playerInfo.getColor(), playerInfo.getRotation());
     }
 
     public Map<String, Object> generatePacket(Integer messageType, Object data){

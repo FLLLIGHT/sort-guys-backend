@@ -92,6 +92,7 @@ public class RoomService {
         playerInfo.setX((double)randomX);
         playerInfo.setY(30d);
         playerInfo.setZ((double)randomZ);
+        playerInfo.setRotation(0d);
         playerInfo.setHintsNumLeft(hintsNum);
         playerInfo.setCorrectNum(0);
         redisUtil.hset(userMapKey, username, playerInfo);

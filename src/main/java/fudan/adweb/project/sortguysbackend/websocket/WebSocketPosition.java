@@ -148,7 +148,7 @@ public class WebSocketPosition {
 
         roomService.leaveRoom(String.valueOf(roomId), username);
 
-        multicastPosition(new PositionMsg(username, -1d, -1d, -1d, GameConstant.POSITION_REMOVE_MESSAGE, ""), roomId);
+        multicastPosition(new PositionMsg(username, -1d, -1d, -1d, GameConstant.POSITION_REMOVE_MESSAGE, "", 0d), roomId);
     }
 
     /**
