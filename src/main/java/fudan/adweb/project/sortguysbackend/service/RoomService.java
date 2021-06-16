@@ -1,24 +1,32 @@
 package fudan.adweb.project.sortguysbackend.service;
 
 import fudan.adweb.project.sortguysbackend.constant.GameConstant;
+import fudan.adweb.project.sortguysbackend.entity.Scene;
+import fudan.adweb.project.sortguysbackend.entity.UserAppearance;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.RoomInfo;
 import fudan.adweb.project.sortguysbackend.mapper.SceneMapper;
+import fudan.adweb.project.sortguysbackend.mapper.UserAppearanceMapper;
+import fudan.adweb.project.sortguysbackend.mapper.UserAuthorityMapper;
+import fudan.adweb.project.sortguysbackend.mapper.UserMapper;
 import fudan.adweb.project.sortguysbackend.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class RoomService {
     private RedisUtil redisUtil;
     private SceneService sceneService;
+    private UserAppearanceService userAppearanceService;
 
     @Autowired
-    public RoomService(RedisUtil redisUtil, SceneService sceneService){
+    public RoomService(RedisUtil redisUtil, SceneService sceneService, UserAppearanceService userAppearanceService){
         this.sceneService = sceneService;
         this.redisUtil = redisUtil;
+        this.userAppearanceService = userAppearanceService;
     }
 
     // 创建房间（指定房间号）
@@ -49,7 +57,8 @@ public class RoomService {
         redisUtil.hmset(roomId, map);
 
         // 创建房间的用户集合，并将房主放入
-        enterRoom(true, roomId, roomOwner);
+        // 现在放到连接时一起加入
+//        enterRoom(true, roomId, roomOwner);
 
         // 加入总的房间
         redisUtil.sSet("existedRoomId", roomId);
@@ -63,7 +72,7 @@ public class RoomService {
     }
 
     // 用户进入房间
-    public void enterRoom(boolean isRoomOwner, String roomId, String username){
+    public PlayerInfo enterRoom(boolean isRoomOwner, String roomId, String username){
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
         // 获取该房间的 hints 最大值
         int hintsNum = (int)redisUtil.hget(roomId, "hintsNum");
@@ -71,15 +80,25 @@ public class RoomService {
         playerInfo.setRoomOwner(isRoomOwner);
         playerInfo.setStatus(0);
         playerInfo.setUsername(username);
-        playerInfo.setX(0d);
+
+        // 设置用户颜色！
+        UserAppearance userAppearance = userAppearanceService.getAppearance(username);
+        playerInfo.setColor(userAppearance.getColor());
+
+        Scene scene = (Scene) redisUtil.hget(roomId, "scene");
+        // 生成在随机位置
+        int randomX = ThreadLocalRandom.current().nextInt(scene.getMinX(), scene.getMaxX());
+        int randomZ = ThreadLocalRandom.current().nextInt(scene.getMinZ(), scene.getMaxZ() + 1);
+        playerInfo.setX((double)randomX);
         playerInfo.setY(30d);
-        playerInfo.setZ(0d);
+        playerInfo.setZ((double)randomZ);
         playerInfo.setHintsNumLeft(hintsNum);
         playerInfo.setCorrectNum(0);
         redisUtil.hset(userMapKey, username, playerInfo);
 
         String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");
         redisUtil.zSet(scoreZSetKey, username, 0);
+        return playerInfo;
     }
 
     // 用户离开房间

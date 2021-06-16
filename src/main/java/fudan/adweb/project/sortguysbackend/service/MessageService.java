@@ -15,11 +15,15 @@ public class MessageService {
     public Map<String, PositionMsg> fromAllPlayerInfo2PositionMsg(Set<PlayerInfo> playerInfoSet){
         Map<String, PositionMsg> positionMsgMap = new HashMap<>();
         for(PlayerInfo playerInfo : playerInfoSet){
-            positionMsgMap.put(playerInfo.getUsername(), new PositionMsg(
-                    playerInfo.getUsername(), playerInfo.getX(), playerInfo.getY(),
-                    playerInfo.getZ(), 1));
+            positionMsgMap.put(playerInfo.getUsername(), fromPlayerInfo2PositionMsg(playerInfo));
         }
         return positionMsgMap;
+    }
+
+    public PositionMsg fromPlayerInfo2PositionMsg(PlayerInfo playerInfo){
+        return new PositionMsg(
+                playerInfo.getUsername(), playerInfo.getX(), playerInfo.getY(),
+                playerInfo.getZ(), 1, playerInfo.getColor());
     }
 
     public Map<String, Object> generatePacket(Integer messageType, Object data){

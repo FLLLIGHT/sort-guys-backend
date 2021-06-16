@@ -8,16 +8,27 @@ public class PositionMsg {
     // 一般的有内容有意义的位置信息的类型都是1，然后断开连接的消息类型是2（里面的位置信息无意义，都是-1）
     private int type;
 
+    private String color;
+
     public PositionMsg(){
         //empty
     }
 
-    public PositionMsg(String username, Double x, Double y, Double z, int type) {
+    public PositionMsg(String username, Double x, Double y, Double z, int type, String color) {
         this.username = username;
         this.x = x;
         this.y = y;
         this.z = z;
         this.type = type;
+        this.color = color;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public String getUsername() {

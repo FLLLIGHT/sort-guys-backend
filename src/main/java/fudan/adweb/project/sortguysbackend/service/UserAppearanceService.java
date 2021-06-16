@@ -28,6 +28,12 @@ public class UserAppearanceService {
         return userAppearanceMapper.findByUid(uid);
     }
 
+    public UserAppearance getAppearance(String username) {
+        if (username == null) return null;
+        Integer uid = userMapper.getUidByUsername(username);
+        return userAppearanceMapper.findByUid(uid);
+    }
+
     public String updateAppearance(Integer uid, UserAppearance userAppearance) {
         if (uid == null || userAppearance == null || !uid.equals(userAppearance.getUid())){
             return "uid 错误";

@@ -74,9 +74,12 @@ public class WebSocketPosition {
         sessionMap.put(session.getId(), session);
         usersMap.put(nickname, session.getId());
 
+        PlayerInfo newPlayerInfo = null;
         // 房主在创建房间时就已经加入内存了，不需要重复加入
         if(!roomService.checkRoomOwner(String.valueOf(roomId), nickname)){
-            roomService.enterRoom(false, String.valueOf(roomId), nickname);
+            newPlayerInfo = roomService.enterRoom(false, String.valueOf(roomId), nickname);
+        }else{
+            newPlayerInfo = roomService.enterRoom(true, String.valueOf(roomId), nickname);
         }
 
         Set<WebSocketPosition> room = roomMap.get(roomId);
@@ -110,7 +113,7 @@ public class WebSocketPosition {
         }
 
         // 给房间中的人广播新的人的信息
-        PositionMsg positionMsg = new PositionMsg(nickname, 0d, 30d, 0d, GameConstant.POSITION_CHANGE_MESSAGE);
+        PositionMsg positionMsg = messageService.fromPlayerInfo2PositionMsg(newPlayerInfo);
         multicastPosition(positionMsg, roomId);
     }
 
@@ -145,7 +148,7 @@ public class WebSocketPosition {
 
         roomService.leaveRoom(String.valueOf(roomId), username);
 
-        multicastPosition(new PositionMsg(username, -1d, -1d, -1d, GameConstant.POSITION_REMOVE_MESSAGE), roomId);
+        multicastPosition(new PositionMsg(username, -1d, -1d, -1d, GameConstant.POSITION_REMOVE_MESSAGE, ""), roomId);
     }
 
     /**

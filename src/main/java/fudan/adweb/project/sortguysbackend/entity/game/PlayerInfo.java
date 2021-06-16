@@ -14,6 +14,16 @@ public class PlayerInfo {
     private int hintsNumLeft;
     // 当前连续分对的垃圾数
     private int correctNum;
+    // 用户颜色
+    private String color;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 
     public boolean isRoomOwner() {
         return isRoomOwner;
