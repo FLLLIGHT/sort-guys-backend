@@ -78,7 +78,7 @@ public class RoomService {
         int hintsNum = (int)redisUtil.hget(roomId, "hintsNum");
         PlayerInfo playerInfo = new PlayerInfo();
         playerInfo.setRoomOwner(isRoomOwner);
-        playerInfo.setStatus(0);
+        playerInfo.setStatus(1);
         playerInfo.setUsername(username);
 
         // 设置用户颜色！
@@ -117,6 +117,10 @@ public class RoomService {
     // 判断用户是否是房主
     public boolean checkRoomOwner(String roomId, String username){
         return redisUtil.hget(roomId, "roomOwner").equals(username);
+    }
+
+    public String getRoomOwner(String roomId){
+        return (String) redisUtil.hget(roomId, "roomOwner");
     }
 
     // 判断房间内除房主外所有用户是否已经准备好了（房主随意）

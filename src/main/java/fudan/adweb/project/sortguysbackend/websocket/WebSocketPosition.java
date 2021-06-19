@@ -101,7 +101,8 @@ public class WebSocketPosition {
         System.out.println("New connection: " + nickname + ", id: " + session.getId() + ", current people:" + roomMap.get(roomId).size());
         message.put("type",0); // 0-connect success，1-message
         message.put("people",roomMap.get(roomId).size());
-        message.put("name",nickname);
+        // 房主的名字
+        message.put("name",roomService.getRoomOwner(String.valueOf(roomId)));
         message.put("aisle",session.getId());
         message.put("roomId", roomId);
 
@@ -111,9 +112,9 @@ public class WebSocketPosition {
         }
 
         Set<PlayerInfo> playerInfos = roomService.getAllPlayerInfo(String.valueOf(roomId));
-        Map<String, PositionMsg> positionMap = messageService.fromAllPlayerInfo2PositionMsg(playerInfos);
+//        Map<String, PositionMsg> positionMap = messageService.fromAllPlayerInfo2PositionMsg(playerInfos);
         synchronized (this.session){
-            this.session.getBasicRemote().sendText(asJsonString(positionMap));
+            this.session.getBasicRemote().sendText(asJsonString(playerInfos));
         }
 
         // 给房间中的人广播新的人的信息

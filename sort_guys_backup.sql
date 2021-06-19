@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： 127.0.0.1
--- 生成日期： 2021-06-19 17:38:11
+-- 生成日期： 2021-06-15 08:53:22
 -- 服务器版本： 10.1.39-MariaDB
 -- PHP 版本： 7.3.5
 
@@ -274,8 +274,8 @@ CREATE TABLE `user_appearance` (
 --
 
 INSERT INTO `user_appearance` (`uid`, `color`, `url`) VALUES
-(1, 'orange', 'models/au_blue'),
-(2, 'orange', 'models/au_blue'),
+(1, 'blue', 'models/au_blue'),
+(2, 'blue', 'models/au_blue'),
 (3, 'blue', 'models/au_blue'),
 (7, 'blue', 'models/au_blue');
 
@@ -318,7 +318,7 @@ CREATE TABLE `user_login_info` (
 --
 
 INSERT INTO `user_login_info` (`id`, `uid`, `token`) VALUES
-(43, 7, 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJDaW5keSIsImlhdCI6MTYyNDExNjc2OCwiZXhwIjoxNjI0MTM0NzY4fQ.vBi6abqZwiIk4Jl9Cj056rqd8sVAiv4xn1wKNjSIwyIAu_B0i7lL9BZl6nDlW3_TTDr128mm22wyqjwGA0VEpw');
+(43, 7, 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJDaW5keSIsImlhdCI6MTYyMzczOTg2OCwiZXhwIjoxNjIzNzU3ODY4fQ.IBqXx2jWI58aGO0J6qbFNv_A-xhKFzyZLS2Ytoc-fzKK5Jb-9i7f_dbbpqFSd5992lHFv8OWwCtq0o5dAwaR2A');
 
 -- --------------------------------------------------------
 
@@ -429,7 +429,7 @@ ALTER TABLE `emoji`
 -- 使用表AUTO_INCREMENT `garbage`
 --
 ALTER TABLE `garbage`
-  MODIFY `gid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `gid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- 使用表AUTO_INCREMENT `scene`
