@@ -1,5 +1,9 @@
 package fudan.adweb.project.sortguysbackend.websocket;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import fudan.adweb.project.sortguysbackend.constant.GameConstant;
@@ -156,10 +160,20 @@ public class WebSocketPosition {
      */
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) {
-        ObjectMapper objectMapper = new ObjectMapper();
+        // 忽略messageType字段
+        ObjectMapper objectMapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);;
 
+        Integer messageType = -1;
+        try{
+            JsonNode jsonNode = objectMapper.readTree(message);
+            JsonNode name = jsonNode.get("messageType");
+            messageType = Integer.parseInt(name.asText());
+        }catch (JsonProcessingException e){
+            e.printStackTrace();
+        }
+
+        System.out.println(message);
         // 请求类型作为url参数进行传递，保证是同一个连接
-        Integer messageType = Integer.parseInt(session.getRequestParameterMap().get("messageType").get(0));
         System.out.println(messageType);
         // 用户位置移动信息
         if (messageType == GameConstant.POSITION_MESSAGE){
