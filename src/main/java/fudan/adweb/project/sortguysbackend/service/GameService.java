@@ -254,6 +254,12 @@ public class GameService {
             }
             String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");
             redisUtil.zIncr(scoreZSetKey, username, garbageInfo.getScore() + bonusScore);
+
+            // 在回传信息中设置本次实际得分
+            garbageInfo.setScore(garbageInfo.getScore() + bonusScore);
+        } else {
+            // 若扔错，则设为0分（实际得分为0分）
+            garbageInfo.setScore(0);
         }
 
         // todo: 添加拾取记录（到MySQL）
