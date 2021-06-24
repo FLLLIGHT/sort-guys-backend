@@ -7,10 +7,7 @@ import fudan.adweb.project.sortguysbackend.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class GarbageSortResultService {
@@ -107,5 +104,20 @@ public class GarbageSortResultService {
         if (correctNum == 0) return true;
 
         return (double) correctNum / (double) totalNum <= 0.5;
+    }
+
+    public void updateFalseResult(Integer gid, Integer uid){
+        garbageSortResultMapper.updateFalseResult(gid, uid);
+    }
+
+    public void updateCorrectResult(Integer gid, Integer uid){
+        garbageSortResultMapper.updateCorrectResult(gid, uid);
+    }
+
+    public void unlock(Integer gid, Integer uid){
+        GarbageSortResult garbageSortResult = garbageSortResultMapper.findByGidAndUid(gid, uid);
+        if(garbageSortResult.getUnlockTime()==null){
+            garbageSortResultMapper.updateUnlockTime(new Date(), gid, uid);
+        }
     }
 }

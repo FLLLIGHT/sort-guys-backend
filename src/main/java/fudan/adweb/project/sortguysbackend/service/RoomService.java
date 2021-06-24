@@ -3,6 +3,7 @@ package fudan.adweb.project.sortguysbackend.service;
 import fudan.adweb.project.sortguysbackend.constant.GameConstant;
 import fudan.adweb.project.sortguysbackend.entity.Scene;
 import fudan.adweb.project.sortguysbackend.entity.UserAppearance;
+import fudan.adweb.project.sortguysbackend.entity.game.GarbageSortResultRedisInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.RoomInfo;
 import fudan.adweb.project.sortguysbackend.mapper.SceneMapper;
@@ -48,6 +49,9 @@ public class RoomService {
 
         String garbageMapKey = UUID.randomUUID().toString().replaceAll("-","");
         map.put("garbageMapKey", garbageMapKey);
+
+        List<GarbageSortResultRedisInfo> garbageSortResultInfos = new LinkedList<>();
+        map.put("garbageSortResultInfos", garbageSortResultInfos);
 
         String scoreZSetKey = UUID.randomUUID().toString().replaceAll("-","");
         map.put("scoreZSetKey", scoreZSetKey);

@@ -23,4 +23,7 @@ public interface GarbageMapper {
 
     @Select("select * from garbage order by rand() limit 5")
     List<Garbage> findRandom5();
+
+    @Select("select gid from garbage where name = #{garbageName}")
+    Integer findGidByName(String garbageName);
 }

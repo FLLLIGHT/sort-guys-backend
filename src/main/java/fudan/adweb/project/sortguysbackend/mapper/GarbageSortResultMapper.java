@@ -4,8 +4,10 @@ import fudan.adweb.project.sortguysbackend.entity.GarbageSortResult;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -19,4 +21,16 @@ public interface GarbageSortResultMapper {
 
     @Select("select * from garbage_sort_result where gid = #{gid}")
     List<GarbageSortResult> findByGid(Integer gid);
+
+    @Update("update garbage_sort_result set times = times + 1 where gid = #{gid} and uid = #{uid}")
+    void updateFalseResult(Integer gid, Integer uid);
+
+    @Update("update garbage_sort_result set times = times + 1, correctTimes = correctTimes + 1 where gid = #{gid} and uid = #{uid}")
+    void updateCorrectResult(Integer gid, Integer uid);
+
+    @Select("select * from garbage_sort_result where gid = #{gid} and uid = #{uid}")
+    GarbageSortResult findByGidAndUid(Integer gid, Integer uid);
+
+    @Update("update garbage_sort_result set unlockTime = #{unlockTime} where gid = #{gid} and uid = #{uid}")
+    void updateUnlockTime(Date unlockTime, Integer gid, Integer uid);
 }

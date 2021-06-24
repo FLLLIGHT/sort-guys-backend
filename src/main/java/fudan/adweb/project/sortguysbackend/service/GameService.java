@@ -4,11 +4,9 @@ import com.alibaba.fastjson.JSON;
 import fudan.adweb.project.sortguysbackend.constant.GameConstant;
 import fudan.adweb.project.sortguysbackend.entity.Garbage;
 import fudan.adweb.project.sortguysbackend.entity.Scene;
-import fudan.adweb.project.sortguysbackend.entity.game.GarbageBinInfo;
-import fudan.adweb.project.sortguysbackend.entity.game.GarbageInfo;
-import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
-import fudan.adweb.project.sortguysbackend.entity.game.ScoreInfo;
+import fudan.adweb.project.sortguysbackend.entity.game.*;
 import fudan.adweb.project.sortguysbackend.mapper.GarbageMapper;
+import fudan.adweb.project.sortguysbackend.mapper.UserMapper;
 import fudan.adweb.project.sortguysbackend.util.RedisUtil;
 import org.springframework.aop.target.LazyInitTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +25,18 @@ public class GameService {
     private final GarbageMapper garbageMapper;
     private final GarbageSortResultService garbageSortResultService;
     private final  UserScoreService userScoreService;
+    private final UserMapper userMapper;
 
     @Autowired
     public GameService(RedisUtil redisUtil, RoomService roomService, GarbageMapper garbageMapper,
-                       GarbageSortResultService garbageSortResultService, UserScoreService userScoreService){
+                       GarbageSortResultService garbageSortResultService, UserScoreService userScoreService,
+                        UserMapper userMapper){
         this.redisUtil = redisUtil;
         this.roomService = roomService;
         this.garbageMapper = garbageMapper;
         this.garbageSortResultService = garbageSortResultService;
         this.userScoreService = userScoreService;
+        this.userMapper = userMapper;
     }
 
     // 更新用户在房间内的位置信息
@@ -177,8 +178,27 @@ public class GameService {
 
         // TODO: 更新垃圾分类结果信息，用户总得分信息（MySQL）
         updateUserScoreToSQL(roomId);
+        updateSortResultToSQL(roomId);
 
         return list;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void updateSortResultToSQL(String roomId) {
+        List<GarbageSortResultRedisInfo> garbageSortResultInfos = (List<GarbageSortResultRedisInfo>) redisUtil.hget(roomId, "garbageSortResultInfos");
+        for (GarbageSortResultRedisInfo garbageSortResultRedisInfo : garbageSortResultInfos){
+            String username = garbageSortResultRedisInfo.getUsername();
+            String garbageName = garbageSortResultRedisInfo.getGarbageName();
+            Integer uid = userMapper.getUidByUsername(username);
+            Integer gid = garbageMapper.findGidByName(garbageName);
+            
+            garbageSortResultService.unlock(gid, uid);
+            if(garbageSortResultRedisInfo.isSortResult()){
+                garbageSortResultService.updateCorrectResult(gid, uid);
+            }else{
+                garbageSortResultService.updateFalseResult(gid, uid);
+            }
+        }
     }
 
     private void updateUserScoreToSQL(String roomId) {
@@ -233,6 +253,7 @@ public class GameService {
     }
 
     // 扔垃圾
+    @SuppressWarnings("unchecked")
     public GarbageInfo throwGarbage(String roomId, String username, String garbageId, int garbageBinType){
         // 判断垃圾扔的是否正确
         String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
@@ -262,7 +283,15 @@ public class GameService {
             garbageInfo.setScore(0);
         }
 
-        // todo: 添加拾取记录（到MySQL）
+        // 添加拾取记录到redis
+        GarbageSortResultRedisInfo garbageSortResultInfo = new GarbageSortResultRedisInfo();
+        garbageSortResultInfo.setSortResult(correct);
+        garbageSortResultInfo.setGarbageName(garbageInfo.getGarbageName());
+        garbageSortResultInfo.setUsername(username);
+
+        List<GarbageSortResultRedisInfo> garbageSortResultInfos = (List<GarbageSortResultRedisInfo>) redisUtil.hget(roomId, "garbageSortResultInfos");
+        garbageSortResultInfos.add(garbageSortResultInfo);
+        redisUtil.hset(roomId, "garbageSortResultInfos", garbageSortResultInfos);
 
         return garbageInfo;
     }
