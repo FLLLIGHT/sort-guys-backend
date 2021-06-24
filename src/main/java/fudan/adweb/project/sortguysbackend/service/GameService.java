@@ -26,14 +26,16 @@ public class GameService {
     private final RoomService roomService;
     private final GarbageMapper garbageMapper;
     private final GarbageSortResultService garbageSortResultService;
+    private final  UserScoreService userScoreService;
 
     @Autowired
     public GameService(RedisUtil redisUtil, RoomService roomService, GarbageMapper garbageMapper,
-                       GarbageSortResultService garbageSortResultService){
+                       GarbageSortResultService garbageSortResultService, UserScoreService userScoreService){
         this.redisUtil = redisUtil;
         this.roomService = roomService;
         this.garbageMapper = garbageMapper;
         this.garbageSortResultService = garbageSortResultService;
+        this.userScoreService = userScoreService;
     }
 
     // 更新用户在房间内的位置信息
@@ -173,7 +175,17 @@ public class GameService {
         updateAllPlayerHintsNum(roomId, (int) redisUtil.hget(roomId, "hintsNum"));
         updateAllPlayerCorrectNum(roomId, 0);
 
+        // TODO: 更新垃圾分类结果信息，用户总得分信息（MySQL）
+        updateUserScoreToSQL(roomId);
+
         return list;
+    }
+
+    private void updateUserScoreToSQL(String roomId) {
+        List<ScoreInfo> scoreList = getScoreList(roomId);
+        for (ScoreInfo scoreInfo: scoreList){
+            userScoreService.updateUserScore(scoreInfo.getUsername(), scoreInfo.getScore());
+        }
     }
 
     private void updateAllPlayerCorrectNum(String roomId, int num) {

@@ -29,4 +29,13 @@ public class UserScoreService {
         }
         return userScoreMapper.findScoreByUid(uid);
     }
+
+    public void updateUserScore(String username, Double score) {
+        Integer uid = userMapper.getUidByUsername(username);
+        User user = userMapper.getUserByUid(uid);
+        if (user == null){
+            return;
+        }
+        userScoreMapper.updateScoreByUid(uid, score);
+    }
 }

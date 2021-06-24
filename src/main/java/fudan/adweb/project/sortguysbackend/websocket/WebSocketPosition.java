@@ -61,6 +61,8 @@ public class WebSocketPosition {
     public void onOpen(Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) throws IOException {
         System.out.println("========IN OPEN===========");
 
+        // TODO: 加 token 在初始建立连接时进行身份认证
+
         // 1. 判断房间是否存在，如果房间不存在，则拒绝连接
         if (!roomService.isExisted(String.valueOf(roomId))) {
             session.close(new CloseReason(getCloseCode(GameConstant.ROOM_NOT_EXIST), "room not exist"));
@@ -161,6 +163,11 @@ public class WebSocketPosition {
      */
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) {
+        // 验证身份
+        if (!usersMap.get(nickname).equals(session.getId())){
+            return;
+        }
+
         // 忽略messageType字段
         ObjectMapper objectMapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);;
 
