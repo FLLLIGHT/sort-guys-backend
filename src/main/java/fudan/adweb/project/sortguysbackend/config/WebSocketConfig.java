@@ -1,5 +1,6 @@
 package fudan.adweb.project.sortguysbackend.config;
 
+import fudan.adweb.project.sortguysbackend.security.jwt.JwtTokenUtil;
 import fudan.adweb.project.sortguysbackend.service.EmojiService;
 import fudan.adweb.project.sortguysbackend.service.GameService;
 import fudan.adweb.project.sortguysbackend.service.MessageService;
@@ -39,6 +40,9 @@ public class WebSocketConfig {
     public void setEmojiService(EmojiService emojiService){
         WebSocketPosition.emojiService = emojiService;
     }
+
+    @Autowired
+    public void setJwtTokenUtil(JwtTokenUtil jwtTokenUtil){WebSocketPosition.jwtTokenUtil = jwtTokenUtil;}
 
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {

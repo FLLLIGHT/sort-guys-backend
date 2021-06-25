@@ -15,6 +15,7 @@ import fudan.adweb.project.sortguysbackend.entity.game.GarbageBinInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.GarbageInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.ScoreInfo;
+import fudan.adweb.project.sortguysbackend.security.jwt.JwtTokenUtil;
 import fudan.adweb.project.sortguysbackend.service.EmojiService;
 import fudan.adweb.project.sortguysbackend.service.GameService;
 import fudan.adweb.project.sortguysbackend.service.MessageService;
@@ -53,6 +54,7 @@ public class WebSocketPosition {
     public static GameService gameService;
     public static MessageService messageService;
     public static EmojiService emojiService;
+    public static JwtTokenUtil jwtTokenUtil;
 
     /**
      * on connect
@@ -60,8 +62,6 @@ public class WebSocketPosition {
     @OnOpen
     public void onOpen(Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) throws IOException {
         System.out.println("========IN OPEN===========");
-
-        // TODO: 加 token 在初始建立连接时进行身份认证
 
         // 1. 判断房间是否存在，如果房间不存在，则拒绝连接
         if (!roomService.isExisted(String.valueOf(roomId))) {
@@ -162,7 +162,7 @@ public class WebSocketPosition {
      * @param message message from client
      */
     @OnMessage
-    public void onMessage(String message, Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) {
+    public void onMessage(String message, Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) throws IOException {
         // 验证身份
         if (!usersMap.get(nickname).equals(session.getId())){
             return;
@@ -172,13 +172,23 @@ public class WebSocketPosition {
         ObjectMapper objectMapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);;
 
         Integer messageType = -1;
+        String token = "";
         try{
             JsonNode jsonNode = objectMapper.readTree(message);
             JsonNode name = jsonNode.get("messageType");
             messageType = Integer.parseInt(name.asText());
+            JsonNode tokenNode = jsonNode.get("token");
+            token = tokenNode.asText();
         }catch (JsonProcessingException e){
             e.printStackTrace();
         }
+
+        boolean isTokenValid = checkToken(token, nickname);
+        if (!isTokenValid){
+            session.close(new CloseReason(getCloseCode(GameConstant.ILLEGAL_TOKEN), "invalid token"));
+            return;
+        }
+
 
         System.out.println(message);
         // 请求类型作为url参数进行传递，保证是同一个连接
@@ -320,6 +330,21 @@ public class WebSocketPosition {
                 e.printStackTrace();
             }
         }
+    }
+
+    private boolean checkToken(String token, String nickname) throws IOException {
+        if (token == null || token.equals("")){session.close(new CloseReason(getCloseCode(GameConstant.GAME_ALREADY_START), "already start"));
+            return false;
+        }
+        String username = "";
+        try{
+            username = jwtTokenUtil.getUsernameFromToken(token);
+        }
+        catch (Exception e){
+            return false;
+        }
+
+        return username.equals(nickname);
     }
 
     // 根据消息类型生成 msg
