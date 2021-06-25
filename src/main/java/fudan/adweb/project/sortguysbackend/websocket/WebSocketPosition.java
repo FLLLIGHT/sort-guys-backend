@@ -74,6 +74,10 @@ public class WebSocketPosition {
 
         // 存入用户session
         this.session = session;
+        if (sessionMap.containsKey(session.getId())){
+            session.close(new CloseReason(getCloseCode(GameConstant.ALREADY_CONNECTED), "already connected"));
+            return;
+        }
         sessionMap.put(session.getId(), session);
         usersMap.put(nickname, session.getId());
 
@@ -164,11 +168,6 @@ public class WebSocketPosition {
      */
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("roomId") Integer roomId, @PathParam("nickname") String nickname) throws IOException {
-        // 验证身份
-        if (!usersMap.get(nickname).equals(session.getId())){
-            return;
-        }
-
         // 忽略messageType字段
         ObjectMapper objectMapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);;
 
@@ -334,7 +333,8 @@ public class WebSocketPosition {
     }
 
     private boolean checkToken(String token, String nickname) throws IOException {
-        if (token == null || token.equals("")){session.close(new CloseReason(getCloseCode(GameConstant.GAME_ALREADY_START), "already start"));
+        if (token == null || token.equals("")){
+            session.close(new CloseReason(getCloseCode(GameConstant.GAME_ALREADY_START), "already start"));
             return false;
         }
         String username = "";

@@ -10,6 +10,7 @@ public final class GameConstant {
     public static final int GAME_ALREADY_START = 4000;
     public static final int ROOM_NOT_EXIST = 4001;
     public static final int ILLEGAL_TOKEN = 4002;
+    public static final int ALREADY_CONNECTED = 4003;
 
     // websocket传递message类型 - 1：位置信息  2：游戏控制信息（准备/开始/暂停）  3：垃圾操纵动作 4：聊天
     public static final int POSITION_MESSAGE = 1;
