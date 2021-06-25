@@ -1,78 +1,73 @@
--- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
+-- phpMyAdmin SQL Dump
+-- version 4.8.5
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost    Database: sort_guys
--- ------------------------------------------------------
--- Server version	8.0.20
+-- 主机： 127.0.0.1
+-- 生成日期： 2021-06-25 09:23:44
+-- 服务器版本： 10.1.39-MariaDB
+-- PHP 版本： 7.3.5
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Table structure for table `authority`
+-- 数据库： `sort_guys`
 --
 
-DROP TABLE IF EXISTS `authority`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `authority`
+--
+
 CREATE TABLE `authority` (
-  `aid` int NOT NULL AUTO_INCREMENT,
-  `authority` varchar(256) NOT NULL,
-  PRIMARY KEY (`aid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `aid` int(11) NOT NULL,
+  `authority` varchar(256) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `authority`
+-- 转存表中的数据 `authority`
 --
 
-LOCK TABLES `authority` WRITE;
-/*!40000 ALTER TABLE `authority` DISABLE KEYS */;
-INSERT INTO `authority` VALUES (1,'player'),(2,'admin');
-/*!40000 ALTER TABLE `authority` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `authority` (`aid`, `authority`) VALUES
+(1, 'player'),
+(2, 'admin');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `emoji`
+-- 表的结构 `emoji`
 --
 
-DROP TABLE IF EXISTS `emoji`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `emoji` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `name` varchar(256) NOT NULL,
-  `url` varchar(256) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `url` varchar(256) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `emoji`
+-- 转存表中的数据 `emoji`
 --
 
-LOCK TABLES `emoji` WRITE;
-/*!40000 ALTER TABLE `emoji` DISABLE KEYS */;
-INSERT INTO `emoji` VALUES (1,'1','/emoji/1.jpg');
-/*!40000 ALTER TABLE `emoji` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `emoji` (`id`, `name`, `url`) VALUES
+(1, '1', '/emoji/1.jpg');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `garbage`
+-- 表的结构 `garbage`
 --
 
-DROP TABLE IF EXISTS `garbage`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `garbage` (
-  `gid` int NOT NULL AUTO_INCREMENT,
+  `gid` int(11) NOT NULL,
   `cname` varchar(256) NOT NULL,
   `type` varchar(256) NOT NULL,
   `description` varchar(1024) DEFAULT NULL,
@@ -80,223 +75,346 @@ CREATE TABLE `garbage` (
   `url` varchar(256) DEFAULT NULL,
   `name` varchar(256) NOT NULL,
   `valid` tinyint(1) NOT NULL DEFAULT '0',
-  `rate` float NOT NULL DEFAULT '1',
-  PRIMARY KEY (`gid`),
-  CONSTRAINT `garbage_chk_1` CHECK ((`type` in (_utf8mb3'干垃圾',_utf8mb3'湿垃圾',_utf8mb3'有害垃圾',_utf8mb3'可回收物')))
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `rate` float NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `garbage`
+-- 转存表中的数据 `garbage`
 --
 
-LOCK TABLES `garbage` WRITE;
-/*!40000 ALTER TABLE `garbage` DISABLE KEYS */;
-INSERT INTO `garbage` VALUES (1,'餐巾纸','干垃圾','一张普通的餐巾纸。没什么特别的，不过很常见。','2021-05-20 17:45:00','/garbage/napkin.jpg','toilet_paper',1,2),(5,'椰子壳','干垃圾','左半边还是右半边？其实都无所谓啦。','2021-05-20 17:45:00','/garbage/coconut_shell.jpg','coconut',1,0.5),(6,'口红','干垃圾','一支口红。是因为过期还是别的原因被丢掉的就不得而知了。','2021-05-20 17:45:00','/garbage/lipstick.jpg','lipstick',1,0.3),(7,'西瓜皮','湿垃圾','还好没有直接踩上去。','2021-05-20 17:45:00','/garbage/watermelon_peel.jpg','watermelon',1,0.003),(10,'未吃完的饭菜','湿垃圾','好吃?不好吃。','2021-05-20 17:45:00','/garbage/leftovers.jpg','food',1,0.04),(12,'废电池','有害垃圾','一块废旧电池。','2021-05-20 17:45:00','/garbage/battery.jpg','battery',1,0.03),(14,'水银温度计','有害垃圾','测体温用的水银温度计。','2021-05-20 17:45:00','/garbage/clinical_thermometer.jpg','thermometer',1,0.1),(18,'易拉罐','可回收物','看上去很有质感，不知道味道怎么样。','2021-05-20 17:45:00','/garbage/can.jpg','can',1,0.01),(21,'碎玻璃','可回收物','玻璃水杯的碎片。记得先包起来以免划伤哦。','2021-05-20 17:45:00','/garbage/glass.jpg','glass',1,0.4),(23,'笔记本','可回收物','比起电脑还是更习惯手写课堂笔记。','2021-06-25 11:35:08','/garbage/book.jpg','notebook',1,0.05);
-/*!40000 ALTER TABLE `garbage` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `garbage` (`gid`, `cname`, `type`, `description`, `updateTime`, `url`, `name`, `valid`, `rate`) VALUES
+(1, '餐巾纸', '干垃圾', '一张普通的餐巾纸。没什么特别的，不过很常见。', '2021-05-20 17:45:00', '/garbage/napkin.jpg', 'toilet_paper', 1, 2),
+(5, '椰子壳', '干垃圾', '左半边还是右半边？其实都无所谓啦。', '2021-05-20 17:45:00', '/garbage/coconut_shell.jpg', 'coconut', 1, 0.5),
+(6, '口红', '干垃圾', '一支口红。是因为过期还是别的原因被丢掉的就不得而知了。', '2021-05-20 17:45:00', '/garbage/lipstick.jpg', 'lipstick', 1, 0.3),
+(7, '西瓜皮', '湿垃圾', '还好没有直接踩上去。', '2021-05-20 17:45:00', '/garbage/watermelon_peel.jpg', 'watermelon', 1, 0.003),
+(10, '未吃完的饭菜', '湿垃圾', '好吃?不好吃。', '2021-05-20 17:45:00', '/garbage/leftovers.jpg', 'food', 1, 0.04),
+(12, '废电池', '有害垃圾', '一块废旧电池。', '2021-05-20 17:45:00', '/garbage/battery.jpg', 'battery', 1, 0.03),
+(14, '水银温度计', '有害垃圾', '测体温用的水银温度计。', '2021-05-20 17:45:00', '/garbage/clinical_thermometer.jpg', 'thermometer', 1, 0.1),
+(18, '易拉罐', '可回收物', '看上去很有质感，不知道味道怎么样。', '2021-05-20 17:45:00', '/garbage/can.jpg', 'can', 1, 0.01),
+(21, '碎玻璃', '可回收物', '玻璃水杯的碎片。记得先包起来以免划伤哦。', '2021-05-20 17:45:00', '/garbage/glass.jpg', 'glass', 1, 0.4),
+(23, '笔记本', '可回收物', '比起电脑还是更习惯手写课堂笔记。', '2021-06-25 11:35:08', '/garbage/book.jpg', 'notebook', 1, 0.05);
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `garbage_sort_result`
+-- 表的结构 `garbage_sort_result`
 --
 
-DROP TABLE IF EXISTS `garbage_sort_result`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `garbage_sort_result` (
-  `gid` int NOT NULL,
-  `uid` int NOT NULL,
-  `times` int NOT NULL DEFAULT '0',
-  `correctTimes` int NOT NULL DEFAULT '0',
-  `unlockTime` datetime DEFAULT NULL,
-  PRIMARY KEY (`gid`,`uid`),
-  KEY `uid` (`uid`),
-  CONSTRAINT `garbage_sort_result_ibfk_1` FOREIGN KEY (`gid`) REFERENCES `garbage` (`gid`),
-  CONSTRAINT `garbage_sort_result_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`),
-  CONSTRAINT `garbage_sort_result_chk_1` CHECK ((`correctTimes` <= `times`)),
-  CONSTRAINT `garbage_sort_result_chk_2` CHECK ((((`unlockTime` is not null) and (`times` > 0)) or ((`unlockTime` is null) and (`times` = 0))))
+  `gid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `times` int(11) NOT NULL DEFAULT '0',
+  `correctTimes` int(11) NOT NULL DEFAULT '0',
+  `unlockTime` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `garbage_sort_result`
+-- 转存表中的数据 `garbage_sort_result`
 --
 
-LOCK TABLES `garbage_sort_result` WRITE;
-/*!40000 ALTER TABLE `garbage_sort_result` DISABLE KEYS */;
-INSERT INTO `garbage_sort_result` VALUES (1,1,0,0,NULL),(1,2,0,0,NULL),(1,3,0,0,NULL),(6,1,0,0,NULL),(6,2,0,0,NULL),(6,3,0,0,NULL),(7,1,0,0,NULL),(7,2,0,0,NULL),(7,3,0,0,NULL),(10,1,0,0,NULL),(10,2,0,0,NULL),(10,3,0,0,NULL),(12,1,0,0,NULL),(12,2,0,0,NULL),(12,3,0,0,NULL),(14,1,0,0,NULL),(14,2,0,0,NULL),(14,3,0,0,NULL),(18,1,0,0,NULL),(18,2,0,0,NULL),(18,3,0,0,NULL),(21,1,0,0,NULL),(21,2,0,0,NULL),(21,3,0,0,NULL);
-/*!40000 ALTER TABLE `garbage_sort_result` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `garbage_sort_result` (`gid`, `uid`, `times`, `correctTimes`, `unlockTime`) VALUES
+(1, 1, 0, 0, NULL),
+(1, 2, 0, 0, NULL),
+(1, 3, 0, 0, NULL),
+(6, 1, 0, 0, NULL),
+(6, 2, 0, 0, NULL),
+(6, 3, 0, 0, NULL),
+(7, 1, 0, 0, NULL),
+(7, 2, 0, 0, NULL),
+(7, 3, 0, 0, NULL),
+(10, 1, 0, 0, NULL),
+(10, 2, 0, 0, NULL),
+(10, 3, 0, 0, NULL),
+(12, 1, 0, 0, NULL),
+(12, 2, 0, 0, NULL),
+(12, 3, 0, 0, NULL),
+(14, 1, 0, 0, NULL),
+(14, 2, 0, 0, NULL),
+(14, 3, 0, 0, NULL),
+(18, 1, 0, 0, NULL),
+(18, 2, 0, 0, NULL),
+(18, 3, 0, 0, NULL),
+(21, 1, 0, 0, NULL),
+(21, 2, 0, 0, NULL),
+(21, 3, 0, 0, NULL);
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `scene`
+-- 表的结构 `scene`
 --
 
-DROP TABLE IF EXISTS `scene`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `scene` (
-  `sid` int NOT NULL AUTO_INCREMENT,
-  `minX` int NOT NULL,
-  `maxX` int NOT NULL,
-  `minY` int NOT NULL,
-  `maxY` int NOT NULL,
-  `minZ` int NOT NULL,
-  `maxZ` int NOT NULL,
-  `name` varchar(2048) NOT NULL,
-  PRIMARY KEY (`sid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `sid` int(11) NOT NULL,
+  `minX` int(11) NOT NULL,
+  `maxX` int(11) NOT NULL,
+  `minY` int(11) NOT NULL,
+  `maxY` int(11) NOT NULL,
+  `minZ` int(11) NOT NULL,
+  `maxZ` int(11) NOT NULL,
+  `name` varchar(2048) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `scene`
+-- 转存表中的数据 `scene`
 --
 
-LOCK TABLES `scene` WRITE;
-/*!40000 ALTER TABLE `scene` DISABLE KEYS */;
-INSERT INTO `scene` VALUES (1,-54,54,0,0,-54,54,'默认场景');
-/*!40000 ALTER TABLE `scene` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `scene` (`sid`, `minX`, `maxX`, `minY`, `maxY`, `minZ`, `maxZ`, `name`) VALUES
+(1, -54, 54, 0, 0, -54, 54, '默认场景');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- 表的结构 `user`
 --
 
-DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
-  `uid` int NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
   `username` varchar(256) NOT NULL,
-  `password` varchar(256) NOT NULL,
-  PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `password` varchar(256) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `user`
+-- 转存表中的数据 `user`
 --
 
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Admin','$2a$10$NM7s19sWIN4LBfBWHqkIKuaAk15j4kZndX5mqtDONmdxWseECQoxW'),(2,'Alice','$2a$10$pKMujZhdPtNDKwnY8I.RjOj1N2eGe9KiNv2a/OBSv65tGxH0TdjDe'),(3,'Bob','$2a$10$.e6FOBKAtWygZrGdPlrJiOHfAZH/F68C4rPH714aQRo.bF.s2uylq');
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `user` (`uid`, `username`, `password`) VALUES
+(1, 'Admin', '$2a$10$NM7s19sWIN4LBfBWHqkIKuaAk15j4kZndX5mqtDONmdxWseECQoxW'),
+(2, 'Alice', '$2a$10$pKMujZhdPtNDKwnY8I.RjOj1N2eGe9KiNv2a/OBSv65tGxH0TdjDe'),
+(3, 'Bob', '$2a$10$.e6FOBKAtWygZrGdPlrJiOHfAZH/F68C4rPH714aQRo.bF.s2uylq');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `user_appearance`
+-- 表的结构 `user_appearance`
 --
 
-DROP TABLE IF EXISTS `user_appearance`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_appearance` (
-  `uid` int NOT NULL,
+  `uid` int(11) NOT NULL,
   `color` varchar(128) NOT NULL,
-  `url` varchar(128) NOT NULL,
-  PRIMARY KEY (`uid`),
-  CONSTRAINT `user_appearance_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
+  `url` varchar(128) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_appearance`
+-- 转存表中的数据 `user_appearance`
 --
 
-LOCK TABLES `user_appearance` WRITE;
-/*!40000 ALTER TABLE `user_appearance` DISABLE KEYS */;
-INSERT INTO `user_appearance` VALUES (1,'blue','models/au_blue'),(2,'orange','models/au_orange'),(3,'blue','models/au_blue');
-/*!40000 ALTER TABLE `user_appearance` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `user_appearance` (`uid`, `color`, `url`) VALUES
+(1, 'blue', 'models/au_blue'),
+(2, 'orange', 'models/au_orange'),
+(3, 'blue', 'models/au_blue');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `user_authority`
+-- 表的结构 `user_authority`
 --
 
-DROP TABLE IF EXISTS `user_authority`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_authority` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `aid` int NOT NULL,
-  `uid` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `uid` (`uid`),
-  KEY `aid` (`aid`),
-  CONSTRAINT `user_authority_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`),
-  CONSTRAINT `user_authority_ibfk_2` FOREIGN KEY (`aid`) REFERENCES `authority` (`aid`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_authority`
---
-
-LOCK TABLES `user_authority` WRITE;
-/*!40000 ALTER TABLE `user_authority` DISABLE KEYS */;
-INSERT INTO `user_authority` VALUES (1,1,1),(2,2,1),(3,1,2);
-/*!40000 ALTER TABLE `user_authority` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `user_login_info`
---
-
-DROP TABLE IF EXISTS `user_login_info`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_login_info` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `uid` int NOT NULL,
-  `token` varchar(1024) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `uid` (`uid`),
-  CONSTRAINT `user_login_info_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_login_info`
---
-
-LOCK TABLES `user_login_info` WRITE;
-/*!40000 ALTER TABLE `user_login_info` DISABLE KEYS */;
-INSERT INTO `user_login_info` VALUES (45,2,'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGljZSIsImlhdCI6MTYyNDU0MTkxMSwiZXhwIjoxNjI0NTU5OTExfQ.ZzuNxAT7CAHn9xFgrogJ4XS3njsww8yY-BnhpzpI3qMSqnQxVp-a3mf41SmvbUjOystNiXSPPK-Dyy6Wea1MuQ');
-/*!40000 ALTER TABLE `user_login_info` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `user_score`
---
-
-DROP TABLE IF EXISTS `user_score`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_score` (
-  `uid` int NOT NULL,
-  `score` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`uid`),
-  CONSTRAINT `user_score_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)
+  `id` int(11) NOT NULL,
+  `aid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_score`
+-- 转存表中的数据 `user_authority`
 --
 
-LOCK TABLES `user_score` WRITE;
-/*!40000 ALTER TABLE `user_score` DISABLE KEYS */;
-INSERT INTO `user_score` VALUES (1,0),(2,0),(3,0);
-/*!40000 ALTER TABLE `user_score` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+INSERT INTO `user_authority` (`id`, `aid`, `uid`) VALUES
+(1, 1, 1),
+(2, 2, 1),
+(3, 1, 2);
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `user_login_info`
+--
+
+CREATE TABLE `user_login_info` (
+  `id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `token` varchar(1024) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `user_login_info`
+--
+
+INSERT INTO `user_login_info` (`id`, `uid`, `token`) VALUES
+(45, 2, 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGljZSIsImlhdCI6MTYyNDU0MTkxMSwiZXhwIjoxNjI0NTU5OTExfQ.ZzuNxAT7CAHn9xFgrogJ4XS3njsww8yY-BnhpzpI3qMSqnQxVp-a3mf41SmvbUjOystNiXSPPK-Dyy6Wea1MuQ');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `user_score`
+--
+
+CREATE TABLE `user_score` (
+  `uid` int(11) NOT NULL,
+  `score` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `user_score`
+--
+
+INSERT INTO `user_score` (`uid`, `score`) VALUES
+(1, 0),
+(2, 0),
+(3, 0);
+
+--
+-- 转储表的索引
+--
+
+--
+-- 表的索引 `authority`
+--
+ALTER TABLE `authority`
+  ADD PRIMARY KEY (`aid`);
+
+--
+-- 表的索引 `emoji`
+--
+ALTER TABLE `emoji`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 表的索引 `garbage`
+--
+ALTER TABLE `garbage`
+  ADD PRIMARY KEY (`gid`);
+
+--
+-- 表的索引 `garbage_sort_result`
+--
+ALTER TABLE `garbage_sort_result`
+  ADD PRIMARY KEY (`gid`,`uid`),
+  ADD KEY `uid` (`uid`);
+
+--
+-- 表的索引 `scene`
+--
+ALTER TABLE `scene`
+  ADD PRIMARY KEY (`sid`);
+
+--
+-- 表的索引 `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`uid`);
+
+--
+-- 表的索引 `user_appearance`
+--
+ALTER TABLE `user_appearance`
+  ADD PRIMARY KEY (`uid`);
+
+--
+-- 表的索引 `user_authority`
+--
+ALTER TABLE `user_authority`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `uid` (`uid`),
+  ADD KEY `aid` (`aid`);
+
+--
+-- 表的索引 `user_login_info`
+--
+ALTER TABLE `user_login_info`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `uid` (`uid`);
+
+--
+-- 表的索引 `user_score`
+--
+ALTER TABLE `user_score`
+  ADD PRIMARY KEY (`uid`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `authority`
+--
+ALTER TABLE `authority`
+  MODIFY `aid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- 使用表AUTO_INCREMENT `emoji`
+--
+ALTER TABLE `emoji`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- 使用表AUTO_INCREMENT `garbage`
+--
+ALTER TABLE `garbage`
+  MODIFY `gid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+
+--
+-- 使用表AUTO_INCREMENT `scene`
+--
+ALTER TABLE `scene`
+  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- 使用表AUTO_INCREMENT `user`
+--
+ALTER TABLE `user`
+  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- 使用表AUTO_INCREMENT `user_authority`
+--
+ALTER TABLE `user_authority`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- 使用表AUTO_INCREMENT `user_login_info`
+--
+ALTER TABLE `user_login_info`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+
+--
+-- 限制导出的表
+--
+
+--
+-- 限制表 `garbage_sort_result`
+--
+ALTER TABLE `garbage_sort_result`
+  ADD CONSTRAINT `garbage_sort_result_ibfk_1` FOREIGN KEY (`gid`) REFERENCES `garbage` (`gid`),
+  ADD CONSTRAINT `garbage_sort_result_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`);
+
+--
+-- 限制表 `user_appearance`
+--
+ALTER TABLE `user_appearance`
+  ADD CONSTRAINT `user_appearance_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`);
+
+--
+-- 限制表 `user_authority`
+--
+ALTER TABLE `user_authority`
+  ADD CONSTRAINT `user_authority_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`),
+  ADD CONSTRAINT `user_authority_ibfk_2` FOREIGN KEY (`aid`) REFERENCES `authority` (`aid`);
+
+--
+-- 限制表 `user_login_info`
+--
+ALTER TABLE `user_login_info`
+  ADD CONSTRAINT `user_login_info_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`);
+
+--
+-- 限制表 `user_score`
+--
+ALTER TABLE `user_score`
+  ADD CONSTRAINT `user_score_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`);
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2021-06-25 11:50:49
