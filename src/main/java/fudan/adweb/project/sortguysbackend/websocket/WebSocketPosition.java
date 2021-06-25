@@ -7,10 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import fudan.adweb.project.sortguysbackend.constant.GameConstant;
-import fudan.adweb.project.sortguysbackend.entity.ChatMsg;
-import fudan.adweb.project.sortguysbackend.entity.GameControlMsg;
-import fudan.adweb.project.sortguysbackend.entity.GarbageControlMsg;
-import fudan.adweb.project.sortguysbackend.entity.PositionMsg;
+import fudan.adweb.project.sortguysbackend.entity.*;
 import fudan.adweb.project.sortguysbackend.entity.game.GarbageBinInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.GarbageInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
@@ -153,9 +150,13 @@ public class WebSocketPosition {
 
         sessionMap.remove(this.session.getId());
 
-        roomService.leaveRoom(String.valueOf(roomId), username);
+        String newRoomOwner = roomService.leaveRoom(String.valueOf(roomId), username);
 
-        multicastPosition(new PositionMsg(username, -1d, -1d, -1d, GameConstant.POSITION_REMOVE_MESSAGE, "", 0d), roomId);
+        PositionMsg positionMsg = new PositionMsg(username, -1d, -1d, -1d, GameConstant.POSITION_REMOVE_MESSAGE, "", 0d);
+        LeavePositionMsg leavePositionMsg = new LeavePositionMsg();
+        leavePositionMsg.setPositionMsg(positionMsg);
+        leavePositionMsg.setNewRoomOwner(newRoomOwner);
+        multicastObject(leavePositionMsg, roomId);
     }
 
     /**
@@ -363,6 +364,16 @@ public class WebSocketPosition {
     @OnError
     public void onError(Session session, Throwable error) {
         error.printStackTrace();
+    }
+
+    // 组播
+    private void multicastObject(Object object, Integer roomId) throws IOException {
+        Set<WebSocketPosition> room = roomMap.get(roomId);
+        for (WebSocketPosition item : room) {
+            synchronized (item.session){
+                item.session.getBasicRemote().sendText(asJsonString(object));
+            }
+        }
     }
 
     // 组播位置信息（基于房间号）
