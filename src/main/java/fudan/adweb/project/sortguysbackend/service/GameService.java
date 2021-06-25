@@ -127,11 +127,14 @@ public class GameService {
         garbageInfo.setScore(GameConstant.GARBAGE_BASIC_SCORE + (garbageSortResultService.isGarbagePuzzle(garbage.getGid()) ? GameConstant.GARBAGE_PUZZLE_SCORE : 0));
 
         // 生成在随机位置
-        int randomX = ThreadLocalRandom.current().nextInt(scene.getMinX(), scene.getMaxX() + 1);
-        int randomZ = ThreadLocalRandom.current().nextInt(scene.getMinZ(), scene.getMaxZ() + 1);
-        garbageInfo.setX((double) randomX);
+        int randomX = ThreadLocalRandom.current().nextInt(8, scene.getMaxX() + 1);
+        int randomZ = ThreadLocalRandom.current().nextInt(8, scene.getMaxZ() + 1);
+        int randomXF = ThreadLocalRandom.current().nextBoolean() ? 1 : -1;
+        int randomZF = ThreadLocalRandom.current().nextBoolean() ? 1 : -1;
+
+        garbageInfo.setX((double) randomX * randomXF);
         garbageInfo.setY(30d);
-        garbageInfo.setZ((double) randomZ);
+        garbageInfo.setZ((double) randomZ * randomZF);
 
         garbageInfo.setGarbageName(garbage.getName());
         garbageInfo.setType(GameConstant.GARBAGE_TYPE_MAP.get(garbage.getType()));
@@ -386,10 +389,10 @@ public class GameService {
 
         // 生成在随机位置
         List<GarbageBinInfo> garbageBinInfos = new ArrayList<>();
-        garbageBinInfos.add(generateGarbageBin(minX, midX-2, minZ, midZ-2));
-        garbageBinInfos.add(generateGarbageBin(minX, midX-2, midZ, maxZ-2));
-        garbageBinInfos.add(generateGarbageBin(midX, maxX-2, minZ, midZ-2));
-        garbageBinInfos.add(generateGarbageBin(midX, maxX-2, midZ, maxZ-2));
+        garbageBinInfos.add(generateGarbageBin(minX, midX-10, minZ, midZ-10));
+        garbageBinInfos.add(generateGarbageBin(minX, midX-10, midZ+10, maxZ-2));
+        garbageBinInfos.add(generateGarbageBin(midX+10, maxX-2, minZ, midZ-10));
+        garbageBinInfos.add(generateGarbageBin(midX+10, maxX-2, midZ+10, maxZ-2));
         return garbageBinInfos;
     }
 
