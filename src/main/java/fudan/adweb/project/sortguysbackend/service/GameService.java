@@ -92,6 +92,9 @@ public class GameService {
             return "房间内有用户尚未准备";
         }
 
+        // 排行榜分数归零
+        roomService.rtzScoreInfo(roomId);
+
         // 将房间内所有用户状态变为游戏中
         updateAllPlayerStatus(roomId, GameConstant.PLAYER_IN_GAME);
 
@@ -162,11 +165,7 @@ public class GameService {
     // 游戏结束，删除游戏相关信息，将游戏记录写入MySQL
     public List<ScoreInfo> getOver(String roomId, String username){
         // 删除游戏相关信息 或 归零
-        String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
-        Map<Object, Object> garbageMap = redisUtil.hmget(garbageMapKey);
-        for (Map.Entry<Object, Object> entry : garbageMap.entrySet()){
-            redisUtil.hdel(garbageMapKey, (String) entry.getKey());
-        }
+        roomService.delGarbageInfo(roomId);
 
         List<ScoreInfo> list = getScoreList(roomId);
 
@@ -176,7 +175,7 @@ public class GameService {
         updateAllPlayerHintsNum(roomId, (int) redisUtil.hget(roomId, "hintsNum"));
         updateAllPlayerCorrectNum(roomId, 0);
 
-        // TODO: 更新垃圾分类结果信息，用户总得分信息（MySQL）
+        // 更新垃圾分类结果信息，用户总得分信息（MySQL）
         updateUserScoreToSQL(roomId);
         updateSortResultToSQL(roomId);
 
@@ -191,7 +190,7 @@ public class GameService {
             String garbageName = garbageSortResultRedisInfo.getGarbageName();
             Integer uid = userMapper.getUidByUsername(username);
             Integer gid = garbageMapper.findGidByName(garbageName);
-            
+
             garbageSortResultService.unlock(gid, uid);
             if(garbageSortResultRedisInfo.isSortResult()){
                 garbageSortResultService.updateCorrectResult(gid, uid);

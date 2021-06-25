@@ -153,7 +153,8 @@ public class WebSocketPosition {
 
         sessionMap.remove(this.session.getId());
 
-        roomService.leaveRoom(String.valueOf(roomId), username);
+        String newRoomOwner = roomService.leaveRoom(String.valueOf(roomId), username);
+
 
         multicastPosition(new PositionMsg(username, -1d, -1d, -1d, GameConstant.POSITION_REMOVE_MESSAGE, "", 0d), roomId);
     }

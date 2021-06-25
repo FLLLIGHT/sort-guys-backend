@@ -6,12 +6,14 @@ import fudan.adweb.project.sortguysbackend.entity.UserAppearance;
 import fudan.adweb.project.sortguysbackend.entity.game.GarbageSortResultRedisInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.PlayerInfo;
 import fudan.adweb.project.sortguysbackend.entity.game.RoomInfo;
+import fudan.adweb.project.sortguysbackend.entity.game.ScoreInfo;
 import fudan.adweb.project.sortguysbackend.mapper.SceneMapper;
 import fudan.adweb.project.sortguysbackend.mapper.UserAppearanceMapper;
 import fudan.adweb.project.sortguysbackend.mapper.UserAuthorityMapper;
 import fudan.adweb.project.sortguysbackend.mapper.UserMapper;
 import fudan.adweb.project.sortguysbackend.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -70,6 +72,26 @@ public class RoomService {
         return roomId;
     }
 
+    public void delGarbageInfo(String roomId){
+        String garbageMapKey = (String) redisUtil.hget(roomId, "garbageMapKey");
+        Map<Object, Object> garbageMap = redisUtil.hmget(garbageMapKey);
+        for (Map.Entry<Object, Object> entry : garbageMap.entrySet()){
+            redisUtil.hdel(garbageMapKey, (String) entry.getKey());
+        }
+    }
+
+    // 归零
+    public void rtzScoreInfo(String roomId){
+        String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");
+        Set<ZSetOperations.TypedTuple<Object>> rangeWithScores = redisUtil.zReverseRangeWithScore(scoreZSetKey, 0, 4);
+
+        Iterator<ZSetOperations.TypedTuple<Object>> iterator = rangeWithScores.iterator();
+        while(iterator.hasNext()){
+            ZSetOperations.TypedTuple<Object> next = iterator.next();
+            redisUtil.zSet(scoreZSetKey, (String) next.getValue(), 0);
+        }
+    }
+
     // 判断房间是否已经存在
     public boolean isExisted(String roomId){
         return redisUtil.hget(roomId, "roomOwner") != null;
@@ -107,15 +129,38 @@ public class RoomService {
     }
 
     // 用户离开房间
-    public void leaveRoom(String roomId, String username){
+    public String leaveRoom(String roomId, String username){
         // todo: 判断游戏是否已经开始？
 
-        // todo: 判断是否是房主？
         String userMapKey = (String) redisUtil.hget(roomId, "userMapKey");
-        redisUtil.hdel(userMapKey, username);
-
         String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");
+        redisUtil.hdel(userMapKey, username);
         redisUtil.zSetRemove(scoreZSetKey, username);
+
+        //判断是否是房主？
+        String newRoomOwner = "";
+        boolean isRoomOwner = checkRoomOwner(roomId, username);
+        if (isRoomOwner) {
+            Set<PlayerInfo> playerInfos = getAllPlayerInfo(roomId);
+            if (playerInfos.size() == 0) {
+                // 房间剩余人数为0，删除房间
+                delGarbageInfo(roomId);
+                redisUtil.hdel(roomId, "roomOwner", "status",
+                        "hintsNum", "roomId", "userMapKey", "garbageMapKey",
+                        "garbageSortResultInfos", "scoreZSetKey", "scene");
+                redisUtil.setRemove("existedRoomId", roomId);
+            } else {
+                // 房间剩余人数不为0，随机移交房主
+                PlayerInfo playerInfo = playerInfos.iterator().next();
+                playerInfo.setRoomOwner(true);
+                newRoomOwner = playerInfo.getUsername();
+
+                redisUtil.hset(userMapKey, newRoomOwner, playerInfo);
+                redisUtil.hset(roomId, "roomOwner", newRoomOwner);
+            }
+        }
+
+        return newRoomOwner;
     }
 
     // 判断用户是否是房主
