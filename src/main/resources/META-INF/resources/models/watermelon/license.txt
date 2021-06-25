@@ -1,0 +1,11 @@
+Model Information:
+* title:	Tembikai (Watermelon)
+* source:	https://sketchfab.com/3d-models/tembikai-watermelon-83f6af2628494e0384a995fcc7815240
+* author:	ezul4000 (https://sketchfab.com/ezul4000)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Tembikai (Watermelon)" (https://sketchfab.com/3d-models/tembikai-watermelon-83f6af2628494e0384a995fcc7815240) by ezul4000 (https://sketchfab.com/ezul4000) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

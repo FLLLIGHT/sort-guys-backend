@@ -5,11 +5,14 @@ import java.io.Serializable;
 public class Garbage implements Serializable {
     private static final long serialVersionUID = 6184686150867692493L;
     private Integer gid;
-    private String name;
+    private String cname;
     private String type;
     private String description;
     private String updateTime;
     private String url;
+    private String name;
+    private boolean valid;
+    private float rate;
 
     public Integer getGid() {
         return gid;
@@ -19,12 +22,12 @@ public class Garbage implements Serializable {
         this.gid = gid;
     }
 
-    public String getName() {
-        return name;
+    public String getCname() {
+        return cname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCname(String cname) {
+        this.cname = cname;
     }
 
     public String getType() {
@@ -57,5 +60,29 @@ public class Garbage implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
+    public float getRate() {
+        return rate;
+    }
+
+    public void setRate(float rate) {
+        this.rate = rate;
     }
 }

@@ -1,0 +1,11 @@
+Model Information:
+* title:	hamburguesa
+* source:	https://sketchfab.com/3d-models/hamburguesa-fb48ec6a15294c7ca38a0eb2691bb194
+* author:	Danpollo (https://sketchfab.com/danpollo)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "hamburguesa" (https://sketchfab.com/3d-models/hamburguesa-fb48ec6a15294c7ca38a0eb2691bb194) by Danpollo (https://sketchfab.com/danpollo) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
