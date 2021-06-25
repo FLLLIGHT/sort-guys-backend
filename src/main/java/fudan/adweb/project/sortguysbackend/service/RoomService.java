@@ -113,11 +113,13 @@ public class RoomService {
 
         Scene scene = (Scene) redisUtil.hget(roomId, "scene");
         // 生成在随机位置
-        int randomX = ThreadLocalRandom.current().nextInt(scene.getMinX(), scene.getMaxX());
-        int randomZ = ThreadLocalRandom.current().nextInt(scene.getMinZ(), scene.getMaxZ() + 1);
-        playerInfo.setX((double)randomX);
+        int randomX = ThreadLocalRandom.current().nextInt(8, scene.getMaxX());
+        int randomZ = ThreadLocalRandom.current().nextInt(8, scene.getMaxZ());
+        int randomXF = ThreadLocalRandom.current().nextBoolean() ? -1 : 1;
+        int randomZF = ThreadLocalRandom.current().nextBoolean() ? -1 : 1;
+        playerInfo.setX((double)randomX * randomXF);
         playerInfo.setY(30d);
-        playerInfo.setZ((double)randomZ);
+        playerInfo.setZ((double)randomZ * randomZF);
         playerInfo.setRotation(0d);
         playerInfo.setHintsNumLeft(hintsNum);
         playerInfo.setCorrectNum(0);
