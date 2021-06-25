@@ -51,7 +51,7 @@ CREATE TABLE `emoji` (
   `name` varchar(256) NOT NULL,
   `url` varchar(256) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,7 +60,7 @@ CREATE TABLE `emoji` (
 
 LOCK TABLES `emoji` WRITE;
 /*!40000 ALTER TABLE `emoji` DISABLE KEYS */;
-INSERT INTO `emoji` VALUES (1,'1','/emojis/1.jpg');
+INSERT INTO `emoji` VALUES (1,'1','/emojis/1.jpg'),(2,'2','/emojis/2.jpg'),(3,'3','/emojis/3.jpg');
 /*!40000 ALTER TABLE `emoji` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -297,4 +297,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-06-26  0:51:20
+-- Dump completed on 2021-06-26  1:07:45
