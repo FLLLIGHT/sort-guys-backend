@@ -115,6 +115,7 @@ public class GarbageSortResultService {
     }
 
     public void unlock(Integer gid, Integer uid){
+        System.out.println("gid: " + gid + ", uid = " + uid);
         GarbageSortResult garbageSortResult = garbageSortResultMapper.findByGidAndUid(gid, uid);
         if(garbageSortResult.getUnlockTime()==null){
             garbageSortResultMapper.updateUnlockTime(new Date(), gid, uid);

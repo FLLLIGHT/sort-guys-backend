@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/models/**").permitAll()
                     .antMatchers("/garbage/**").permitAll()
                     .antMatchers("/emoji/**").permitAll()
+                    .antMatchers("/textures/**").permitAll()
                     .antMatchers("/sortResult").hasAuthority("admin")
                     .antMatchers("/websocketPosition/**").permitAll()
                     .antMatchers("/websocketChat/**").permitAll()
