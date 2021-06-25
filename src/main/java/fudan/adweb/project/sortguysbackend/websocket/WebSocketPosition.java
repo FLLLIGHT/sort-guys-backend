@@ -190,9 +190,9 @@ public class WebSocketPosition {
         }
 
 
-        System.out.println(message);
+//        System.out.println(message);
         // 请求类型作为url参数进行传递，保证是同一个连接
-        System.out.println(messageType);
+//        System.out.println(messageType);
         // 用户位置移动信息
         if (messageType == GameConstant.POSITION_MESSAGE){
             PositionMsg positionMsg;

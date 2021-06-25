@@ -26,8 +26,8 @@ public class HintController {
         this.garbageService = garbageService;
     }
 
-    @PutMapping("/hint/{gid}")
-    public ResponseEntity<?> getGarbageTypeByGid(@PathVariable("gid") Integer gid, @RequestBody HintRequest request){
+    @PutMapping("/hint/{garbageName}")
+    public ResponseEntity<?> getGarbageTypeByGid(@PathVariable("garbageName") String garbageName, @RequestBody HintRequest request){
         // 是不是本人
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!user.getUid().equals(request.getUid())){
@@ -37,7 +37,7 @@ public class HintController {
         }
 
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        Garbage garbage = garbageService.getByGid(gid);
+        Garbage garbage = garbageService.getByName(garbageName);
         if (garbage == null){
             Map<String, String> map = new HashMap<>();
             map.put("message", "garbage 不存在");

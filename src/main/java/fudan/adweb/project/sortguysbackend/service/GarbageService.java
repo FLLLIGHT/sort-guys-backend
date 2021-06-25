@@ -17,4 +17,9 @@ public class GarbageService {
     public Garbage getByGid(Integer gid) {
         return garbageMapper.findByGid(gid);
     }
+
+    public Garbage getByName(String garbageName) {
+        Integer gid = garbageMapper.findGidByName(garbageName);
+        return getByGid(gid);
+    }
 }
