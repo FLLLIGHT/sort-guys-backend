@@ -277,7 +277,7 @@ public class GameService {
             if (correctNum > 1){
                 correctNum = Math.min(5, correctNum);
                 // 连续分对垃圾的附加分
-                bonusScore = GameConstant.GARBAGE_BONUS_CORRECT_SCORE.get(correctNum - 1);
+                bonusScore = GameConstant.GARBAGE_BONUS_CORRECT_SCORE.get(correctNum - 2);
             }
             String scoreZSetKey = (String) redisUtil.hget(roomId, "scoreZSetKey");
             redisUtil.zIncr(scoreZSetKey, username, garbageInfo.getScore() + bonusScore);
