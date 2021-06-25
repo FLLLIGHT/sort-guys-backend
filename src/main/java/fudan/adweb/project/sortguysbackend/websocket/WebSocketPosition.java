@@ -74,7 +74,7 @@ public class WebSocketPosition {
 
         // 存入用户session
         this.session = session;
-        if (sessionMap.containsKey(session.getId())){
+        if (usersMap.containsKey(nickname)){
             session.close(new CloseReason(getCloseCode(GameConstant.ALREADY_CONNECTED), "already connected"));
             return;
         }
