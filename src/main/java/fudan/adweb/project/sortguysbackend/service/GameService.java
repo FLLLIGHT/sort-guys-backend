@@ -92,6 +92,11 @@ public class GameService {
             return "房间内有用户尚未准备";
         }
 
+        // 判断是否已经开始
+        if (roomService.getRoomInfo(roomId).getStatus() != GameConstant.ROOM_WAITING) {
+            return "不能重复开始游戏";
+        }
+
         // 排行榜分数归零
         roomService.rtzScoreInfo(roomId);
 
