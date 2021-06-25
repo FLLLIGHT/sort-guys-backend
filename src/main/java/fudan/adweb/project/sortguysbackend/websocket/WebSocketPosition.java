@@ -334,7 +334,6 @@ public class WebSocketPosition {
 
     private boolean checkToken(String token, String nickname) throws IOException {
         if (token == null || token.equals("")){
-            session.close(new CloseReason(getCloseCode(GameConstant.GAME_ALREADY_START), "already start"));
             return false;
         }
         String username = "";
