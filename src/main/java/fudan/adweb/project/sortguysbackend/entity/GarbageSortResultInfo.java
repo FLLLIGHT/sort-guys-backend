@@ -9,9 +9,10 @@ public class GarbageSortResultInfo {
     private Integer times;
     private Integer correctTimes;
     private String unlockTime;  // 管理员获取全部的垃圾分类信息时该项为垃圾初始化的时间
+    private String type;
 
     public GarbageSortResultInfo(Integer gid, String name, String cname, String description, Integer times,
-                                 Integer correctTimes, String unlockTime, String url) {
+                                 Integer correctTimes, String unlockTime, String url, String type) {
         this.gid = gid;
         this.name = name;
         this.description = description;
@@ -20,6 +21,7 @@ public class GarbageSortResultInfo {
         this.unlockTime = unlockTime;
         this.cname = cname;
         this.url = url;
+        this.type = type;
     }
 
     public Integer getGid() {
@@ -84,6 +86,14 @@ public class GarbageSortResultInfo {
 
     public void setCname(String cname) {
         this.cname = cname;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override
