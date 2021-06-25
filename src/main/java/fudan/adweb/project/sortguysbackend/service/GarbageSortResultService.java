@@ -46,7 +46,7 @@ public class GarbageSortResultService {
         for (GarbageSortResult re: results){
             Integer gid = re.getGid();
             Garbage garbage = garbageMapper.findByGid(gid);
-            GarbageSortResultInfo info = new GarbageSortResultInfo(gid, garbage.getName(), garbage.getDescription(),
+            GarbageSortResultInfo info = new GarbageSortResultInfo(gid, garbage.getName(), garbage.getCname(), garbage.getDescription(),
                     re.getTimes(), re.getCorrectTimes(), re.getUnlockTime(), garbage.getUrl());
             result.add(info);
         }
@@ -58,7 +58,7 @@ public class GarbageSortResultService {
         List<GarbageSortResultInfo> result = new ArrayList<>();
         List<Garbage> garbageList = garbageMapper.findAll();
         for (Garbage g: garbageList){
-            GarbageSortResultInfo info = new GarbageSortResultInfo(g.getGid(), g.getName(), g.getDescription(),
+            GarbageSortResultInfo info = new GarbageSortResultInfo(g.getGid(), g.getName(), g.getCname(), g.getDescription(),
                     0, 0, g.getUpdateTime(), g.getUrl());
             result.add(info);
         }

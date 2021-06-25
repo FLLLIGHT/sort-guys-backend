@@ -130,6 +130,8 @@ public class GameService {
 
         garbageInfo.setGarbageName(garbage.getName());
         garbageInfo.setType(GameConstant.GARBAGE_TYPE_MAP.get(garbage.getType()));
+        garbageInfo.setRate(garbage.getRate());
+        garbageInfo.setCname(garbage.getCname());
         redisUtil.hset(garbageMapKey, garbageId, garbageInfo);
         return garbageInfo;
     }

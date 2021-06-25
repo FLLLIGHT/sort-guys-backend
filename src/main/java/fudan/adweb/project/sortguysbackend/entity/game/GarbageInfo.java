@@ -18,6 +18,12 @@ public class GarbageInfo {
     // UUID
     private String garbageId;
 
+    // 缩放大小
+    private float rate;
+
+    // 中文名
+    private String cname;
+
     public String getGarbageId() {
         return garbageId;
     }
@@ -80,5 +86,21 @@ public class GarbageInfo {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public float getRate() {
+        return rate;
+    }
+
+    public void setRate(float rate) {
+        this.rate = rate;
+    }
+
+    public String getCname() {
+        return cname;
+    }
+
+    public void setCname(String cname) {
+        this.cname = cname;
     }
 }
