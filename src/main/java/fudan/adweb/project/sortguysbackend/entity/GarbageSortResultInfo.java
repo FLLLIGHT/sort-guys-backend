@@ -18,6 +18,8 @@ public class GarbageSortResultInfo {
         this.times = times;
         this.correctTimes = correctTimes;
         this.unlockTime = unlockTime;
+        this.cname = cname;
+        this.url = url;
     }
 
     public Integer getGid() {
@@ -82,5 +84,19 @@ public class GarbageSortResultInfo {
 
     public void setCname(String cname) {
         this.cname = cname;
+    }
+
+    @Override
+    public String toString() {
+        return "GarbageSortResultInfo{" +
+                "gid=" + gid +
+                ", name='" + name + '\'' +
+                ", cname='" + cname + '\'' +
+                ", url='" + url + '\'' +
+                ", description='" + description + '\'' +
+                ", times=" + times +
+                ", correctTimes=" + correctTimes +
+                ", unlockTime='" + unlockTime + '\'' +
+                '}';
     }
 }

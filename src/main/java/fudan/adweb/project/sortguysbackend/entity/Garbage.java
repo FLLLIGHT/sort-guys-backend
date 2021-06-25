@@ -85,4 +85,19 @@ public class Garbage implements Serializable {
     public void setRate(float rate) {
         this.rate = rate;
     }
+
+    @Override
+    public String toString() {
+        return "Garbage{" +
+                "gid=" + gid +
+                ", cname='" + cname + '\'' +
+                ", type='" + type + '\'' +
+                ", description='" + description + '\'' +
+                ", updateTime='" + updateTime + '\'' +
+                ", url='" + url + '\'' +
+                ", name='" + name + '\'' +
+                ", valid=" + valid +
+                ", rate=" + rate +
+                '}';
+    }
 }
